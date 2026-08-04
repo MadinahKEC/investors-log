@@ -1,0 +1,2454 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Investor Registration Log — مدينة المعرفة الاقتصادية</title>
+<style>@font-face{font-family:'Readex Pro';font-style:normal;font-weight:200 700;font-display:block;src:url('fonts/readex-arabic.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource-variable/readex-pro@5.2.11/files/readex-pro-arabic-wght-normal.woff2') format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF}@font-face{font-family:'Readex Pro';font-style:normal;font-weight:200 700;font-display:block;src:url('fonts/readex-latin.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource-variable/readex-pro@5.2.11/files/readex-pro-latin-wght-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:block;src:url('fonts/plexmono-400.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.6/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:block;src:url('fonts/plexmono-500.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.6/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}</style>
+<style>
+/* ============================================================================
+   KEC Report Identity — report.css
+   Single source of truth for all KEC report styling.
+   Geometry in mm. Type in px. Never rem (rem depends on root size = not print-safe).
+   ========================================================================== */
+
+:root{
+  /* ---- greens ---- */
+  --kec-green:#2F6B3E;
+  --kec-title:#1C6034;
+  --kec-green-deep:#143D1E;
+  /* ---- gold (olive-gold, faithful to the logo swoosh — NOT amber) ---- */
+  --kec-gold:#9A8A1E;
+  --kec-olive:#7E6F1B;
+  /* ---- neutrals ---- */
+  --kec-ink:#16221B;
+  --kec-muted:#5C6B60;
+  --kec-paper:#FBFCFA;
+  --kec-surface:#F0F5EC;
+  --kec-surface-2:#EAF3E4;
+  --kec-hairline:#E4EBDF;
+  --kec-icon:#143D1E;
+  /* ---- badge tints ---- */
+  --kec-badge-gold-bg:#F4F1DF; --kec-badge-gold-bd:#E1DAB4; --kec-badge-gold-tx:#6E6316;
+  --kec-badge-green-bg:#EFF5EB; --kec-badge-green-bd:#D3E4CF;
+  /* ---- semantic (directional). gold is NEVER directional ---- */
+  --kec-pos:#2F6B3E; --kec-neg:#B5462F; --kec-info:#2E7D6B; --kec-warn:#9A8A1E;
+
+  /* ---- fonts ---- */
+  --kec-font:'Readex Pro',system-ui,'Segoe UI',Tahoma,sans-serif;
+  --kec-mono:'IBM Plex Mono',ui-monospace,monospace;
+
+  /* ---- type scale (px, print-calibrated: 96dpi, 1pt = 1.333px) ---- */
+  --fs-title:29.6px; /* report title (H1)          ~22pt / 700 */
+  --fs-sub:16.8px;   /* subtitle                 ~12.6pt / 500 */
+  --fs-hero:46px;    /* single hero figure       ~34.5pt / 300 */
+  --fs-kpi:25px;     /* dashboard KPI number     ~18.8pt / 600 */
+  --fs-h:14.4px;     /* section heading          ~10.8pt / 700 */
+  --fs-body:12px;    /* body                        9pt / 400 */
+  --fs-label:10px;   /* KPI / field label         ~7.5pt / 500 */
+  --fs-small:9.5px;  /* footer, caption, legend   ~7.1pt / 400 */
+  --fs-badge:8.5px;  /* header badges             ~6.4pt / 500 */
+
+  /* ---- geometry ---- */
+  --logo-w:35mm;     /* LOCKED. header left block = logo width = badge-row width */
+  --logo-h:25.3mm;   /* LOCKED box. object-fit:contain keeps any KEC.png's ratio */
+  --gap:10px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#e9ece7;font-family:var(--kec-font);color:var(--kec-ink);
+  font-size:var(--fs-body);-webkit-font-smoothing:antialiased;font-synthesis:none}
+
+/* ============================ PAGE ======================================== */
+.page{
+  background:var(--kec-paper);position:relative;
+  display:flex;flex-direction:column;
+  padding:10mm 13mm 13mm;      /* top / sides / bottom */
+  margin:10mm auto;
+  overflow:hidden;             /* TRIPWIRE, not the fitting mechanism.
+                                  verify.py asserts scrollHeight <= clientHeight. */
+  box-shadow:0 2px 14px rgba(0,0,0,.10);
+  break-after:page;
+}
+.page:last-child{break-after:auto}
+.page--portrait { width:210mm; height:297mm }   /* content box ≈ 184mm × 222mm */
+.page--landscape{ width:297mm; height:210mm }   /* content box ≈ 271mm × 135mm */
+.page--wide     { width:1280px;height:720px;padding:44px } /* 16:9 screen deck  */
+
+/* ============================ HEADER ====================================== */
+/* RTL flex row: FIRST child lands at the RIGHT. Title block must come first. */
+.kec-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:2px solid var(--kec-hairline);
+  padding-bottom:9px;margin-bottom:13px;position:relative;flex:none;
+}
+.kec-head::after{content:'';position:absolute;bottom:-2px;right:0;
+  width:120px;height:3px;background:var(--kec-gold)}
+.kec-title{font-size:var(--fs-title);font-weight:700;color:var(--kec-title);
+  line-height:1.18;letter-spacing:-.2px}
+.kec-sub{font-size:var(--fs-sub);font-weight:500;color:var(--kec-gold);margin-top:3px}
+
+/* left block: width is LOCKED to the logo width; badges span exactly that width */
+.kec-head__left{display:flex;flex-direction:column;align-items:center;gap:5px;
+  width:var(--logo-w);flex:none}
+.kec-logo{width:var(--logo-w);height:var(--logo-h);object-fit:contain;
+  object-position:center;display:block}
+.kec-badges{display:flex;gap:5px;width:100%}
+.kec-badge{flex:1;min-width:0;width:100%;font-family:var(--kec-font);
+  font-size:var(--fs-badge);font-weight:500;padding:3px 2px;border-radius:4px;
+  border:1px solid;white-space:nowrap;text-align:center;line-height:1.5;
+  -webkit-appearance:none;appearance:none;text-align-last:center;
+  background-image:none;cursor:pointer;height:auto;outline:none}
+.kec-badge--status{background:var(--kec-badge-gold-bg);color:var(--kec-badge-gold-tx);
+  border-color:var(--kec-badge-gold-bd)}
+.kec-badge--period{background:var(--kec-badge-green-bg);color:var(--kec-green);
+  border-color:var(--kec-badge-green-bd)}
+
+/* ============================ CONTENT ===================================== */
+.kec-content{flex:1;min-height:0;overflow:hidden;
+  display:flex;flex-direction:column;gap:var(--gap)}
+
+/* --- grids: asymmetric by default. Reach past the 4-in-a-row template. --- */
+.band{display:grid;gap:var(--gap);align-items:stretch;flex:none}
+.band--intro-3 {grid-template-columns:2.1fr 1fr 1fr 1fr} /* APPROVED — landscape */
+.band--intro-2 {grid-template-columns:3fr 1fr 1fr}       /* APPROVED — portrait 60/20/20 */
+.band--hero    {grid-template-columns:1.05fr 2fr}   /* hero figure + satellites */
+.band--split   {grid-template-columns:1fr 1.35fr}   /* narrative + chart        */
+.band--split-r {grid-template-columns:1.35fr 1fr}   /* chart + narrative        */
+.band--halves  {grid-template-columns:1fr 1fr}
+.band--thirds  {grid-template-columns:repeat(3,minmax(0,1fr))}
+.band--quarters{grid-template-columns:repeat(4,minmax(0,1fr))}
+.band>*{min-width:0}
+.full{grid-column:1 / -1}
+
+/* --- surfaces: three weights, deliberately different (not all bordered cards) --- */
+.card{background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;
+  padding:11px 13px;display:flex;flex-direction:column;min-width:0}
+.card--tint{background:var(--kec-surface);border-color:transparent}
+.card--bare{background:transparent;border:none;border-radius:0;padding:0}
+
+/* --- section heading --- */
+.sec{display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  padding-bottom:5px;border-bottom:1px solid var(--kec-hairline)}
+.sec__n{background:var(--kec-green);color:#fff;font-weight:600;font-size:10px;
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  border-radius:5px;flex:none;font-feature-settings:'tnum' 1}
+.sec__t{font-size:var(--fs-h);font-weight:700;color:var(--kec-green-deep)}
+.sec__dot{color:var(--kec-gold);font-size:11px;line-height:1}
+.sec__sub{font-size:var(--fs-small);font-weight:400;color:var(--kec-muted)}
+.hl{color:var(--kec-green);font-weight:600}
+
+/* --- hero figure --- */
+.hero{display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding:13px 15px;border-radius:11px;background:var(--kec-surface);
+  position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;right:0;width:3px;height:100%;
+  background:var(--kec-gold)}
+.hero__l{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted)}
+.hero__v{font-size:var(--fs-hero);font-weight:300;color:var(--kec-green-deep);
+  line-height:1.05;font-feature-settings:'tnum' 1;letter-spacing:-1px}
+.hero__u{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted);margin-top:1px}
+.hero__d{font-size:var(--fs-small);font-weight:500;margin-top:6px}
+
+/* --- KPI STRIP: the approved opening. A full-width row of uniform cards, ------
+   ----- ABOVE the intro. Portrait = 4 cards, landscape = 6 — same card size. --- */
+.kstrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap)}
+.page--landscape .kstrip{grid-template-columns:repeat(6,minmax(0,1fr))}
+.page--landscape .kc{padding:9px 10px 8px;gap:3px}    /* landscape budget is short */
+.page--landscape .kec-content{gap:7px}                /* recover vertical room */
+.kc{background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;
+  padding:13px 12px 12px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;text-align:center;min-width:0}
+.kc__top{display:flex;align-items:center;gap:6px;justify-content:center;min-width:0;max-width:100%}
+.kc__top .ic{color:var(--kec-green)}
+.kc__l{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.kc__v{font-size:var(--fs-kpi);font-weight:600;color:var(--kec-green-deep);line-height:1;
+  font-feature-settings:'tnum' 1;display:flex;align-items:baseline;gap:4px;
+  justify-content:center;white-space:nowrap;max-width:100%}
+.kc__u{font-size:var(--fs-label);font-weight:400;color:var(--kec-muted)}
+.kc__d{font-size:var(--fs-small);font-weight:500;white-space:nowrap;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis}
+.kc__d.up{color:var(--kec-pos)} .kc__d.down{color:var(--kec-neg)} .kc__d.flat{color:var(--kec-muted)}
+.kc--empty{background:var(--kec-surface);border-style:dashed;border-color:var(--kec-hairline)}
+
+/* --- KPI card: legacy intro-band shape (icon badge, centred stack) --- */
+.kpi{background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;
+  padding:11px 10px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;text-align:center;min-width:0}
+.kpi__ic{width:30px;height:30px;border-radius:9px;background:var(--kec-surface);
+  display:flex;align-items:center;justify-content:center;margin-bottom:3px;flex:none}
+.kpi__ic .ic{width:15px;height:15px;color:var(--kec-green)}
+.kpi__l{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted);
+  line-height:1.4;max-width:100%}
+.kpi__v{font-size:var(--fs-kpi);font-weight:600;color:var(--kec-green-deep);
+  line-height:1.15;font-feature-settings:'tnum' 1;
+  display:flex;align-items:baseline;gap:4px;justify-content:center;max-width:100%;
+  flex-wrap:wrap}   /* narrow card → the unit wraps under the number, never clips */
+.kpi__u{font-size:var(--fs-label);font-weight:400;color:var(--kec-muted)}
+.kpi__d{font-size:var(--fs-small);font-weight:500;line-height:1.4;max-width:100%}
+
+/* --- KPI satellites: ONE bordered container split by hairlines --- */
+.sats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;overflow:hidden}
+.sat{padding:11px 12px;border-inline-start:1px solid var(--kec-hairline);min-width:0}
+.sat:first-child{border-inline-start:none}
+.sats--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sats--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sats--col{grid-template-columns:1fr}
+.sats--col .sat{border-inline-start:none;border-top:1px solid var(--kec-hairline)}
+.sats--col .sat:first-child{border-top:none}
+.sat__l{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted);
+  display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden}
+.sat__v{font-size:var(--fs-kpi);font-weight:600;color:var(--kec-green-deep);
+  margin-top:5px;line-height:1;font-feature-settings:'tnum' 1;
+  display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.sat__u{font-size:var(--fs-label);font-weight:400;color:var(--kec-muted)}
+.sat__d{font-size:var(--fs-small);font-weight:500;margin-top:5px;white-space:nowrap}
+.up{color:var(--kec-pos)} .down{color:var(--kec-neg)} .flat{color:var(--kec-muted)}
+
+/* --- body copy --- */
+.p{font-size:var(--fs-body);line-height:1.65;color:#3F4A43;
+  text-align:justify;text-align-last:start}
+.p + .p{margin-top:6px}
+.dots{list-style:none;display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.dots li{display:flex;gap:8px;font-size:var(--fs-body);line-height:1.55;color:#3F4A43}
+.dots li>span:last-child,.nums li>span:last-child{text-align:justify;text-align-last:start}
+.dots .d{color:var(--kec-green);font-size:14px;line-height:1.15;flex:none}
+.nums{list-style:none;display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.nums li{display:flex;gap:8px;font-size:var(--fs-body);line-height:1.55;color:#3F4A43}
+.nums .n{font-family:var(--kec-mono);font-weight:500;color:var(--kec-green);
+  font-size:var(--fs-small);flex:none;padding-top:1px}
+
+/* --- inline metric strip --- */
+.strip{display:flex;border:1px solid var(--kec-hairline);border-radius:9px;
+  overflow:hidden;background:#FCFDFB;margin-top:auto}
+.strip>div{flex:1;padding:7px 6px;text-align:center;min-width:0}
+.strip .sl{font-size:var(--fs-small);color:var(--kec-muted);white-space:nowrap}
+.strip .sv{font-size:13px;font-weight:600;color:var(--kec-green-deep);margin-top:2px;
+  font-feature-settings:'tnum' 1;white-space:nowrap}
+.strip .sep{flex:none;width:1px;padding:0;background:var(--kec-hairline)}
+
+/* --- charts: the box is LOCKED; charts.py renders SVG to exactly these dims --- */
+.chart{margin-top:6px;flex:none}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;margin-top:6px}
+.legend .li{display:flex;align-items:center;gap:5px;font-size:var(--fs-small);
+  color:var(--kec-muted);white-space:nowrap}
+.legend .mk{width:12px;height:8px;border-radius:2px;flex:none}
+.cap{font-size:var(--fs-small);color:var(--kec-muted);margin-top:4px;text-align:center}
+
+/* --- tables --- */
+table.kec{width:100%;border-collapse:collapse;font-size:var(--fs-body)}
+table.kec thead th{text-align:start;color:var(--kec-green-deep);font-weight:500;
+  font-size:var(--fs-label);padding:6px 8px;background:var(--kec-surface);
+  border-bottom:1px solid var(--kec-hairline);white-space:nowrap}
+table.kec thead th:first-child{border-start-start-radius:6px}
+table.kec thead th:last-child{border-start-end-radius:6px}
+table.kec td{padding:5px 8px;border-bottom:1px solid #EEF2EA;
+  font-feature-settings:'tnum' 1;line-height:1.45}
+/* the totals row — a solid deep-green band that CLOSES the table, mirroring the
+   light green band that opens it. Attention comes from tone inversion, not from
+   extra weight, extra rules or extra padding: identical padding to a data row,
+   so the row never grows taller than the header. */
+table.kec tbody tr.tot td{border-bottom:none;background:var(--kec-green-deep);
+  color:#fff;font-weight:500}
+table.kec tbody tr.tot td:first-child{border-end-start-radius:6px}
+table.kec tbody tr.tot td:last-child{border-end-end-radius:6px}
+table.kec .num{font-feature-settings:'tnum' 1;white-space:nowrap}
+
+/* --- icons: inline SVG sprite, ONE colour, KPI labels only (never headings) --- */
+.ic{width:13px;height:13px;color:var(--kec-icon);flex:none;stroke:currentColor;
+  fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
+
+/* ============================ FOOTER ====================================== */
+.kec-foot{margin-top:var(--gap);flex:none}
+.kec-foot__rule{height:2px;background:var(--kec-gold);border-radius:2px}
+.kec-foot__row{display:flex;align-items:center;padding-top:8px;gap:10px}
+.kec-foot__src{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.kec-foot__bar{width:3px;height:24px;background:var(--kec-green);border-radius:2px;flex:none}
+.kec-foot__lbl{font-size:var(--fs-small);color:var(--kec-muted);white-space:nowrap}
+.kec-foot__val{font-size:var(--fs-body);font-weight:500;color:var(--kec-green-deep);
+  white-space:nowrap}
+.kec-foot__mid{flex:none;display:flex;align-items:center;padding:0 12px;
+  border-inline:1px solid #EEF2EA;align-self:stretch}
+.kec-pagepill{background:var(--kec-surface);color:var(--kec-green);font-weight:500;
+  font-size:var(--fs-small);padding:4px 11px;border-radius:20px;white-space:nowrap}
+.kec-foot__cls{flex:1;min-width:0;display:flex;align-items:center;gap:8px;
+  justify-content:flex-end}
+
+/* reference input: NEVER a fixed width. kec_build.js sizes it to its content
+   on load and on every keystroke, so it can never clip its own tail. */
+input.kec-ref{font-family:var(--kec-mono);font-weight:500;color:var(--kec-green-deep);
+  font-size:var(--fs-small);border:none;background:transparent;outline:none;
+  text-align:left;direction:ltr;padding:0;min-width:4ch;
+  border-bottom:1px dashed transparent;flex:none}
+input.kec-ref:hover,input.kec-ref:focus{border-bottom-color:var(--kec-hairline)}
+.kec-chip{background:var(--kec-green);color:#fff;font-family:var(--kec-font);
+  font-size:var(--fs-small);font-weight:500;padding:5px 12px;border-radius:5px;
+  line-height:1.7;border:none;-webkit-appearance:none;appearance:none;
+  text-align:center;text-align-last:center;cursor:pointer;height:auto;flex:none}
+
+/* ============================ PRINT ======================================= */
+@media print{
+  html,body{background:#fff}
+  .page{margin:0;box-shadow:none}
+  html,body,.page,*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  input.kec-ref:hover,input.kec-ref:focus{border-bottom-color:transparent}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-build" viewBox="0 0 24 24"><path d="M4 21V5l7-2v18M11 21h9V11l-9-3M8 8v0M8 12v0M8 16v0"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></symbol>
+<symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5L5 19M7.5 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM16.5 14a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 8v4l3 2"/></symbol>
+<symbol id="i-riyal" viewBox="0 0 24 24"><path d="M7 4v10a4 4 0 004 4h6M17 4v14M4 11h16M4 15h13"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 16.8 6.7 19.7l1.1-6.1L3.4 9.4l6-.8L12 3z"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 16.5a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 20v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 10a4 4 0 100-8 4 4 0 000 8M22 20v-2a4 4 0 00-3-3.87M16 2.13A4 4 0 0119 6a4 4 0 01-3 3.87"/></symbol>
+</svg>
+<section class="page page--wide">
+  <header class="kec-head">
+      <div>
+        <h1 class="kec-title">Investor Registration Log</h1>
+        <p class="kec-sub">Investment &amp; Business Development — live register of investor engagements</p>
+      </div>
+      <div class="kec-head__left">
+        <img class="kec-logo" src="KEC.png" alt="Knowledge Economic City">
+        <div class="kec-badges">
+          <select class="kec-badge kec-badge--status" aria-label="Document status"><option selected>Updated</option><option>Draft</option><option>Under Review</option><option>For Approval</option><option>Approved</option><option>Final</option></select>
+          <input class="kec-badge kec-badge--period" value="04 Aug 2026" aria-label="As of date">
+        </div>
+      </div>
+    </header>
+  <div class="kec-content">
+
+    <style>/* ===== KEC Investor Log — app layer. Tokens only; no new colour values. ===== */
+
+/* 16:9 gets the landscape strip grammar: 6 uniform cards, tighter padding. */
+.page--wide .kstrip{grid-template-columns:repeat(6,minmax(0,1fr))}
+.page--wide .kc{padding:6px 9px 5px;gap:2px}
+.page--wide .kc__v{font-size:22px}
+.page--wide .kec-content{gap:8px}
+
+/* ---- fill the screen: the canvas stays 1280x720, only the raster scales ---- */
+body.fitted{overflow:hidden;height:100vh;margin:0;
+  display:flex;align-items:center;justify-content:center}
+body.fitted .page{margin:0;flex:none;transform:scale(var(--fit,1));transform-origin:center center}
+@media print{body.fitted{display:block;overflow:visible;height:auto}
+  body.fitted .page{transform:none}}
+
+.applog{padding:8px 11px 6px}
+.seg{display:inline-flex;border:1px solid var(--kec-hairline);border-radius:6px;overflow:hidden;height:25px}
+.seg button{font-family:var(--kec-font);font-size:var(--fs-badge);font-weight:500;
+  padding:0 9px;border:none;background:#fff;color:var(--kec-muted);cursor:pointer;height:100%}
+.seg button.on{background:var(--kec-green);color:#fff}
+
+/* ---- toolbar controls and buttons ---- */
+.applog__bar{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.applog__sp{flex:1;min-width:0}
+
+.fld{font-family:var(--kec-font);font-size:var(--fs-small);color:var(--kec-ink);
+  border:1px solid var(--kec-hairline);border-radius:6px;padding:4px 7px;
+  background:#fff;outline:none;height:25px;line-height:1.4;
+  transition:border-color .14s ease,box-shadow .14s ease}
+.fld:hover{border-color:var(--kec-badge-green-bd)}
+.fld:focus{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
+.fld--search{min-width:150px;max-width:180px}
+
+.btn{font-family:var(--kec-font);font-size:var(--fs-small);font-weight:500;height:25px;
+  padding:0 10px;border-radius:6px;border:1px solid var(--kec-hairline);background:#fff;
+  color:var(--kec-green-deep);cursor:pointer;line-height:1;display:inline-flex;
+  align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{background:var(--kec-surface);border-color:var(--kec-badge-green-bd)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn--go{background:var(--kec-green);border-color:var(--kec-green);color:#fff}
+.btn--go:hover{background:var(--kec-green-deep);border-color:var(--kec-green-deep)}
+.btn--sm{height:20px;padding:0 8px;font-size:var(--fs-badge)}
+
+.btn--icon{height:20px;width:20px;padding:0;justify-content:center;
+  border:1px solid transparent;border-radius:5px;background:transparent;
+  color:var(--kec-muted);vertical-align:middle;
+  transition:background .14s ease,color .14s ease,border-color .14s ease}
+.btn--icon:hover{background:var(--kec-surface-2);color:var(--kec-green-deep);
+  border-color:var(--kec-badge-green-bd)}
+.btn--icon:active{transform:translateY(1px)}
+.btn--icon.dl:hover{color:var(--kec-neg);border-color:#E7CCC4;background:#F7E9E5}
+.btn--icon.grip{cursor:grab}
+.btn--icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;display:block}
+
+/* ---- column manager ---- */
+.cm{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:600px;max-width:78vw}
+.cm__c{display:flex;flex-direction:column;min-width:0}
+.cm__h{font-size:var(--fs-label);font-weight:600;color:var(--kec-green-deep);
+  padding-bottom:5px;border-bottom:1px solid var(--kec-hairline);margin-bottom:5px}
+.cm__h em{font-style:normal;color:var(--kec-muted);font-weight:400}
+.cm__p{display:flex;align-items:center;gap:6px;font-size:var(--fs-badge);
+  color:var(--kec-muted);margin-bottom:5px}
+.cm__p select{flex:none;max-width:100%}
+.cm__l{list-style:none;margin:0;padding:0;max-height:236px;overflow:auto;
+  display:flex;flex-direction:column;gap:2px}
+.cm__i{display:flex;align-items:center;gap:5px;padding:3px 5px;border-radius:5px;
+  background:#fff;border:1px solid var(--kec-hairline);cursor:grab}
+.cm__i.dragging{opacity:.45}
+.cm__i.drop{box-shadow:inset 0 2px 0 var(--kec-green)}
+.cm__n{font-family:var(--kec-mono);font-size:var(--fs-badge);color:var(--kec-muted);
+  min-width:14px;text-align:right}
+.cm__d{width:8px;height:8px;border-radius:2px;border:1px solid;flex:none}
+.cm__t{flex:1;min-width:0;font-size:var(--fs-small);color:var(--kec-ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm__w{font-family:var(--kec-mono);font-size:var(--fs-badge);color:var(--kec-muted)}
+.cm__b{border:none;background:transparent;color:var(--kec-muted);cursor:pointer;
+  font-size:var(--fs-badge);line-height:1;padding:2px 3px;border-radius:4px;
+  font-family:var(--kec-font)}
+.cm__b:hover{background:var(--kec-surface);color:var(--kec-green-deep)}
+.cm__b.rm:hover{color:var(--kec-neg)}
+.cm__b.add{color:var(--kec-green);font-size:13px;font-weight:600}
+.cm__f{margin-top:6px;padding-top:5px;border-top:1px solid var(--kec-hairline);
+  font-size:var(--fs-badge);color:var(--kec-muted);display:flex;gap:6px;align-items:center}
+.cm__f.warn{color:var(--kec-neg)}
+.cm__e{font-size:var(--fs-badge);color:var(--kec-muted);padding:8px 4px}
+
+/* ---- table ---- */
+.applog table.kec{table-layout:fixed;font-size:var(--fs-small);width:100%}
+
+/* ---- horizontal scroll: appears only when the columns no longer fit ---- */
+/* the native bar is hidden and replaced by a built one that no browser can thin out */
+#scroll{overflow-x:auto;overflow-y:hidden;min-width:0;scrollbar-width:none}
+#scroll::-webkit-scrollbar{display:none}
+.hwrap{display:none;align-items:center;gap:6px;flex:1;min-width:0}
+#scroll.scrolling ~ .foot .hwrap{display:flex}
+#scroll.scrolling ~ .foot .foot__k{display:none}
+.hbtn{border:1px solid var(--kec-hairline);background:#fff;color:var(--kec-green-deep);
+  border-radius:5px;width:18px;height:14px;line-height:1;cursor:pointer;padding:0;
+  font-family:var(--kec-font);font-size:9px;flex:none;transition:background .14s ease}
+.hbtn:hover{background:var(--kec-surface-2)}
+.hbar{flex:1;min-width:0;height:11px;border-radius:7px;background:var(--kec-surface);
+  border:1px solid var(--kec-hairline);position:relative;cursor:pointer}
+.hthumb{position:absolute;top:1px;bottom:1px;left:0;width:60px;border-radius:6px;
+  background:var(--kec-green);cursor:grab;transition:background .14s ease}
+.hthumb:hover{background:var(--kec-green-deep)}
+.hpos{font-family:var(--kec-mono);font-size:var(--fs-badge);color:var(--kec-muted);
+  min-width:26px;text-align:right;flex:none}
+
+/* ---- frozen columns: the record and the action buttons never scroll away ---- */
+.applog th.stick,.applog td.stick{position:sticky;z-index:3;background:#fff}
+.applog thead th.stick{z-index:7}
+.applog thead tr.col th.stick{background:var(--kec-surface)}
+.applog td.acts,.applog th.g-act{position:sticky;right:0;z-index:4;background:#fff}
+.applog thead th.g-act{z-index:8;background:var(--kec-surface)}
+.applog thead tr.grp th.g-act{background:var(--kec-paper)}
+#scroll.scrolling .applog td.acts,#scroll.scrolling .applog th.g-act{
+  box-shadow:-1px 0 0 var(--kec-hairline)}
+.applog .stick.edge{box-shadow:1px 0 0 var(--kec-hairline)}
+.applog tbody tr:hover td.stick,.applog tbody tr:hover td.acts{background:var(--kec-paper)}
+
+/* ---- column resize grip on every header cell ---- */
+.applog thead tr.col th{position:relative}
+.applog thead tr.col th.stick,.applog thead tr.grp th.stick{position:sticky}
+.rz{position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;z-index:5}
+.rz::after{content:'';position:absolute;top:4px;bottom:4px;left:3px;width:1px;
+  background:transparent}
+.rz:hover::after{background:var(--kec-green)}
+body.resizing{cursor:col-resize;user-select:none}
+.applog thead th{padding:4px 6px;font-size:var(--fs-badge);font-weight:500;
+  letter-spacing:.2px;vertical-align:middle}
+.applog thead tr.grp th{font-size:var(--fs-badge);font-weight:500;padding:3px 6px;
+  text-align:center;border-bottom:1px solid #fff}
+.applog thead tr.grp th.g-kec{background:var(--kec-surface-2);color:var(--kec-green-deep)}
+.applog thead tr.grp th.g-inv{background:var(--kec-badge-gold-bg);color:var(--kec-badge-gold-tx)}
+.applog thead tr.grp th.g-act{background:var(--kec-paper);color:var(--kec-muted)}
+.applog thead tr.grp th.on{box-shadow:inset 0 -2px 0 var(--kec-green)}
+.applog thead tr.col th{background:var(--kec-surface);cursor:pointer;white-space:nowrap}
+.applog thead tr.col th .ar{color:var(--kec-green);font-size:var(--fs-badge)}
+.applog td{padding:2px 6px;line-height:1.45;vertical-align:middle}
+.applog tbody tr:hover td{background:var(--kec-paper)}
+.applog tbody tr.dragging td{opacity:.45}
+.applog tbody tr.drop td{box-shadow:inset 0 2px 0 var(--kec-green)}
+.applog td.id{font-family:var(--kec-mono);font-weight:500;color:var(--kec-green)}
+.applog td.acts{white-space:nowrap;text-align:right;font-size:0;letter-spacing:0;padding:1px 6px}
+.applog td.acts .grip{cursor:grab;color:var(--kec-badge-green-bd)}
+.applog td.acts .grip:hover{color:var(--kec-muted)}
+
+.pill{display:inline-block;font-size:var(--fs-badge);font-weight:500;padding:1px 6px;
+  border-radius:9px;border:1px solid;line-height:1.6;white-space:nowrap}
+.pill--crit{background:#F7E9E5;border-color:#E7CCC4;color:var(--kec-neg)}
+.pill--high{background:var(--kec-badge-gold-bg);border-color:var(--kec-badge-gold-bd);
+  color:var(--kec-badge-gold-tx)}
+.pill--med {background:var(--kec-badge-green-bg);border-color:var(--kec-badge-green-bd);
+  color:var(--kec-green)}
+.pill--low {background:var(--kec-paper);border-color:var(--kec-hairline);color:var(--kec-muted)}
+.due{color:var(--kec-neg);font-weight:500}
+
+.bar{display:flex;align-items:center;gap:5px}
+.applog td .bar{width:100%}
+.bar__t{display:block;flex:1;height:5px;border-radius:3px;background:var(--kec-hairline);overflow:hidden}
+.bar__f{display:block;height:100%;background:var(--kec-green);border-radius:3px}
+.bar__n{font-family:var(--kec-mono);font-size:var(--fs-badge);color:var(--kec-muted);
+  min-width:24px;text-align:right}
+
+.foot{display:flex;align-items:center;gap:10px;margin-top:6px}
+.foot__k{font-size:var(--fs-badge);color:var(--kec-muted);display:flex;align-items:center;gap:5px}
+.foot__sw{width:9px;height:9px;border-radius:2px;border:1px solid}
+.sw-kec{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd)}
+.sw-inv{background:var(--kec-badge-gold-bg);border-color:var(--kec-badge-gold-bd)}
+.foot__pg{margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-size:var(--fs-badge);color:var(--kec-muted)}
+.mode{font-size:var(--fs-badge);color:var(--kec-muted);display:flex;align-items:center;gap:4px}
+.mode__d{width:6px;height:6px;border-radius:50%;background:var(--kec-muted)}
+.mode__d.on{background:var(--kec-green)}
+
+/* ---- drawer (hidden at load; never measured by the verifier) ---- */
+.dr{position:fixed;inset:0;background:rgba(20,61,30,.32);z-index:60;
+  display:none;align-items:center;justify-content:center;padding:24px}
+.dr.open{display:flex}
+.dr__p{background:var(--kec-paper);border-radius:14px;width:min(1040px,96vw);
+  max-height:92vh;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 18px 60px rgba(0,0,0,.28)}
+.dr__h{display:flex;align-items:center;gap:10px;padding:13px 18px;
+  border-bottom:1px solid var(--kec-hairline);background:#fff}
+.dr__t{font-size:var(--fs-h);font-weight:700;color:var(--kec-green-deep)}
+.dr__id{font-family:var(--kec-mono);font-size:var(--fs-small);color:var(--kec-green);
+  background:var(--kec-surface);padding:2px 8px;border-radius:5px}
+.dr__tabs{display:flex;gap:6px;padding:9px 18px 0;background:#fff}
+.dr__tab{font-size:var(--fs-small);font-weight:500;padding:5px 11px;border-radius:7px 7px 0 0;
+  border:1px solid var(--kec-hairline);border-bottom:none;background:var(--kec-paper);
+  color:var(--kec-muted);cursor:pointer}
+.dr__tab.on{background:var(--kec-surface);color:var(--kec-green-deep)}
+.dr__b{padding:14px 18px;overflow:auto;background:#fff;border-top:1px solid var(--kec-hairline)}
+.dr__pane{display:none}
+.dr__pane.on{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;align-items:start}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f--wide{grid-column:span 3}
+.f__l{font-size:var(--fs-label);font-weight:500;color:var(--kec-muted)}
+.f__l i{font-style:normal;color:var(--kec-gold)}
+.f__h{font-size:var(--fs-badge);color:var(--kec-muted)}
+.f__i{font-family:var(--kec-font);font-size:var(--fs-body);color:var(--kec-ink);
+  border:1px solid var(--kec-hairline);border-radius:7px;padding:6px 9px;background:#fff;
+  outline:none;width:100%}
+.f__i:focus{border-color:var(--kec-green)}
+.f__i[readonly]{background:var(--kec-surface);color:var(--kec-muted)}
+textarea.f__i{resize:vertical;min-height:52px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:5px;border:1px solid var(--kec-hairline);
+  border-radius:7px;padding:6px;background:#fff;max-height:88px;overflow:auto}
+.chip{font-size:var(--fs-badge);padding:3px 8px;border-radius:20px;cursor:pointer;
+  border:1px solid var(--kec-hairline);background:var(--kec-paper);color:var(--kec-muted)}
+.chip.on{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd);
+  color:var(--kec-green-deep);font-weight:500}
+.dr__f{display:flex;align-items:center;gap:8px;padding:11px 18px;background:#fff;
+  border-top:1px solid var(--kec-hairline)}
+.dr__meter{display:flex;align-items:center;gap:7px;font-size:var(--fs-badge);
+  color:var(--kec-muted);min-width:190px}
+.dr__meter .bar__t{width:88px;flex:none}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:80;
+  background:var(--kec-green-deep);color:#fff;font-size:var(--fs-small);
+  padding:9px 14px;border-radius:9px;display:none;align-items:center;gap:12px;
+  box-shadow:0 8px 26px rgba(0,0,0,.25)}
+.toast.on{display:flex}
+.toast button{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;
+  font-family:var(--kec-font);font-size:var(--fs-badge);padding:3px 9px;border-radius:6px;
+  cursor:pointer}
+.menu{position:relative}
+.menu__l{position:absolute;top:28px;right:0;background:#fff;border:1px solid var(--kec-hairline);
+  border-radius:9px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:5px;display:none;
+  z-index:40;min-width:172px}
+.menu__l--wide{padding:11px 13px}
+.menu.on .menu__l{display:block}
+.menu__i{display:block;width:100%;text-align:left;font-family:var(--kec-font);
+  font-size:var(--fs-small);color:var(--kec-ink);background:transparent;border:none;
+  padding:6px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.menu__i:hover{background:var(--kec-surface)}
+.empty{text-align:center;color:var(--kec-muted);font-size:var(--fs-small);padding:26px 0}
+
+/* ---- inline editing + tags + refined motion ---- */
+.applog td.num{text-align:right;font-family:var(--kec-mono);font-size:var(--fs-small);
+  font-weight:500;color:var(--kec-green-deep)}
+.applog td.ed-cell{cursor:cell;transition:box-shadow .12s ease,background .12s ease}
+.applog td.ed-cell:hover{background:var(--kec-surface);
+  box-shadow:inset 0 -1.5px 0 var(--kec-badge-green-bd)}
+.applog td.editing{background:var(--kec-surface-2);box-shadow:none}
+.cell-in{width:100%;box-sizing:border-box;font-family:var(--kec-font);
+  font-size:var(--fs-small);color:var(--kec-ink);background:#fff;
+  border:1px solid var(--kec-green);border-radius:4px;padding:1px 4px;outline:none}
+.tag{display:inline-block;font-size:var(--fs-badge);padding:1px 6px;border-radius:5px;
+  border:1px solid;line-height:1.6;white-space:nowrap}
+.tag--ok{background:var(--kec-badge-green-bg);border-color:var(--kec-badge-green-bd);color:var(--kec-green)}
+.tag--wait{background:var(--kec-badge-gold-bg);border-color:var(--kec-badge-gold-bd);color:var(--kec-badge-gold-tx)}
+.tag--bad{background:#F7E9E5;border-color:#E7CCC4;color:var(--kec-neg)}
+.tag--na{background:var(--kec-paper);border-color:var(--kec-hairline);color:var(--kec-muted)}
+.lnk{color:var(--kec-green);text-decoration:none;border-bottom:1px solid var(--kec-badge-green-bd)}
+.lnk:hover{color:var(--kec-green-deep)}
+.who{font-size:var(--fs-badge);color:var(--kec-muted);cursor:pointer;
+  border-bottom:1px dotted var(--kec-hairline)}
+.who:hover{color:var(--kec-green-deep)}
+
+.applog tbody tr{transition:background .14s ease}
+.applog tbody tr.flash td{animation:kflash .9s ease}
+@keyframes kflash{0%{background:var(--kec-badge-green-bg)}100%{background:transparent}}
+.kc.pop .kc__v{animation:kfade .45s ease}
+@keyframes kfade{0%{opacity:.15}100%{opacity:1}}
+.bar__f{transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.btn{transition:background .14s ease,color .14s ease,border-color .14s ease}
+.btn:active{transform:translateY(1px)}
+.dr.open .dr__p{animation:krise .18s ease}
+.toast.on{animation:krise .2s ease}
+@keyframes krise{0%{opacity:0}100%{opacity:1}}
+.applog thead tr.col th{transition:background .14s ease}
+.applog thead tr.col th:hover{background:var(--kec-surface-2)}
+.cm__i{transition:background .12s ease,box-shadow .12s ease}
+.cm__i:hover{background:var(--kec-surface)}
+
+
+/* ================= custom dropdown — themed, coloured, keyboard aware ===== */
+.sel{position:relative;display:inline-flex;vertical-align:middle;min-width:0}
+.sel__t{display:inline-flex;align-items:center;gap:6px;width:100%;height:25px;
+  padding:0 7px 0 9px;border:1px solid var(--kec-hairline);border-radius:6px;
+  background:#fff;cursor:pointer;font-family:var(--kec-font);
+  font-size:var(--fs-small);color:var(--kec-ink);line-height:1;white-space:nowrap;
+  transition:border-color .14s ease,box-shadow .14s ease,background .14s ease}
+.sel__t:hover{border-color:var(--kec-badge-green-bd);background:var(--kec-paper)}
+.sel.open .sel__t{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
+.sel__v{flex:1;min-width:0;text-align:left;overflow:hidden}
+.sel__v.empty{color:var(--kec-muted)}
+.sel__c{flex:none;width:8px;height:8px;border-right:1.4px solid var(--kec-muted);
+  border-bottom:1.4px solid var(--kec-muted);transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .18s ease}
+.sel.open .sel__c{transform:rotate(225deg) translate(-3px,-3px);border-color:var(--kec-green)}
+
+.sel__p{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-width:300px;
+  background:#fff;border:1px solid var(--kec-hairline);border-radius:9px;
+  box-shadow:0 12px 32px rgba(20,61,30,.16);padding:4px;display:none;z-index:70;
+  max-height:212px;overflow:auto;scrollbar-width:thin}
+.sel--r .sel__p{left:auto;right:0}
+.sel--up .sel__p{top:auto;bottom:calc(100% + 4px)}
+.sel.open .sel__p{display:block;animation:selin .13s ease}
+@keyframes selin{0%{opacity:0}100%{opacity:1}}
+.sel__o{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;
+  font-size:var(--fs-small);color:var(--kec-ink);cursor:pointer;white-space:nowrap;
+  transition:background .1s ease,color .1s ease}
+.sel__o:hover,.sel__o.cur{background:var(--kec-surface-2);color:var(--kec-title);font-weight:500}
+.sel__o.on{background:var(--kec-badge-green-bg)}
+.sel__o.on::after{content:'✓';margin-left:auto;color:var(--kec-green);font-size:var(--fs-badge)}
+.sel__o.hint{color:var(--kec-muted)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--kec-green)}
+.dot--neg{background:var(--kec-neg)}
+.dot--gold{background:var(--kec-gold)}
+.dot--green{background:var(--kec-green)}
+.dot--mute{background:var(--kec-hairline);border:1px solid var(--kec-muted)}
+.tone--neg{color:var(--kec-neg)}
+.tone--gold{color:var(--kec-badge-gold-tx)}
+.tone--green{color:var(--kec-green)}
+.tone--mute{color:var(--kec-muted)}
+.sel--cell{width:100%}
+.sel--cell .sel__t{height:21px;padding:0 5px 0 6px;font-size:var(--fs-small);
+  border-color:var(--kec-green)}
+.sel--field{flex:none;align-self:stretch}
+.sel--field .sel__t{height:29px;padding:0 9px;border-radius:7px;
+  font-size:var(--fs-body)}
+
+/* editable footer fields */
+input.kec-src{font-family:var(--kec-font);font-weight:500;color:var(--kec-green-deep);
+  font-size:var(--fs-body);border:none;background:transparent;outline:none;padding:0;
+  min-width:4ch;border-bottom:1px dashed transparent}
+input.kec-src:hover,input.kec-src:focus{border-bottom-color:var(--kec-hairline)}
+input.kec-ref:hover,input.kec-ref:focus{border-bottom-color:var(--kec-hairline)}
+.build{font-family:var(--kec-mono);font-size:var(--fs-badge);color:var(--kec-muted);opacity:.5}
+
+/* the record number opens the full form */
+.applog td.id{cursor:pointer;transition:color .12s ease}
+.applog td.id:hover{color:var(--kec-title);text-decoration:underline}
+
+/* the header status badge and the footer classification chip, themed like
+   every other list while keeping their identity box exactly as generated */
+.kec-badges .sel--badge{flex:1;min-width:0;display:flex}
+.sel--badge .sel__t{width:100%;height:auto;padding:3px 2px;border-radius:4px;
+  font-size:var(--fs-badge);font-weight:500;line-height:1.5;justify-content:center;
+  background:var(--kec-badge-gold-bg);color:var(--kec-badge-gold-tx);
+  border:1px solid var(--kec-badge-gold-bd)}
+.sel--badge .sel__v{flex:none;text-align:center}
+.sel--badge .sel__c{display:none}
+.sel--badge .sel__p{left:auto;right:0;min-width:132px}
+.sel--chip{flex:none}
+.sel--chip .sel__t{height:auto;padding:5px 10px 5px 12px;border-radius:5px;
+  font-size:var(--fs-small);font-weight:500;line-height:1.7;
+  background:var(--kec-green);color:#fff;border:1px solid var(--kec-green)}
+.sel--chip .sel__t:hover{background:var(--kec-green-deep);border-color:var(--kec-green-deep)}
+.sel--chip .sel__c{border-color:#fff;opacity:.85}
+.sel--chip .sel__p{left:auto;right:0;min-width:172px}
+
+/* ---- import dialog ---- */
+.imp{display:flex;flex-direction:column;gap:11px;min-width:640px}
+.imp__row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.imp__drop{border:1.5px dashed var(--kec-badge-green-bd);border-radius:10px;
+  background:var(--kec-paper);padding:14px;text-align:center;color:var(--kec-muted);
+  font-size:var(--fs-small);transition:background .14s ease,border-color .14s ease}
+.imp__drop.hot{background:var(--kec-surface-2);border-color:var(--kec-green)}
+.imp__ta{width:100%;box-sizing:border-box;min-height:74px;font-family:var(--kec-mono);
+  font-size:var(--fs-small);border:1px solid var(--kec-hairline);border-radius:8px;
+  padding:7px 9px;outline:none;resize:vertical;background:#fff;color:var(--kec-ink)}
+.imp__ta:focus{border-color:var(--kec-green)}
+.imp__t{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
+.imp__t th{text-align:left;font-weight:500;color:var(--kec-muted);font-size:var(--fs-badge);
+  padding:4px 6px;border-bottom:1px solid var(--kec-hairline)}
+.imp__t td{padding:3px 6px;border-bottom:1px solid var(--kec-hairline);vertical-align:middle}
+.imp__wrap{max-height:250px;overflow:auto}
+.imp__s{display:flex;gap:14px;font-size:var(--fs-small);color:var(--kec-muted);
+  background:var(--kec-surface);border-radius:8px;padding:8px 11px}
+.imp__s b{color:var(--kec-green-deep);font-weight:600}
+.imp__s .warn{color:var(--kec-neg)}
+.imp__h{font-size:var(--fs-label);font-weight:600;color:var(--kec-green-deep)}
+.imp__note{font-size:var(--fs-badge);color:var(--kec-muted)}
+
+@media print{.sel__p{display:none !important}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+@media print{.dr,.toast,.menu__l,.hwrap{display:none !important}}
+.foot__sw.cm__d{width:8px;height:8px}
+</style>
+    <div class="kstrip"><div class="kc" id="k1"><div class="kc__top"><svg class="ic"><use href="#i-users"/></svg><span class="kc__l">Total Records</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k2"><div class="kc__top"><svg class="ic"><use href="#i-trend"/></svg><span class="kc__l">Active Pipeline</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k3"><div class="kc__top"><svg class="ic"><use href="#i-target"/></svg><span class="kc__l">MoU Stage or Later</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k4"><div class="kc__top"><svg class="ic"><use href="#i-star"/></svg><span class="kc__l">High Priority</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k5"><div class="kc__top"><svg class="ic"><use href="#i-clock"/></svg><span class="kc__l">Overdue Follow-up</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k6"><div class="kc__top"><svg class="ic"><use href="#i-percent"/></svg><span class="kc__l">Average Progress</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div></div>
+    <div class="card applog">
+      
+      <div class="applog__bar">
+        <input id="q" class="fld fld--search" placeholder="Search all fields…" aria-label="Search">
+        <span class="sel" id="fDept"  aria-label="Department filter"></span>
+        <span class="sel" id="fStage" aria-label="Stage filter"></span>
+        <span class="sel" id="fPrio"  aria-label="Priority filter"></span>
+        <span class="sel" id="fOwner" aria-label="Owner filter"></span>
+        <button id="reset" class="btn" type="button">Reset</button>
+        <span class="applog__sp"></span>
+        <span class="menu" id="colMenu">
+          <button id="cols" class="btn" type="button">Columns ▾</button>
+          <span class="menu__l menu__l--wide" id="colPanel"></span>
+        </span>
+        <button id="add" class="btn btn--go" type="button">+ New Record</button>
+        <span class="menu" id="menu">
+          <button id="more" class="btn" type="button">Data ▾</button>
+          <span class="menu__l" id="moreM">
+            <button class="menu__i" id="eCsv"  type="button">Export CSV</button>
+            <button class="menu__i" id="eJson" type="button">Export JSON (backup)</button>
+            <button class="menu__i" id="impOpen" type="button">Import from Excel / CSV…</button>
+            <button class="menu__i" id="tmpl"   type="button">Download Excel template</button>
+            <button class="menu__i" id="iJson"  type="button">Import JSON backup…</button>
+            <button class="menu__i" id="restore" type="button">Restore sample records</button>
+            <button class="menu__i" id="wipe"  type="button">Clear all records</button>
+          </span>
+        </span>
+      </div>
+      <div id="scroll"><table class="kec" id="tbl"></table></div>
+      
+      <div class="foot">
+        <span class="hwrap">
+          <button class="hbtn" id="hLeft"  type="button">◀</button>
+          <span class="hbar" id="hbar"><span class="hthumb" id="hthumb"></span></span>
+          <button class="hbtn" id="hRight" type="button">▶</button>
+          <span class="hpos" id="hpos">0%</span>
+        </span>
+        
+        <span class="foot__pg">
+          <button id="pPrev" class="btn btn--sm" type="button">‹</button>
+          <span id="pg"></span>
+          <button id="pNext" class="btn btn--sm" type="button">›</button>
+        </span>
+      </div>
+    </div>
+    
+    <div class="dr" id="dr">
+      <div class="dr__p">
+        <div class="dr__h">
+          <span class="dr__t" id="drTitle">New Record</span>
+          <span class="dr__id" id="drId">#000</span>
+        </div>
+        <div class="dr__tabs"><button class="dr__tab" id="tabA" type="button">A · KEC Registry</button><button class="dr__tab" id="tabB" type="button">B · Investor Profile</button><button class="dr__tab" id="tabC" type="button">C · Business Profile</button><button class="dr__tab" id="tabD" type="button">D · Opportunity &amp; Pipeline</button></div>
+        <div class="dr__b" id="drBody"><div class="dr__pane" id="paneA"></div><div class="dr__pane" id="paneB"></div><div class="dr__pane" id="paneC"></div><div class="dr__pane" id="paneD"></div></div>
+        <div class="dr__f">
+          <span class="dr__meter">
+            <span class="bar__t"><span class="bar__f" id="mFill" style="width:0%"></span></span>
+            <span id="mNum">0%</span>
+          </span>
+          <span class="applog__sp"></span>
+          <button id="drDel" class="btn" type="button">Delete</button>
+          <button id="drCancel" class="btn" type="button">Cancel</button>
+          <button id="drSave" class="btn btn--go" type="button">Save Record</button>
+        </div>
+      </div>
+    </div>
+    <div class="dr" id="imp">
+      <div class="dr__p">
+        <div class="dr__h">
+          <span class="dr__t" id="impTitle">Import from Excel</span>
+          <span class="dr__id" id="impStep">step 1 of 2</span>
+        </div>
+        <div class="dr__b" id="impBody"></div>
+        <div class="dr__f">
+          <span class="imp__note" id="impNote"></span>
+          <span class="applog__sp"></span>
+          <button id="impBack"   class="btn" type="button">Back</button>
+          <button id="impCancel" class="btn" type="button">Cancel</button>
+          <button id="impGo"     class="btn btn--go" type="button">Continue</button>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>/* ===== KEC Investor Log — application layer ================================
+   Storage: Firebase Firestore when configured, browser localStorage otherwise.
+   Fill FIREBASE_CONFIG below (Project settings → Your apps → SDK setup) and the
+   log switches to a shared, live-synced register with no other change.
+   ========================================================================= */
+(function () {
+'use strict';
+
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBr88VCVXdDkQJdxJqwLJ_HutsFvZR-HJE",
+  authDomain: "kec-investor-log.firebaseapp.com",
+  projectId: "kec-investor-log",
+  storageBucket: "kec-investor-log.firebasestorage.app",
+  messagingSenderId: "870716823065",
+  appId: "1:870716823065:web:bde028421733f7d6febc88"
+};
+
+var COLLECTION      = 'kec_investors';
+
+var SCHEMA = [{"key": "record_id", "label": "Record ID", "short": "#", "group": "A", "type": "auto", "options": [], "help": "Sequential, system-generated", "column": true}, {"key": "entry_date", "label": "Entry Date", "short": "Entry", "group": "A", "type": "stamp", "options": [], "help": "Auto-stamped on first save", "column": true}, {"key": "department", "label": "Department", "short": "Department", "group": "A", "type": "select", "options": ["Investment", "Business Development"], "help": "", "column": true}, {"key": "assigned_to", "label": "Assigned To", "short": "Owner", "group": "A", "type": "owner", "options": [], "help": "Editable list — add owners inline", "column": true}, {"key": "lead_source", "label": "Lead Source", "short": "Source", "group": "A", "type": "select", "options": ["KEC Outreach", "Inbound Enquiry", "Referral", "Executive Referral", "Conference / Exhibition", "Government Channel", "Existing Partner", "Website", "Broker / Advisor", "Other"], "help": "How the investor reached KEC", "column": true}, {"key": "created_by", "label": "Created By", "short": "Created By", "group": "A", "type": "audit", "options": [], "help": "Audit trail", "column": false}, {"key": "updated_by", "label": "Last Updated", "short": "Updated", "group": "A", "type": "audit", "options": [], "help": "Who changed it last, and when", "column": true}, {"key": "company", "label": "Company Name", "short": "Company", "group": "B", "type": "text", "options": [], "help": "", "column": true}, {"key": "country", "label": "Country", "short": "Country", "group": "B", "type": "select", "options": ["Saudi Arabia", "United Arab Emirates", "Kuwait", "Qatar", "Bahrain", "Oman", "Egypt", "Jordan", "Lebanon", "Iraq", "Morocco", "Tunisia", "Turkey", "United Kingdom", "France", "Germany", "Switzerland", "United States", "Canada", "China", "India", "Pakistan", "Indonesia", "Malaysia", "Singapore", "Japan", "South Korea", "Other"], "help": "", "column": true}, {"key": "industry", "label": "Industry", "short": "Industry", "group": "B", "type": "select", "options": ["Real Estate Development", "Contracting & Construction", "Hospitality & Hotels", "Pilgrim & Visitor Services", "Retail", "Entertainment & Tourism", "Healthcare", "Education", "Logistics & Transport", "Manufacturing", "Technology", "Financial Services & Investment", "Energy & Utilities", "Food & Beverage", "Endowments (Awqaf)", "Professional Services", "Other"], "help": "What the company does", "column": true}, {"key": "investor_category", "label": "Investor Category", "short": "Category", "group": "B", "type": "select", "options": ["Strategic Investor", "Real Estate Developer", "Investment Fund", "Holding Company", "Family Office", "Institutional Investor", "Operator / Brand", "Individual (HNWI)", "Government / Sovereign", "Endowment (Waqf)", "Technology / Service Partner"], "help": "", "column": true}, {"key": "organization_type", "label": "Organization Type", "short": "Org. Type", "group": "B", "type": "select", "options": ["Listed Joint Stock Company", "Closed Joint Stock Company", "Limited Liability Company", "Single Person Company", "Sole Proprietorship", "Holding Company", "Licensed Investment Fund", "Government Entity", "Semi-Government Entity", "Endowment (Waqf)", "Non-Profit Organization", "Foreign Company Branch"], "help": "", "column": true}, {"key": "year_established", "label": "Year Established", "short": "Founded", "group": "B", "type": "number", "options": [], "help": "Years in business are derived", "column": true}, {"key": "primary_contact", "label": "Primary Contact", "short": "Contact", "group": "C", "type": "text", "options": [], "help": "", "column": true}, {"key": "position", "label": "Position", "short": "Position", "group": "C", "type": "select", "options": ["Chairman", "Board Member", "Chief Executive Officer", "Deputy CEO", "General Manager", "Business Development Manager", "Investment Manager", "Projects Manager", "Chief Financial Officer", "Authorized Representative", "Other"], "help": "", "column": true}, {"key": "contact_info", "label": "Contact Information", "short": "Email / Phone", "group": "C", "type": "text", "options": [], "help": "Email · mobile", "column": true}, {"key": "company_size", "label": "Company Size", "short": "Size", "group": "C", "type": "select", "options": ["Micro (1–5)", "Small (6–49)", "Medium (50–249)", "Large (250–999)", "Enterprise (1000+)"], "help": "Monshaat classification", "column": true}, {"key": "project_size", "label": "Project Size", "short": "Project Size", "group": "C", "type": "select", "options": ["Under SAR 50M", "SAR 50–200M", "SAR 200–500M", "SAR 500M–1B", "SAR 1–5B", "Above SAR 5B"], "help": "Typical project value", "column": true}, {"key": "project_locations", "label": "Project Locations", "short": "Locations", "group": "C", "type": "multi", "options": ["Madinah", "Makkah", "Riyadh", "Jeddah", "Eastern Province", "Qassim", "Hail", "Tabuk", "Asir", "NEOM / North-West", "Other KSA Regions", "GCC", "Wider Arab Region", "International"], "help": "", "column": true}, {"key": "major_projects", "label": "Major Projects", "short": "Projects", "group": "C", "type": "area", "options": [], "help": "", "column": true}, {"key": "business_sectors", "label": "Asset Classes", "short": "Assets", "group": "C", "type": "multi", "options": ["Residential", "Commercial / Retail", "Office", "Hospitality", "Mixed-Use", "Entertainment", "Education", "Healthcare", "Logistics", "Industrial", "Endowments", "Pilgrim & Visitor Services", "Infrastructure"], "help": "Where they invest", "column": true}, {"key": "deal_value", "label": "Deal Value (SAR)", "short": "Deal Value", "group": "D", "type": "money", "options": [], "help": "Expected value of the opportunity", "column": true}, {"key": "weighted_value", "label": "Weighted Value", "short": "Weighted", "group": "D", "type": "calc", "options": [], "help": "Deal value × stage probability", "column": true}, {"key": "stage", "label": "Current Stage", "short": "Stage", "group": "D", "type": "select", "options": ["Identification", "Initial Contact", "Introductory Meeting", "Information Exchange", "Opportunity Pitch", "Negotiation", "MoU / Term Sheet", "Signed Agreement", "Closed — Not Completed"], "help": "Drives progress and weighting", "column": true}, {"key": "progress", "label": "Progress (%)", "short": "Progress", "group": "D", "type": "calc", "options": [], "help": "From stage", "column": true}, {"key": "priority", "label": "Priority", "short": "Priority", "group": "D", "type": "select", "options": ["Critical", "High", "Medium", "Low"], "help": "", "column": true}, {"key": "rationale", "label": "Opportunity Rationale", "short": "Rationale", "group": "D", "type": "select", "options": ["Strong financial standing", "Proven market track record", "Existing presence in Madinah", "Alignment with KEC targets", "Pre-existing relationship", "Owns operator / brand", "High execution speed", "Synergy with an active project", "Executive management referral", "Investor-initiated approach"], "help": "", "column": true}, {"key": "rationale_note", "label": "Rationale Detail", "short": "Rationale Detail", "group": "D", "type": "area", "options": [], "help": "Shown next to the rationale", "column": false}, {"key": "opportunity", "label": "Potential Opportunity", "short": "Opportunity", "group": "D", "type": "multi", "options": ["Land Acquisition", "Joint Development (JV)", "Long-Term Usufruct", "Space Leasing", "Asset Operation & Management", "Fund / Instrument Investment", "Contracting & Delivery", "Technology / Service Partnership", "Financing", "Not Yet Defined"], "help": "", "column": true}, {"key": "nda_signed", "label": "NDA", "short": "NDA", "group": "D", "type": "select", "options": ["Not Required", "Pending", "Signed", "Expired"], "help": "", "column": true}, {"key": "nda_date", "label": "NDA Date", "short": "NDA Date", "group": "D", "type": "date", "options": [], "help": "Shown next to the NDA status", "column": false}, {"key": "last_activity", "label": "Last Activity", "short": "Last Activity", "group": "D", "type": "select", "options": ["Phone Call", "In-Person Meeting", "Virtual Meeting", "Email", "Site Visit", "Presentation", "Document Exchange", "Official Correspondence", "No Activity Yet"], "help": "", "column": true}, {"key": "last_activity_date", "label": "Activity Date", "short": "Activity Date", "group": "D", "type": "date", "options": [], "help": "Shown next to the activity", "column": false}, {"key": "next_action", "label": "Next Action", "short": "Next Action", "group": "D", "type": "select", "options": ["Schedule Meeting", "Send Opportunity Pack", "Follow-up Email", "Prepare Presentation", "Execute NDA", "Arrange Site Visit", "Draft Agreement", "Request Documents", "Escalate to Executive Management", "Awaiting Investor Response", "Close Record"], "help": "", "column": true}, {"key": "follow_up", "label": "Follow-up Date", "short": "Follow-up", "group": "D", "type": "date", "options": [], "help": "", "column": true}, {"key": "doc_link", "label": "Documents", "short": "Docs", "group": "D", "type": "url", "options": [], "help": "Link to the investor folder", "column": true}], GROUPS = [{"id": "A", "label": "KEC Registry", "short": "KEC", "owner": "kec"}, {"id": "B", "label": "Investor Profile", "short": "Investor", "owner": "inv"}, {"id": "C", "label": "Business Profile", "short": "Business", "owner": "inv"}, {"id": "D", "label": "Opportunity & Pipeline", "short": "Pipeline", "owner": "kec"}];
+var DEFAULT_COLS = ["record_id", "company", "country", "investor_category", "stage", "deal_value", "weighted_value", "priority", "progress", "follow_up"];
+var STAGE_PROGRESS = {"Identification": 10, "Initial Contact": 20, "Introductory Meeting": 35, "Information Exchange": 50, "Opportunity Pitch": 60, "Negotiation": 75, "MoU / Term Sheet": 90, "Signed Agreement": 100, "Closed — Not Completed": 0}, STAGE_ALIAS = {"1 · Identification": "Identification", "2 · Initial Contact": "Initial Contact", "3 · Introductory Meeting": "Introductory Meeting", "4 · Information Exchange": "Information Exchange", "4 · Information Exchange / NDA": "Information Exchange", "5 · Opportunity Pitch": "Opportunity Pitch", "5 · Formal Opportunity Pitch": "Opportunity Pitch", "6 · Negotiation": "Negotiation", "7 · MoU / Term Sheet": "MoU / Term Sheet", "8 · Signed Agreement": "Signed Agreement", "× · Closed — Not Completed": "Closed — Not Completed"}, SEED = [{"record_id": 1, "entry_date": "2026-06-14", "department": "Investment", "assigned_to": "", "lead_source": "Executive Referral", "company": "Tharwa Capital Partners", "country": "Saudi Arabia", "industry": "Financial Services & Investment", "investor_category": "Investment Fund", "organization_type": "Licensed Investment Fund", "year_established": 2011, "primary_contact": "Faisal Al-Otaibi", "position": "Investment Manager", "contact_info": "f.otaibi@tharwa.example · +966 5x xxx xxxx", "company_size": "Medium (50–249)", "project_size": "SAR 500M–1B", "project_locations": ["Riyadh", "Jeddah", "Madinah"], "major_projects": "Two mixed-use districts in Riyadh; hospitality portfolio in Jeddah.", "business_sectors": ["Mixed-Use", "Hospitality", "Commercial / Retail"], "deal_value": 420000000, "stage": "Negotiation", "priority": "Critical", "rationale": "Strong financial standing", "rationale_note": "Committed capital within FY26.", "opportunity": ["Joint Development (JV)", "Land Acquisition"], "nda_signed": "Signed", "nda_date": "2026-07-02", "last_activity": "In-Person Meeting", "last_activity_date": "2026-07-28", "next_action": "Draft Agreement", "follow_up": "2026-08-10", "doc_link": "", "created_by": "System", "updated_by": "System", "updated_at": "2026-07-28", "order": 0}, {"record_id": 2, "entry_date": "2026-06-21", "department": "Business Development", "assigned_to": "", "lead_source": "Existing Partner", "company": "Al Madinah Hospitality Group", "country": "Saudi Arabia", "industry": "Hospitality & Hotels", "investor_category": "Operator / Brand", "organization_type": "Closed Joint Stock Company", "year_established": 2004, "primary_contact": "Nawaf Al-Harbi", "position": "Chief Executive Officer", "contact_info": "ceo@amhg.example · +966 5x xxx xxxx", "company_size": "Large (250–999)", "project_size": "SAR 200–500M", "project_locations": ["Madinah", "Makkah"], "major_projects": "Six operating hotels in the central Haram district.", "business_sectors": ["Hospitality", "Pilgrim & Visitor Services"], "deal_value": 260000000, "stage": "Information Exchange", "priority": "High", "rationale": "Existing presence in Madinah", "rationale_note": "Operator depth in the pilgrim segment.", "opportunity": ["Asset Operation & Management", "Long-Term Usufruct"], "nda_signed": "Pending", "nda_date": "", "last_activity": "Document Exchange", "last_activity_date": "2026-07-19", "next_action": "Send Opportunity Pack", "follow_up": "2026-07-30", "doc_link": "", "created_by": "System", "updated_by": "System", "updated_at": "2026-07-19", "order": 1}, {"record_id": 3, "entry_date": "2026-07-02", "department": "Investment", "assigned_to": "", "lead_source": "Conference / Exhibition", "company": "Meridian Retail Holding", "country": "United Arab Emirates", "industry": "Retail", "investor_category": "Holding Company", "organization_type": "Holding Company", "year_established": 1996, "primary_contact": "Layla Mansouri", "position": "Business Development Manager", "contact_info": "l.mansouri@meridian.example", "company_size": "Enterprise (1000+)", "project_size": "SAR 1–5B", "project_locations": ["GCC", "International"], "major_projects": "Regional mall network across four GCC markets.", "business_sectors": ["Commercial / Retail", "Entertainment"], "deal_value": 180000000, "stage": "Introductory Meeting", "priority": "Medium", "rationale": "Proven market track record", "rationale_note": "Anchor tenant for the retail phase.", "opportunity": ["Space Leasing", "Joint Development (JV)"], "nda_signed": "Not Required", "nda_date": "", "last_activity": "Virtual Meeting", "last_activity_date": "2026-07-24", "next_action": "Schedule Meeting", "follow_up": "2026-08-18", "doc_link": "", "created_by": "System", "updated_by": "System", "updated_at": "2026-07-24", "order": 2}, {"record_id": 4, "entry_date": "2026-07-09", "department": "Business Development", "assigned_to": "", "lead_source": "Inbound Enquiry", "company": "Rawabi Development Co.", "country": "Saudi Arabia", "industry": "Real Estate Development", "investor_category": "Real Estate Developer", "organization_type": "Limited Liability Company", "year_established": 2015, "primary_contact": "Omar Al-Zahrani", "position": "General Manager", "contact_info": "o.zahrani@rawabi.example", "company_size": "Small (6–49)", "project_size": "SAR 50–200M", "project_locations": ["Madinah", "Qassim"], "major_projects": "Three residential subdivisions delivered since 2019.", "business_sectors": ["Residential"], "deal_value": 65000000, "stage": "Identification", "priority": "Low", "rationale": "High execution speed", "rationale_note": "Fast delivery on mid-scale plots.", "opportunity": ["Land Acquisition"], "nda_signed": "Not Required", "nda_date": "", "last_activity": "No Activity Yet", "last_activity_date": "", "next_action": "Follow-up Email", "follow_up": "2026-08-25", "doc_link": "", "created_by": "System", "updated_by": "System", "updated_at": "2026-07-09", "order": 3}, {"record_id": 5, "entry_date": "2026-07-16", "department": "Investment", "assigned_to": "", "lead_source": "KEC Outreach", "company": "Nusuk Facilities Management", "country": "Saudi Arabia", "industry": "Professional Services", "investor_category": "Technology / Service Partner", "organization_type": "Limited Liability Company", "year_established": 2018, "primary_contact": "Hind Al-Sulami", "position": "Projects Manager", "contact_info": "h.sulami@nusuk-fm.example", "company_size": "Medium (50–249)", "project_size": "Under SAR 50M", "project_locations": ["Madinah"], "major_projects": "Facilities contracts across public assets in Madinah.", "business_sectors": ["Infrastructure", "Pilgrim & Visitor Services"], "deal_value": 38000000, "stage": "Opportunity Pitch", "priority": "High", "rationale": "Alignment with KEC targets", "rationale_note": "Localisation of the FM scope.", "opportunity": ["Technology / Service Partnership"], "nda_signed": "Signed", "nda_date": "2026-07-11", "last_activity": "Presentation", "last_activity_date": "2026-07-30", "next_action": "Request Documents", "follow_up": "2026-08-06", "doc_link": "", "created_by": "System", "updated_by": "System", "updated_at": "2026-07-30", "order": 4}];
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* The date is read from the machine every time the file is opened — never baked
+   in at build time, otherwise "today" freezes on the day it was generated. */
+function isoToday () {
+  var d = new Date();
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+function longToday () {
+  var d = new Date();
+  return ('0' + d.getDate()).slice(-2) + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear();
+}
+var TODAY = isoToday();
+var LS = 'kec_investor_log_v1', LSC = 'kec_investor_log_cols_v1', LSU = 'kec_investor_log_user_v1';
+/* Bumped whenever fields or the default layout change. Anything stored under an
+   older build is migrated and its saved column layout is discarded — otherwise a
+   browser that has opened an earlier copy keeps showing the earlier log forever,
+   and every later change is invisible. */
+var BUILD = 7, migrated = '';
+var PER1 = 8, PER2 = 10, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
+
+var F = {}; SCHEMA.forEach(function (f) { F[f.key] = f; });
+var COLFIELDS = SCHEMA.filter(function (f) { return f.column !== false; });
+var GMETA = {}; GROUPS.forEach(function (g) { GMETA[g.id] = g; });
+
+var DATA = [], OWNERS = [], COLS = DEFAULT_COLS.slice(), MANUAL = {}, remote = null;
+var page = 0, sortKey = null, sortDir = 1, editId = null, undo = null, undoT = null;
+var USER = '', cellEdit = null;
+
+var $  = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var esc = function (v) { return String(v == null ? '' : v)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+var val = function (r, k) { var v = r[k]; return Array.isArray(v) ? v.join(', ') : (v == null ? '' : v); };
+
+/* Real text measurement. A character-count estimate is wrong for any
+   proportional face — that is what pushed «Closed Joint Stock Company» past
+   its cell. Measured against the loaded font, never guessed. */
+var _mc = null;
+function mctx (font) {
+  if (!_mc) _mc = document.createElement('canvas').getContext('2d');
+  _mc.font = font || '9.5px "Readex Pro", system-ui, sans-serif';
+  return _mc;
+}
+function fitText (v, w, font) {
+  v = String(v == null ? '' : v); if (!v) return '';
+  var c = mctx(font);
+  if (c.measureText(v).width <= w) return v;
+  var lo = 0, hi = v.length;
+  while (lo < hi) {
+    var m = (lo + hi + 1) >> 1;
+    if (c.measureText(v.slice(0, m) + '…').width <= w) lo = m; else hi = m - 1;
+  }
+  return lo ? v.slice(0, lo) + '…' : '…';
+}
+function fitValue (r, key, w) {
+  var raw = r[key];
+  if (!Array.isArray(raw) || raw.length < 2) return fitText(text(r, key), w);
+  var c = mctx();
+  for (var n = raw.length; n > 0; n--) {
+    var t = raw.slice(0, n).join(', ') + (n < raw.length ? '  +' + (raw.length - n) : '');
+    if (c.measureText(t).width <= w) return t;
+  }
+  return fitText(raw.join(', '), w);
+}
+
+function fmtDate (s) {
+  if (!s) return '';
+  var d = new Date(s + 'T00:00:00'); if (isNaN(d)) return s;
+  return ('0' + d.getDate()).slice(-2) + ' ' + MON[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2);
+}
+function progressOf (r) {
+  if (r.progress_override != null && r.progress_override !== '') return +r.progress_override;
+  return STAGE_PROGRESS[r.stage] != null ? STAGE_PROGRESS[r.stage] : 0;
+}
+function yearsOf (r) {
+  var y = parseInt(r.year_established, 10);
+  return y > 1200 && y <= +TODAY.slice(0, 4) ? (+TODAY.slice(0, 4) - y) : '';
+}
+function isOverdue (r) { return r.follow_up && r.follow_up < TODAY && progressOf(r) < 100; }
+function nextId () { return DATA.reduce(function (m, r) { return Math.max(m, +r.record_id || 0); }, 0) + 1; }
+function uid () { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function pid (r) { return ('00' + (r.record_id || 0)).slice(-3); }
+function money (v) {
+  v = +v; if (!v || isNaN(v)) return '';
+  var a = Math.abs(v);
+  if (a >= 1e9) return 'SAR ' + (v / 1e9).toFixed(a >= 1e10 ? 0 : 1) + 'B';
+  if (a >= 1e6) return 'SAR ' + (v / 1e6).toFixed(a >= 1e8 ? 0 : 1) + 'M';
+  if (a >= 1e3) return 'SAR ' + Math.round(v / 1e3) + 'K';
+  return 'SAR ' + v;
+}
+function weightedOf (r) { return Math.round((+r.deal_value || 0) * progressOf(r) / 100); }
+/* One idea, one column: a field marked column:false is folded into its
+   neighbour instead of eating a second column of width. */
+function text (r, k) {
+  switch (k) {
+    case 'progress':         return progressOf(r) + '%';
+    case 'deal_value':       return money(r.deal_value);
+    case 'weighted_value':   return money(weightedOf(r));
+    case 'year_established': var y = yearsOf(r);
+      return r.year_established ? (r.year_established + (y === '' ? '' : ' · ' + y + ' yrs')) : '';
+    case 'rationale':        var b = (r.rationale_note || '').trim();
+      return r.rationale ? (b ? r.rationale + ' — ' + b : r.rationale) : b;
+    case 'last_activity':    var d = fmtDate(r.last_activity_date);
+      return r.last_activity ? (d ? r.last_activity + ' · ' + d : r.last_activity) : '';
+    case 'nda_signed':       var n = fmtDate(r.nda_date);
+      return r.nda_signed ? (n ? r.nda_signed + ' · ' + n : r.nda_signed) : '';
+    case 'updated_by':       var u = r.updated_by || '', t = fmtDate(r.updated_at);
+      return u ? (t ? u + ' · ' + t : u) : t;
+    case 'doc_link':         return r.doc_link ? 'Open folder' : '';
+    case 'entry_date': case 'follow_up': case 'last_activity_date': case 'nda_date':
+      return fmtDate(r[k]);
+  }
+  return val(r, k);
+}
+function stamp (r) {
+  r.updated_by = USER || 'Unknown';
+  r.updated_at = TODAY;
+  if (!r.created_by) r.created_by = r.updated_by;
+}
+function whoami (force) {
+  if (USER && !force) return USER;
+  var n = (prompt('Your name for the audit trail:', USER || '') || '').trim();
+  if (n) { USER = n; try { localStorage.setItem(LSU, n); } catch (e) {} paintUser(); }
+  return USER;
+}
+function paintUser () {}
+function prioClass (p) { return { Critical: 'crit', High: 'high', Medium: 'med', Low: 'low' }[p] || 'low'; }
+
+/* ---------------------------------------------------------------- storage */
+function setMode (txt, live) { storeLabel = txt; }
+var storeLabel = '';
+var Local = {
+  read:  function () { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } },
+  write: function () {
+    try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS })); } catch (e) {}
+  }
+};
+function seedRecords () {
+  return SEED.map(function (r) { return Object.assign({ _id: uid() }, JSON.parse(JSON.stringify(r))); });
+}
+function untouched (recs) {
+  if (!recs || recs.length !== SEED.length) return false;
+  var names = SEED.map(function (r) { return r.company; });
+  return recs.every(function (r) {
+    return names.indexOf(r.company) >= 0 && (!r.updated_by || r.updated_by === 'System');
+  });
+}
+function migrate (recs) {
+  return recs.map(function (r, i) {
+    if (!r._id) r._id = uid();
+    if (r.order == null) r.order = i;
+    SCHEMA.forEach(function (f) {
+      if (r[f.key] == null) r[f.key] = (f.type === 'multi') ? [] : '';
+    });
+    if (STAGE_ALIAS[r.stage]) r.stage = STAGE_ALIAS[r.stage];
+    delete r.relationship;                 /* removed field — was duplicating stage */
+    delete r.years_in_business;            /* derived from Year Established */
+    return r;
+  });
+}
+function readCols () {
+  try {
+    var c = JSON.parse(localStorage.getItem(LSC) || 'null');
+    if (c && !Array.isArray(c) && c.v === BUILD && c.cols) {
+      COLS = c.cols.filter(function (k) { return F[k] && F[k].column !== false; });
+      MANUAL = c.w || {};
+    }
+  } catch (e) {}
+  if (!COLS.length) { COLS = DEFAULT_COLS.slice(); MANUAL = {}; }
+}
+function writeCols () {
+  try { localStorage.setItem(LSC, JSON.stringify({ v: BUILD, cols: COLS, w: MANUAL })); } catch (e) {}
+}
+
+/* ---- column sizing -------------------------------------------------------
+   Widths follow CONTENT, not a fixed grid: each column is measured against its
+   own header and every value in the register. If the total fits, the columns
+   are scaled up to fill the width exactly (no scrollbar, no truncation). If it
+   does not fit, the table keeps its natural width and the register scrolls
+   horizontally — nothing is ever cut to make it fit. */
+function autoWidth (k, list) {
+  var w = mctx('500 8.5px "Readex Pro", sans-serif')
+            .measureText(F[k].short || F[k].label).width + 16 + (sortKey === k ? 11 : 0);
+  if (k === 'progress') return Math.max(w, 92);
+  var c = mctx();
+  list.forEach(function (r) {
+    var t = text(r, k);
+    if (!t) return;
+    var tw = c.measureText(t).width + 20 + (k === 'priority' ? 16 : 0);
+    if (tw > w) w = tw;
+  });
+  var cap = (F[k].type === 'area') ? 520 : MAX_W;   /* free text gets more room */
+  return Math.min(cap, Math.max(MIN_W, Math.ceil(w)));
+}
+function colWidths (list) {
+  var w = {}, sum = 0;
+  COLS.forEach(function (k) {
+    w[k] = MANUAL[k] ? Math.max(MIN_W, MANUAL[k]) : autoWidth(k, list);
+    sum += w[k];
+  });
+  var avail = ($('#scroll') ? $('#scroll').clientWidth : 1140) - ACT_PX - 2;
+  if (sum < avail && sum > 0) {                 /* fill the width, don't leave a gap */
+    var f = avail / sum, out = {}, acc = 0, keys = COLS;
+    keys.forEach(function (k, i) {
+      out[k] = (i === keys.length - 1) ? (avail - acc) : Math.floor(w[k] * f);
+      acc += out[k];
+    });
+    return { w: out, total: avail + ACT_PX, fits: true };
+  }
+  return { w: w, total: sum + ACT_PX, fits: false };
+}
+
+function initLocal (note) {
+  var s = Local.read();
+  if (!s || !s.records) { DATA = seedRecords(); OWNERS = []; }
+  else if (s.v !== BUILD) {
+    OWNERS = s.owners || [];
+    if (untouched(s.records)) { DATA = seedRecords(); migrated = 'sample'; }
+    else { DATA = migrate(s.records); migrated = 'data'; }
+    Local.write();
+  } else { DATA = s.records; OWNERS = s.owners || []; }
+  setMode(note || 'Local storage', false);
+  renderAll();
+  if (migrated) {
+    toast(migrated === 'sample'
+      ? 'Updated to build ' + BUILD + ' — new fields, layout and sample data loaded.'
+      : 'Updated to build ' + BUILD + ' — your records were kept and the new fields added.',
+      'Restore samples', restoreSamples);
+    migrated = '';
+  }
+}
+function restoreSamples () {
+  if (!confirm('Replace everything in this log with the sample records?')) return;
+  if (remote) DATA.slice().forEach(drop);
+  DATA = seedRecords(); Local.write();
+  COLS = DEFAULT_COLS.slice(); MANUAL = {}; writeCols();
+  renderAll(); toast('Sample records restored.');
+}
+
+// =========================================================================
+// FIREBASE & METADATA LOGIC
+// =========================================================================
+function initStore () {
+  if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.projectId) { initLocal(); return; }
+  setMode('Connecting to Firebase…', false);
+  Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
+  ]).then(function (m) {
+    var app = m[0].initializeApp(FIREBASE_CONFIG), fs = m[1], db = fs.getFirestore(app);
+    remote = { fs: fs, db: db };
+    
+    // 1. Listen to Metadata for centralized Dropdowns (OWNERS)
+    fs.onSnapshot(fs.doc(db, COLLECTION, '_metadata'), function (docSnap) {
+      if (docSnap.exists()) {
+        var data = docSnap.data();
+        if (data.owners) {
+          OWNERS = data.owners;
+          syncOwnerSelects(); // Live update dropdowns on screen when others add an owner
+        }
+      } else {
+        fs.setDoc(fs.doc(db, COLLECTION, '_metadata'), { owners: OWNERS }, { merge: true });
+      }
+    });
+
+    // 2. Listen to actual Records
+    fs.onSnapshot(fs.collection(db, COLLECTION), function (snap) {
+      DATA = snap.docs
+                      .filter(function(d) { return d.id !== '_metadata'; }) // skip the metadata config doc
+                      .map(function (d) { var o = d.data(); o._id = d.id; return o; })
+                      .sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+      setMode('Firebase · live · ' + FIREBASE_CONFIG.projectId, true);
+      renderAll();
+    }, function () { remote = null; initLocal('Firebase read failed · local'); });
+  }).catch(function () { initLocal('Firebase unreachable · local'); });
+}
+
+function updateRemoteOwners() {
+  if (remote) {
+    remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, '_metadata'), { owners: OWNERS }, { merge: true });
+  } else {
+    Local.write();
+  }
+}
+
+function bare (r) { var o = Object.assign({}, r); delete o._id; return o; }
+function save (rec) {
+  if (!USER) whoami();
+  stamp(rec);
+  if (remote) remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, rec._id), bare(rec));
+  else { Local.write(); renderAll(); }
+}
+function saveAll () {
+  if (remote) DATA.forEach(function (r) { remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, r._id), bare(r)); });
+  else { Local.write(); renderAll(); }
+}
+function drop (rec) {
+  if (remote) remote.fs.deleteDoc(remote.fs.doc(remote.db, COLLECTION, rec._id));
+  else { Local.write(); renderAll(); }
+}
+
+
+/* ===================== themed dropdown =====================================
+   A native <select> cannot be coloured per option in a way any browser agrees
+   on, so the log uses its own listbox: KEC surfaces, a tone dot per option and
+   the semantic colour carried into the closed state. */
+var TONE = {
+  priority:   { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' },
+  nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }
+};
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
+function toneOf (key, v) {
+  if (!v) return 'mute';
+  if (TONE[key] && TONE[key][v]) return TONE[key][v];
+  if (key === 'stage') {
+    if (v.indexOf('Closed') === 0) return 'neg';
+    var p = STAGE_PROGRESS[v];
+    return p >= 75 ? 'green' : (p >= 35 ? 'gold' : 'mute');
+  }
+  return 'green';
+}
+function closeSelects (except) {
+  $$('.sel.open').forEach(function (x) { if (x !== except) x.classList.remove('open'); });
+}
+function mountSelect (host, cfg) {
+  if (!host) return null;
+  var st = { v: cfg.value == null ? '' : cfg.value, opts: cfg.options || [],
+             key: cfg.key || '', ph: cfg.placeholder || '' };
+  host.classList.add('sel');
+  if (cfg.cls) host.classList.add(cfg.cls);
+  host.innerHTML = '<button class="sel__t" type="button"><span class="sel__v"></span>' +
+                   '<span class="sel__c"></span></button><span class="sel__p"></span>';
+  var trig = host.querySelector('.sel__t'), lab = host.querySelector('.sel__v'),
+      pan  = host.querySelector('.sel__p');
+
+  if (cfg.minWidth) host.style.minWidth = cfg.minWidth + 'px';
+  else if (cfg.autoWidth !== false) {
+    var f = '9.5px "Readex Pro", system-ui, sans-serif', w = mctx(f).measureText(st.ph).width;
+    st.opts.forEach(function (o) { w = Math.max(w, mctx(f).measureText(o).width); });
+    host.style.minWidth = Math.min(cfg.cap || 240, Math.ceil(w) + 46) + 'px';
+  }
+  function paint () {
+    var t = toneOf(st.key, st.v);
+    lab.className = 'sel__v' + (st.v ? (COLOURED[st.key] ? ' tone--' + t : '') : ' empty');
+    var room = host.getBoundingClientRect().width - (cfg.pad == null ? 36 : cfg.pad);
+    lab.textContent = room > 14 ? fitText(st.v || st.ph, room, cfg.font) : (st.v || st.ph);
+    lab.title = st.v || st.ph;
+  }
+  function fill () {
+    pan.innerHTML =
+      (st.ph ? '<span class="sel__o hint" data-v=""><span class="dot dot--mute"></span>' +
+               esc(st.ph) + '</span>' : '') +
+      st.opts.map(function (o) {
+        var t = toneOf(st.key, o);
+        return '<span class="sel__o' + (o === st.v ? ' on' : '') + '" data-v="' + esc(o) + '">' +
+               '<span class="dot dot--' + t + '"></span>' +
+               '<span class="' + (COLOURED[st.key] ? 'tone--' + t : '') + '">' + esc(o) + '</span></span>';
+      }).join('') +
+      (cfg.extra ? '<span class="sel__o hint" data-v="' + esc(cfg.extra.v) + '">' +
+                   '<span class="dot dot--green"></span>' + esc(cfg.extra.label) + '</span>' : '');
+  }
+  function place () {
+    var r = trig.getBoundingClientRect();
+    host.classList.toggle('sel--r', r.left + 240 > window.innerWidth - 20);
+    host.classList.toggle('sel--up', r.bottom + 220 > window.innerHeight);
+  }
+  function open () { fill(); place(); closeSelects(host); host.classList.add('open'); }
+  function pick (v) {
+    st.v = v; api.value = v; paint();
+    host.classList.remove('open');
+    if (cfg.onChange) cfg.onChange(v);
+  }
+  trig.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (host.classList.contains('open')) host.classList.remove('open'); else open();
+  });
+  trig.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+  });
+  pan.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var o = e.target.closest('.sel__o'); if (o) pick(o.dataset.v);
+  });
+  host.addEventListener('keydown', function (e) {
+    if (!host.classList.contains('open')) return;
+    var os = $$('.sel__o', pan), cur = pan.querySelector('.sel__o.cur') || pan.querySelector('.sel__o.on');
+    var i = os.indexOf(cur);
+    if (e.key === 'Escape') { e.preventDefault(); host.classList.remove('open'); trig.focus(); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      i = Math.max(0, Math.min(os.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)));
+      os.forEach(function (x) { x.classList.remove('cur'); });
+      if (os[i]) { os[i].classList.add('cur'); os[i].scrollIntoView({ block: 'nearest' }); }
+    }
+    if (e.key === 'Enter' && os[i]) { e.preventDefault(); pick(os[i].dataset.v); }
+  });
+  var api = {
+    value: st.v,
+    set: function (v) { st.v = v == null ? '' : v; api.value = st.v; paint(); },
+    setOptions: function (o) { st.opts = o || []; fill(); paint(); },
+    focus: function () { trig.focus(); },
+    open: open
+  };
+  host._sel = api;
+  paint();
+  return api;
+}
+function readVal (el) { return el ? (el._sel ? el._sel.value : el.value) : ''; }
+
+/* ------------------------------------------------------------------ query */
+function filtered () {
+  var q  = ($('#q').value || '').trim().toLowerCase();
+  var fd = readVal($('#fDept')), fst = readVal($('#fStage')),
+      fp = readVal($('#fPrio')),  fo = readVal($('#fOwner'));
+  var out = DATA.filter(function (r) {
+    if (fd && r.department !== fd) return false;
+    if (fst && r.stage !== fst) return false;
+    if (fp && r.priority !== fp) return false;
+    if (fo === '⚑ Overdue only') { if (!isOverdue(r)) return false; }
+    else if (fo && r.assigned_to !== fo) return false;
+    if (!q) return true;
+    return SCHEMA.some(function (f) { return val(r, f.key).toLowerCase().indexOf(q) >= 0; });
+  });
+  if (sortKey) {
+    out.sort(function (a, b) {
+      var x = sortKey === 'progress' ? progressOf(a) : val(a, sortKey);
+      var y = sortKey === 'progress' ? progressOf(b) : val(b, sortKey);
+      if (typeof x === 'number') return (x - y) * sortDir;
+      return String(x).localeCompare(String(y), 'en') * sortDir;
+    });
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------- KPIs */
+function renderKpis () {
+  var n = DATA.length, pl = function (v) { return v === 1 ? 'record' : 'records'; };
+  var open   = DATA.filter(function (r) { var p = progressOf(r); return p > 0 && p < 100; });
+  var pipe   = DATA.reduce(function (s, r) { return s + (progressOf(r) < 100 ? (+r.deal_value || 0) : 0); }, 0);
+  var wtd    = DATA.reduce(function (s, r) { return s + (progressOf(r) < 100 ? weightedOf(r) : 0); }, 0);
+  var neg    = DATA.filter(function (r) { return progressOf(r) >= 75; }).length;
+  var over   = DATA.filter(isOverdue).length;
+  var avg    = n ? Math.round(DATA.reduce(function (s, r) { return s + progressOf(r); }, 0) / n) : 0;
+  var signed = DATA.filter(function (r) { return progressOf(r) === 100; }).length;
+  set('k1', n,            pl(n),  open.length + ' open · ' + signed + ' signed', 'flat');
+  set('k2', money(pipe)  || '—', '', 'open opportunities', pipe ? 'up' : 'flat');
+  set('k3', money(wtd)   || '—', '', 'stage-weighted', wtd ? 'up' : 'flat');
+  set('k4', neg,          pl(neg), 'MoU stage or later', neg ? 'up' : 'flat');
+  set('k5', over,         pl(over), over ? 'past follow-up date' : 'all on schedule', over ? 'down' : 'up');
+  set('k6', avg,          '%',     'across the register', 'flat');
+  function set (id, v, unit, delta, dir) {
+    var c = $('#' + id); if (!c) return;
+    var box = c.querySelector('.kc__v'), txt = esc(v) + (unit ? '<span class="kc__u">' + esc(unit) + '</span>' : '');
+    if (box.innerHTML !== txt) { box.innerHTML = txt; c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
+    var d = c.querySelector('.kc__d');
+    d.className = 'kc__d ' + dir; d.textContent = delta;
+  }
+}
+
+/* ------------------------------------------------------------------ table */
+function actions () {
+  return ib('grip', 'Drag to reorder the register', 'M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01') +
+         ib('ed',   'Open the full record',         'M4 20h4L19 9l-4-4L4 16v4z') +
+         ib('dup',  'Duplicate this record',        'M9 9h10v10H9zM5 15V5h10') +
+         ib('dl',   'Delete this record',           'M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13');
+  function ib (cls, t, d) {
+    return '<button class="btn btn--icon ' + cls + '" title="' + t + '" aria-label="' + t +
+           '"><svg viewBox="0 0 24 24"><path d="' + d + '"/></svg></button>';
+  }
+}
+function cellHtml (r, key, px, sticky) {
+  var w = px - 20, f = F[key];
+  var editable = ['select','text','url','number','money','date','stamp','owner','area','multi'].indexOf(f.type) >= 0;
+  var cls = [];
+  if (sticky != null) { cls.push('stick'); if (COLS.indexOf(key) === FREEZE - 1) cls.push('edge'); }
+  if (editable) cls.push('ed-cell');
+  if (f.type === 'money' || f.type === 'calc') cls.push('num');
+  var st = sticky != null ? ' style="left:' + sticky + 'px"' : '';
+  var at = ' data-k="' + key + '"' + st;
+
+  function td (inner, extra, title) {
+    return '<td class="' + cls.concat(extra || []).join(' ') + '"' + at +
+           (title ? ' title="' + esc(title) + '"' : '') + '>' + inner + '</td>';
+  }
+  if (key === 'record_id')
+    return '<td class="id ' + (sticky != null ? 'stick' : '') +
+           (COLS.indexOf(key) === FREEZE - 1 ? ' edge' : '') + '"' + (sticky != null ? st : '') +
+           '>' + pid(r) + '</td>';
+  if (key === 'progress') {
+    var p = progressOf(r);
+    return td('<span class="bar"><span class="bar__t"><span class="bar__f" style="width:' + p +
+              '%"></span></span><span class="bar__n">' + p + '%</span></span>');
+  }
+  if (key === 'priority')
+    return td(r.priority ? '<span class="pill pill--' + prioClass(r.priority) + '">' +
+              esc(r.priority) + '</span>' : '—');
+  if (key === 'nda_signed') {
+    var s2 = (r.nda_signed || '').toLowerCase();
+    var m2 = s2.indexOf('signed') === 0 ? 'ok' : (s2.indexOf('pending') === 0 ? 'wait' :
+             (s2.indexOf('expired') === 0 ? 'bad' : 'na'));
+    return td(r.nda_signed ? '<span class="tag tag--' + m2 + '">' + esc(fitText(text(r, key), w)) + '</span>' : '—',
+              null, text(r, key));
+  }
+  if (key === 'doc_link')
+    return td(r.doc_link ? '<a class="lnk" href="' + esc(r.doc_link) + '" target="_blank" rel="noopener">Open</a>' : '—');
+  if (key === 'follow_up' || key === 'entry_date') {
+    var t = text(r, key) || '—';
+    return td(esc(t), key === 'follow_up' && isOverdue(r) ? ['due'] : null);
+  }
+  var v = text(r, key);
+  return td(v ? esc(fitValue(r, key, w)) : '—', null, v);
+}
+
+function renderTable (list) {
+  var m = colWidths(DATA.length ? DATA : list);
+  var lefts = [], acc = 0;
+  COLS.forEach(function (k, i) { lefts.push(i < FREEZE ? acc : null); acc += m.w[k]; });
+
+  var cg = COLS.map(function (k) { return '<col style="width:' + m.w[k] + 'px">'; }).join('') +
+           '<col style="width:' + ACT_PX + 'px">';
+
+  var band = '', i;
+  for (i = 0; i < FREEZE && i < COLS.length; i++) {
+    var gi = F[COLS[i]].group;
+    var tail = (i + 1 >= COLS.length) || F[COLS[i + 1]].group !== gi;
+    band += gth(gi, 1, m.w[COLS[i]], tail, lefts[i]);
+  }
+  var run = null, span = 0, runW = 0;
+  for (i = FREEZE; i < COLS.length; i++) {
+    var g = F[COLS[i]].group;
+    if (g !== run) { if (run) band += gth(run, span, runW, true, null); run = g; span = 1; runW = m.w[COLS[i]]; }
+    else { span++; runW += m.w[COLS[i]]; }
+  }
+  if (run) band += gth(run, span, runW, true, null);
+  band += '<th class="g-act"></th>';
+  /* The label must survive any column order the user invents, including a
+     one-column run 39px wide — so it steps down full → short → colour only,
+     and a frozen cell stays blank when the same group continues beside it. */
+  function gth (g, n, w, label, left) {
+    var x = GMETA[g], font = '500 8.5px "Readex Pro", sans-serif', avail = w - 12, lbl = '';
+    if (label) {
+      if (mctx(font).measureText(x.label).width <= avail) lbl = x.label;
+      else if (mctx(font).measureText(x.short).width <= avail) lbl = x.short;
+    }
+    return '<th class="g-' + (x.owner === 'kec' ? 'kec' : 'inv') + (left != null ? ' stick' : '') +
+           '" colspan="' + n + '"' + (left != null ? ' style="left:' + left + 'px"' : '') +
+           ' title="' + esc(x.label) + '">' + esc(lbl) + '</th>';
+  }
+
+  var head = COLS.map(function (k, i) {
+    var on = sortKey === k;
+    var a = on ? '<span class="ar">' + (sortDir > 0 ? '▲' : '▼') + '</span> ' : '';
+    var lw = m.w[k] - 16 - (on ? 11 : 0);
+    var st = lefts[i] != null ? ' style="left:' + lefts[i] + 'px"' : '';
+    var sc = lefts[i] != null ? ('stick' + (i === FREEZE - 1 ? ' edge' : '')) : '';
+    return '<th data-sort="' + k + '" class="' + sc + '"' + st +
+           ' title="' + esc(F[k].label) + ' — click to sort · drag the edge to resize · double-click to auto-fit">' +
+           a + esc(fitText(F[k].short || F[k].label, lw, '500 8.5px "Readex Pro", sans-serif')) +
+           '<span class="rz" data-rz="' + k + '"></span></th>';
+  }).join('') + '<th class="g-act"></th>';
+
+  var start = pageStart(page), slice = list.slice(start, start + pageSize(page)), body;
+  if (!slice.length) {
+    body = '<tr><td colspan="' + (COLS.length + 1) + '"><div class="empty">' +
+           (DATA.length ? 'No records match the current filters.' : 'No records yet — add the first one.') +
+           '</div></td></tr>';
+  } else {
+    body = slice.map(function (r) {
+      return '<tr draggable="true" data-id="' + esc(r._id) + '">' +
+        COLS.map(function (k, i) { return cellHtml(r, k, m.w[k], lefts[i]); }).join('') +
+        '<td class="acts">' + actions() + '</td></tr>';
+    }).join('');
+  }
+  var t = $('#tbl');
+  t.style.width = m.fits ? '100%' : (m.total + 'px');
+  t.innerHTML = '<colgroup>' + cg + '</colgroup><thead><tr class="grp">' + band +
+    '</tr><tr class="col">' + head + '</tr></thead><tbody>' + body + '</tbody>';
+  $('#scroll').classList.toggle('scrolling', !m.fits);
+  syncBar();
+}
+
+/* --- custom horizontal scrollbar: always visible when it can scroll, and
+       driven by real elements so no browser hides or thins it out --- */
+function syncBar () {
+  var sc = $('#scroll'), bar = $('#hbar'), th = $('#hthumb');
+  var over = sc.scrollWidth - sc.clientWidth;
+  if (over <= 1) { bar.classList.remove('on'); return; }
+  bar.classList.add('on');
+  var ratio = sc.clientWidth / sc.scrollWidth;
+  var tw = Math.max(48, Math.round(bar.clientWidth * ratio));
+  th.style.width = tw + 'px';
+  th.style.transform = 'translateX(' + Math.round((bar.clientWidth - tw) * (sc.scrollLeft / over)) + 'px)';
+  $('#hpos').textContent = Math.round(sc.scrollLeft / over * 100) + '%';
+}
+function wireBar () {
+  var sc = $('#scroll'), bar = $('#hbar'), th = $('#hthumb'), drag = null;
+  sc.addEventListener('scroll', syncBar);
+  window.addEventListener('resize', syncBar);
+  th.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    drag = { x: e.clientX, l: sc.scrollLeft };
+    document.body.classList.add('resizing');
+  });
+  document.addEventListener('mousemove', function (e) {
+    if (!drag) return;
+    var over = sc.scrollWidth - sc.clientWidth;
+    var span = bar.clientWidth - th.clientWidth;
+    if (span > 0) sc.scrollLeft = drag.l + (e.clientX - drag.x) * (over / span);
+  });
+  document.addEventListener('mouseup', function () {
+    if (drag) { drag = null; document.body.classList.remove('resizing'); }
+  });
+  bar.addEventListener('mousedown', function (e) {
+    if (e.target === th) return;
+    var rect = bar.getBoundingClientRect();
+    var over = sc.scrollWidth - sc.clientWidth;
+    sc.scrollLeft = Math.max(0, Math.min(over,
+      ((e.clientX - rect.left - th.clientWidth / 2) / (bar.clientWidth - th.clientWidth)) * over));
+  });
+  $('#hLeft').onclick  = function () { sc.scrollBy({ left: -240, behavior: 'smooth' }); };
+  $('#hRight').onclick = function () { sc.scrollBy({ left:  240, behavior: 'smooth' }); };
+}
+
+/* Page 1 carries the dashboard; from page 2 the strip is dropped and the extra
+   room goes to two more investors. */
+function pageSize (p) { return p === 0 ? PER1 : PER2; }
+function pageStart (p) { return p === 0 ? 0 : PER1 + (p - 1) * PER2; }
+function pageCount (n) { return n <= PER1 ? 1 : 1 + Math.ceil((n - PER1) / PER2); }
+function renderList () {
+  var list = filtered(), n = pageCount(list.length);
+  if (page > n - 1) page = n - 1;
+  if (page < 0) page = 0;
+  var strip = document.querySelector('.kstrip');
+  if (strip) strip.style.display = page === 0 ? '' : 'none';
+  renderTable(list);
+  var start = pageStart(page), size = pageSize(page), from = list.length ? start + 1 : 0;
+  $('#pg').textContent = from + '–' + Math.min(start + size, list.length) + ' of ' + list.length +
+    (list.length !== DATA.length ? ' (of ' + DATA.length + ')' : '');
+  $('#pPrev').disabled = page === 0;
+  $('#pNext').disabled = start + size >= list.length;
+  var pill = document.querySelector('.kec-pagepill');
+  if (pill) pill.textContent = 'Page ' + (page + 1) + ' of ' + n;
+}
+function renderAll () { renderKpis(); syncOwnerSelects(); renderList(); }
+
+/* ------------------------------------------------------- column manager */
+function colWidthPx () {
+  var m = colWidths(DATA);
+  return COLS.map(function (k) { return m.w[k]; });
+}
+function renderColPanel () {
+  var px = colWidthPx(), narrow = COLS.filter(function (k) { return !!MANUAL[k]; }).length;
+  var vis = COLS.map(function (k, i) {
+    var m = GMETA[F[k].group];
+    return '<li class="cm__i" draggable="true" data-k="' + k + '" data-i="' + i + '">' +
+      '<span class="cm__n">' + (i + 1) + '</span>' +
+      '<span class="cm__d ' + (m.owner === 'kec' ? 'sw-kec' : 'sw-inv') + '"></span>' +
+      '<span class="cm__t">' + esc(F[k].label) + '</span>' +
+      '<span class="cm__w">' + Math.round(px[i]) + 'px</span>' +
+      '<button class="cm__b up"   title="Move up">▲</button>' +
+      '<button class="cm__b down" title="Move down">▼</button>' +
+      '<button class="cm__b rm"   title="Remove column">✕</button></li>';
+  }).join('');
+
+  var avail = COLFIELDS.filter(function (f) { return COLS.indexOf(f.key) < 0; });
+  var add = avail.length ? avail.map(function (f) {
+    var m = GMETA[f.group];
+    return '<li class="cm__i" data-k="' + f.key + '">' +
+      '<span class="cm__d ' + (m.owner === 'kec' ? 'sw-kec' : 'sw-inv') + '"></span>' +
+      '<span class="cm__t">' + esc(f.label) + '</span>' +
+      '<button class="cm__b add" title="Insert column">+</button></li>';
+  }).join('') : '<li class="cm__e">Every field is already shown.</li>';
+
+  $('#colPanel').innerHTML =
+    '<div class="cm">' +
+      '<div class="cm__c">' +
+        '<div class="cm__h">Shown columns <em>' + COLS.length + ' of ' + COLFIELDS.length + '</em></div>' +
+        '<ul class="cm__l" id="cmVis">' + vis + '</ul>' +
+        '<div class="cm__f">' +
+          '<button class="btn btn--sm" id="cmFit">Auto-fit all widths</button>' +
+          '<span>' + (narrow ? narrow + ' manually narrowed' : 'sized to content') + '</span></div>' +
+      '</div>' +
+      '<div class="cm__c">' +
+        '<div class="cm__h">Available fields <em>' + avail.length + '</em></div>' +
+        '<div class="cm__p">Added inside its own section — drag to fine-tune</div>' +
+        '<ul class="cm__l" id="cmAdd">' + add + '</ul>' +
+        '<div class="cm__f"><button class="btn btn--sm" id="cmReset">Reset to default</button>' +
+          '<button class="btn btn--sm" id="cmAll">Show every field</button></div>' +
+      '</div>' +
+    '</div>';
+}
+function groupRange (g) {
+  var first = -1, last = -1;
+  COLS.forEach(function (k, i) { if (F[k].group === g) { if (first < 0) first = i; last = i; } });
+  return { first: first, last: last };
+}
+/* A new column joins its own section instead of landing wherever the cursor
+   was — otherwise the group band splits and the header stops meaning anything. */
+function insertCol (key) {
+  var g = F[key].group, r = groupRange(g), at, order = GROUPS.map(function (x) { return x.id; }), i;
+  if (r.first >= 0) { at = r.last + 1; }
+  else {
+    at = COLS.length;
+    var gi = order.indexOf(g);
+    for (i = gi + 1; i < order.length; i++) {
+      var nx = groupRange(order[i]);
+      if (nx.first >= 0) { at = nx.first; break; }
+    }
+    if (at === COLS.length) {
+      for (i = gi - 1; i >= 0; i--) {
+        var pv = groupRange(order[i]);
+        if (pv.last >= 0) { at = pv.last + 1; break; }
+      }
+    }
+  }
+  COLS.splice(at, 0, key);
+}
+function moveCol (i, d) {
+  var j = i + d; if (j < 0 || j >= COLS.length) return;
+  COLS.splice(j, 0, COLS.splice(i, 1)[0]);
+  writeCols(); renderList(); renderColPanel();
+}
+function wireColPanel () {
+  var host = $('#colPanel');
+  host.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'cmReset') { COLS = DEFAULT_COLS.slice(); MANUAL = {}; done(); return; }
+    if (b.id === 'cmAll')   { COLS = COLFIELDS.map(function (f) { return f.key; }); done(); return; }
+    if (b.id === 'cmFit')   { MANUAL = {}; done(); return; }
+
+    var li = b.closest('.cm__i'); if (!li) return;
+    var k = li.dataset.k;
+    if (b.classList.contains('rm')) {
+      if (COLS.length <= 2) { alert('Keep at least two columns.'); return; }
+      COLS.splice(COLS.indexOf(k), 1); delete MANUAL[k]; done(); return;
+    }
+    if (b.classList.contains('up'))   { moveCol(+li.dataset.i, -1); return; }
+    if (b.classList.contains('down')) { moveCol(+li.dataset.i,  1); return; }
+    if (b.classList.contains('add')) { insertCol(k); done(); return; }
+  });
+  var dragK = null;
+  host.addEventListener('dragstart', function (e) {
+    var li = e.target.closest('#cmVis .cm__i'); if (!li) return;
+    dragK = li.dataset.k; li.classList.add('dragging');
+  });
+  host.addEventListener('dragover', function (e) {
+    var li = e.target.closest('#cmVis .cm__i'); if (!li || !dragK) return;
+    e.preventDefault();
+    $$('#cmVis .drop').forEach(function (x) { x.classList.remove('drop'); });
+    li.classList.add('drop');
+  });
+  host.addEventListener('drop', function (e) {
+    var li = e.target.closest('#cmVis .cm__i'); if (!li || !dragK) return;
+    e.preventDefault();
+    var to = COLS.indexOf(li.dataset.k), from = COLS.indexOf(dragK);
+    if (from < 0 || to < 0 || from === to) return;
+    COLS.splice(to, 0, COLS.splice(from, 1)[0]);
+    dragK = null; done();
+  });
+  host.addEventListener('dragend', function () {
+    dragK = null;
+    $$('#cmVis .cm__i').forEach(function (x) { x.classList.remove('dragging', 'drop'); });
+  });
+  function done () { writeCols(); renderList(); renderColPanel(); }
+}
+
+/* ------------------------------------------------------------ inline edit */
+function startEdit (td) {
+  if (cellEdit) return;
+  var k = td.dataset.k, f = F[k], tr = td.closest('tr[data-id]');
+  if (!k || !f || !tr) return;
+  var r = DATA.find(function (x) { return x._id === tr.dataset.id; });
+  if (!r) return;
+  if (f.type === 'multi' || f.type === 'area') { openDrawer(r._id, f.group); return; }
+
+  cellEdit = { td: td, k: k, id: r._id, html: td.innerHTML };
+  td.classList.add('editing');
+
+  if (f.type === 'select' || f.type === 'owner') {
+    var host = document.createElement('span');
+    td.innerHTML = ''; td.appendChild(host);
+    mountSelect(host, {
+      key: k, cls: 'sel--cell', autoWidth: false,
+      options: f.type === 'owner' ? OWNERS : f.options,
+      value: r[k] || '', placeholder: f.type === 'owner' ? 'Unassigned' : 'Select…',
+      extra: f.type === 'owner' ? { v: '__new__', label: '+ Add owner…' } : null,
+      onChange: function (v) { applyCell(v); }
+    });
+    host._sel.open();
+    cellEdit.host = host;
+    return;
+  }
+  var el = document.createElement('input');
+  el.type = (f.type === 'date' || f.type === 'stamp') ? 'date'
+          : (f.type === 'money' || f.type === 'number') ? 'number' : 'text';
+  el.value = r[k] == null ? '' : r[k];
+  if (f.type === 'money') el.step = '1000';
+  el.className = 'cell-in';
+  td.innerHTML = ''; td.appendChild(el);
+  el.focus(); if (el.select && el.type === 'text') el.select();
+  /* a date cell should hand you the calendar, not a typing cursor */
+  if (el.type === 'date' && el.showPicker) { try { el.showPicker(); } catch (e) {} }
+  el.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter')  { e.preventDefault(); commitEdit(); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+    if (e.key === 'Tab')    { e.preventDefault(); commitEdit(true, e.shiftKey); }
+  });
+  el.addEventListener('change', function () { if (el.tagName === 'SELECT') commitEdit(); });
+  el.addEventListener('blur', function () { setTimeout(function () { if (cellEdit) commitEdit(); }, 60); });
+}
+function cancelEdit () {
+  if (!cellEdit) return;
+  cellEdit.td.classList.remove('editing');
+  cellEdit.td.innerHTML = cellEdit.html;
+  cellEdit = null;
+}
+/* clicking anywhere outside an open cell editor closes it */
+document.addEventListener('mousedown', function (e) {
+  if (cellEdit && cellEdit.host && !e.target.closest('.sel')) { cellEdit = null; renderList(); }
+});
+function applyCell (v) {
+  if (!cellEdit) return;
+  var c = cellEdit, r = DATA.find(function (x) { return x._id === c.id; });
+  cellEdit = null;
+  if (!r) { renderList(); return; }
+  if (v === '__new__') { addOwnerInline(r); return; }
+  if (String(r[c.k] == null ? '' : r[c.k]) !== String(v)) {
+    r[c.k] = v; save(r); renderAll(); flash(c.id);
+  } else { renderList(); }
+}
+function commitEdit (moveOn, back) {
+  if (!cellEdit) return;
+  var c = cellEdit, el = c.td.querySelector('.cell-in');
+  if (c.host) { cellEdit = null; renderList(); return; }
+  var r = DATA.find(function (x) { return x._id === c.id; });
+  cellEdit = null;
+  if (!r || !el) { return; }
+  var v = el.value;
+  if (v === '__new__') { addOwnerInline(r); return; }
+  if (F[c.k].type === 'money' || F[c.k].type === 'number') v = v === '' ? '' : +v;
+  if (String(r[c.k] == null ? '' : r[c.k]) !== String(v)) {
+    r[c.k] = v;
+    save(r); renderAll(); flash(c.id);
+  } else { renderList(); }
+  if (moveOn) {
+    var cells = $$('#tbl tbody td.ed-cell');
+    var i = cells.map(function (x) { return x.dataset.k + x.closest('tr').dataset.id; })
+                 .indexOf(c.k + c.id);
+    var nx = cells[i + (back ? -1 : 1)];
+    if (nx) startEdit(nx);
+  }
+}
+
+function addOwnerInline (r) {
+  var n = (prompt('Add a team member to the Assigned To list:') || '').trim();
+  if (!n) { renderList(); return; }
+  if (OWNERS.indexOf(n) < 0) {
+    OWNERS.push(n);
+    updateRemoteOwners();
+  }
+  r.assigned_to = n;
+  save(r); renderAll();
+}
+
+function flash (id) {
+  var tr = $('#tbl tr[data-id="' + id + '"]');
+  if (!tr) return;
+  tr.classList.add('flash');
+  setTimeout(function () { tr.classList.remove('flash'); }, 900);
+}
+
+/* --------------------------------------------------------- column resizing */
+function wireResize () {
+  var t = $('#tbl'), live = null;
+  t.addEventListener('mousedown', function (e) {
+    var h = e.target.closest('.rz'); if (!h) return;
+    e.preventDefault(); e.stopPropagation();
+    var k = h.dataset.rz, th = h.parentNode;
+    live = { k: k, x: e.clientX, w: th.getBoundingClientRect().width, moved: false };
+    document.body.classList.add('resizing');
+  });
+  document.addEventListener('mousemove', function (e) {
+    if (!live) return;
+    if (Math.abs(e.clientX - live.x) < 2) return;   /* a click is not a drag */
+    live.moved = true;
+    MANUAL[live.k] = Math.max(MIN_W, Math.round(live.w + (e.clientX - live.x)));
+    applyWidths();          /* live: resize the <col>s, never re-render the DOM,
+                               otherwise the grip is detached mid-gesture */
+  });
+  document.addEventListener('mouseup', function () {
+    if (!live) return;
+    var moved = live.moved; live = null;
+    document.body.classList.remove('resizing');
+    if (moved) { writeCols(); renderList(); }
+  });
+  t.addEventListener('dblclick', function (e) {
+    var h = e.target.closest('.rz'); if (!h) return;
+    e.preventDefault(); e.stopPropagation();
+    delete MANUAL[h.dataset.rz]; writeCols(); renderList();
+  });
+}
+
+function applyWidths () {
+  var m = colWidths(DATA), cols = $$('#tbl colgroup col');
+  COLS.forEach(function (k, i) { if (cols[i]) cols[i].style.width = m.w[k] + 'px'; });
+  $('#tbl').style.width = m.fits ? '100%' : (m.total + 'px');
+  $('#scroll').classList.toggle('scrolling', !m.fits);
+}
+
+/* --------------------------------------------------------- row reordering */
+var dragId = null;
+function wire () {
+  var host = $('#tbl');
+  host.addEventListener('click', function (e) {
+    if (e.target.closest('.rz')) return;      /* the resize grip is not a sort click */
+    var sh = e.target.closest('th[data-sort]');
+    if (sh) { var k = sh.dataset.sort;
+      if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = 1; }
+      renderList(); return; }
+    var idc = e.target.closest('td.id');
+    if (idc) {
+      var trid = idc.closest('tr[data-id]');
+      if (trid) { openDrawer(trid.dataset.id); return; }
+    }
+    var cell = e.target.closest('td.ed-cell');
+    if (cell && !e.target.closest('button') && !e.target.closest('a')) { startEdit(cell); return; }
+    var b = e.target.closest('button'); if (!b) return;
+    var tr = b.closest('[data-id]'); if (!tr) return;
+    var r = DATA.find(function (x) { return x._id === tr.dataset.id; }); if (!r) return;
+    if (b.classList.contains('ed'))  openDrawer(r._id);
+    if (b.classList.contains('dup')) duplicate(r);
+    if (b.classList.contains('dl'))  remove(r);
+  });
+  host.addEventListener('dragstart', function (e) {
+    var el = e.target.closest('tr[data-id]'); if (!el) return;
+    dragId = el.dataset.id; el.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move';
+  });
+  host.addEventListener('dragover', function (e) {
+    var el = e.target.closest('tr[data-id]'); if (!el || el.dataset.id === dragId) return;
+    e.preventDefault();
+    $$('#tbl tr.drop').forEach(function (x) { x.classList.remove('drop'); });
+    el.classList.add('drop');
+  });
+  host.addEventListener('drop', function (e) {
+    var el = e.target.closest('tr[data-id]'); if (!el || !dragId) return;
+    e.preventDefault(); moveTo(dragId, el.dataset.id);
+  });
+  host.addEventListener('dragend', function () {
+    dragId = null;
+    $$('#tbl tr').forEach(function (x) { x.classList.remove('dragging', 'drop'); });
+  });
+}
+function moveTo (fromId, toId) {
+  var a = DATA.findIndex(function (r) { return r._id === fromId; });
+  var b = DATA.findIndex(function (r) { return r._id === toId; });
+  if (a < 0 || b < 0 || a === b) return;
+  DATA.splice(b, 0, DATA.splice(a, 1)[0]);
+  DATA.forEach(function (r, i) { r.order = i; });
+  saveAll(); renderAll();
+}
+
+/* ------------------------------------------------------------ CRUD basics */
+function blank () {
+  var r = { _id: uid(), record_id: nextId(), entry_date: TODAY, order: DATA.length };
+  SCHEMA.forEach(function (f) { if (r[f.key] == null) r[f.key] = (f.type === 'multi') ? [] : ''; });
+  r.department = 'Investment'; r.stage = '1 · Identification';
+  r.priority = 'Medium'; r.relationship = 'New — Not Contacted';
+  r.last_activity = 'No Activity Yet'; r.country = 'Saudi Arabia';
+  return r;
+}
+function duplicate (r) {
+  var c = Object.assign({}, r);
+  c._id = uid(); c.record_id = nextId(); c.entry_date = TODAY; c.order = DATA.length;
+  c.company = (r.company || '') + ' (copy)';
+  DATA.push(c); save(c); renderAll(); toast('Record duplicated as #' + pid(c));
+}
+function remove (r) {
+  if (!confirm('Delete record #' + pid(r) + ' — ' + (r.company || 'untitled') + '?')) return;
+  var i = DATA.indexOf(r); undo = { rec: r, i: i };
+  DATA.splice(i, 1); drop(r); renderAll();
+  toast('Record deleted.', 'Undo', function () {
+    DATA.splice(undo.i, 0, undo.rec); DATA.forEach(function (x, j) { x.order = j; });
+    saveAll(); renderAll();
+  });
+}
+function toast (msg, btn, fn) {
+  var t = $('#toast');
+  t.innerHTML = '<span>' + esc(msg) + '</span>' + (btn ? '<button id="tbtn">' + esc(btn) + '</button>' : '');
+  t.classList.add('on');
+  if (btn) $('#tbtn').onclick = function () { fn(); t.classList.remove('on'); };
+  clearTimeout(undoT); undoT = setTimeout(function () { t.classList.remove('on'); }, 7000);
+}
+
+/* ----------------------------------------------------------------- drawer */
+function fieldHtml (f, r) {
+  var v = r[f.key], id = 'x_' + f.key, wide = (f.type === 'area' || f.type === 'multi');
+  var lab = '<div class="f__l">' + esc(f.label) +
+            (f.type === 'calc' || f.type === 'auto' || f.type === 'stamp' ? ' <i>auto</i>' : '') + '</div>';
+  var hint = f.help ? '<div class="f__h">' + esc(f.help) + '</div>' : '';
+  var inp;
+  if (f.type === 'auto')        inp = ro(id, pid(r));
+  else if (f.type === 'stamp')  inp = '<input class="f__i" id="' + id + '" type="date" value="' + esc(v || TODAY) + '">';
+  else if (f.type === 'date')   inp = '<input class="f__i" id="' + id + '" type="date" value="' + esc(v || '') + '">';
+  else if (f.type === 'number') inp = '<input class="f__i" id="' + id + '" type="number" min="1200" max="' +
+                                      TODAY.slice(0, 4) + '" value="' + esc(v || '') + '">';
+  else if (f.type === 'text' || f.type === 'url')
+    inp = '<input class="f__i" id="' + id + '"' + (f.type === 'url' ? ' type="url"' : '') +
+          ' value="' + esc(v || '') + '">';
+  else if (f.type === 'money')
+    inp = '<input class="f__i" id="' + id + '" type="number" step="1000" min="0" value="' + esc(v || '') + '">';
+  else if (f.type === 'audit')
+    inp = ro(id, (r.updated_by || '—') + (r.updated_at ? ' · ' + fmtDate(r.updated_at) : ''));
+  else if (f.type === 'area')   inp = '<textarea class="f__i" id="' + id + '">' + esc(v || '') + '</textarea>';
+  else if (f.type === 'calc')   inp = ro(id, f.key === 'progress' ? progressOf(r) + '%'
+                                        : f.key === 'weighted_value' ? (money(weightedOf(r)) || '—')
+                                        : (yearsOf(r) === '' ? '—' : yearsOf(r) + ' years'));
+  else if (f.type === 'owner')  inp = '<span class="sel sel--field" id="' + id + '"></span>';
+  else if (f.type === 'multi')  inp = '<div class="chips" id="' + id + '">' + f.options.map(function (o) {
+      return '<span class="chip' + ((v || []).indexOf(o) >= 0 ? ' on' : '') + '" data-v="' + esc(o) + '">' +
+             esc(o) + '</span>'; }).join('') + '</div>';
+  else inp = '<span class="sel sel--field" id="' + id + '"></span>';
+  function ro (i, t) { return '<input class="f__i" id="' + i + '" value="' + esc(t) + '" readonly>'; }
+  return '<div class="f' + (wide ? ' f--wide' : '') + '">' + lab + inp + hint + '</div>';
+}
+function openDrawer (id, atTab) {
+  var r = id ? DATA.find(function (x) { return x._id === id; }) : blank();
+  editId = r._id;
+  if (!id) DATA.push(r);
+  $('#drTitle').textContent = id ? 'Edit Record' : 'New Record';
+  $('#drId').textContent = '#' + pid(r);
+  $('#drDel').style.display = id ? '' : 'none';
+  GROUPS.forEach(function (g) {
+    $('#pane' + g.id).innerHTML = SCHEMA.filter(function (f) { return f.group === g.id; })
+      .map(function (f) { return fieldHtml(f, r); }).join('');
+  });
+  SCHEMA.forEach(function (f) {
+    if (f.type !== 'select' && f.type !== 'owner') return;
+    var host = $('#x_' + f.key); if (!host) return;
+    mountSelect(host, {
+      key: f.key, autoWidth: false,
+      options: f.type === 'owner' ? OWNERS : f.options,
+      value: r[f.key] || '',
+      placeholder: f.type === 'owner' ? 'Unassigned' : 'Select…',
+      extra: f.type === 'owner' ? { v: '__new__', label: '+ Add owner…' } : null,
+      onChange: function (v) { formChanged(f.key, v); }
+    });
+  });
+  syncOwnerSelects(r.assigned_to);
+  $$('#drBody .chips').forEach(function (box) {
+    box.addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (c) { c.classList.toggle('on'); meter(); }
+    });
+  });
+  $$('#drBody input, #drBody textarea').forEach(function (el) {
+    el.addEventListener('change', function () { formChanged(el.id.slice(2), el.value); });
+  });
+  tab(atTab || 'A'); meter();
+  $('#dr').classList.add('open');
+}
+function formChanged (key, v) {
+  if (key === 'stage') {
+    var p = $('#x_progress'); if (p) p.value = (STAGE_PROGRESS[v] || 0) + '%';
+    var w = $('#x_weighted_value'), dv = $('#x_deal_value');
+    if (w) w.value = money(Math.round((+(dv ? dv.value : 0) || 0) * (STAGE_PROGRESS[v] || 0) / 100)) || '—';
+  }
+  if (key === 'deal_value') {
+    var st = readVal($('#x_stage')), w2 = $('#x_weighted_value');
+    if (w2) w2.value = money(Math.round((+v || 0) * (STAGE_PROGRESS[st] || 0) / 100)) || '—';
+  }
+  if (key === 'year_established') {
+    var y = parseInt(v, 10), c = +TODAY.slice(0, 4), yb = $('#x_years_in_business');
+    if (yb) yb.value = (y > 1200 && y <= c) ? (c - y) + ' years' : '—';
+  }
+  if (key === 'assigned_to' && v === '__new__') addOwner();
+  meter();
+}
+function tab (g) {
+  GROUPS.forEach(function (x) {
+    $('#tab' + x.id).classList.toggle('on', x.id === g);
+    $('#pane' + x.id).classList.toggle('on', x.id === g);
+  });
+}
+function collect () {
+  var o = {};
+  SCHEMA.forEach(function (f) {
+    var el = $('#x_' + f.key); if (!el) return;
+    if (f.type === 'multi') o[f.key] = $$('.chip.on', el).map(function (c) { return c.dataset.v; });
+    else if (f.type === 'calc' || f.type === 'auto') { /* derived */ }
+    else if (f.type === 'money' || f.type === 'number') o[f.key] = el.value === '' ? '' : +el.value;
+    else o[f.key] = readVal(el);
+  });
+  return o;
+}
+function meter () {
+  var o = collect(), n = 0, tot = 0;
+  SCHEMA.forEach(function (f) {
+    if (f.type === 'calc' || f.type === 'auto') return;
+    tot++;
+    var v = o[f.key];
+    if (Array.isArray(v) ? v.length : (v != null && String(v).trim() !== '')) n++;
+  });
+  var p = Math.round(n / tot * 100);
+  $('#mFill').style.width = p + '%'; $('#mNum').textContent = n + ' of ' + tot + ' fields · ' + p + '%';
+}
+function commit () {
+  var r = DATA.find(function (x) { return x._id === editId; }); if (!r) return;
+  Object.assign(r, collect());
+  if (!r.company) { alert('Company Name is required.'); tab('B'); return; }
+  r.record_id = +r.record_id || nextId();
+  save(r); renderAll(); closeDr(); toast('Record #' + pid(r) + ' saved.');
+}
+function closeDr (discard) {
+  if (discard) {
+    var r = DATA.find(function (x) { return x._id === editId; });
+    if (r && !r.company) DATA.splice(DATA.indexOf(r), 1);
+    renderAll();
+  }
+  $('#dr').classList.remove('open'); editId = null;
+}
+
+/* ------------------------------------------------------------------ owners */
+function syncOwnerSelects (sel) {
+  var f = $('#fOwner');
+  if (f && f._sel) {
+    var cur = f._sel.value;
+    f._sel.setOptions(['⚑ Overdue only'].concat(OWNERS));
+    f._sel.set(cur && (cur === '⚑ Overdue only' || OWNERS.indexOf(cur) >= 0) ? cur : '');
+  }
+  var d = $('#x_assigned_to');
+  if (d && d._sel) { d._sel.setOptions(OWNERS); if (sel) d._sel.set(sel); }
+}
+
+function addOwner () {
+  var n = (prompt('Add a team member to the Assigned To list:') || '').trim();
+  var d = $('#x_assigned_to');
+  if (!n) { if (d && d._sel) d._sel.set(''); return; }
+  if (OWNERS.indexOf(n) < 0) {
+    OWNERS.push(n);
+    updateRemoteOwners();
+  }
+  syncOwnerSelects(n);
+}
+
+/* ------------------------------------------------------------------ export */
+function csv () {
+  var keys = SCHEMA.map(function (f) { return f.key; });
+  var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+  var lines = [SCHEMA.map(function (f) { return f.label; }).map(q).join(',')];
+  DATA.forEach(function (r) {
+    lines.push(keys.map(function (k) {
+      if (k === 'progress') return q(progressOf(r));
+      if (k === 'years_in_business') return q(yearsOf(r));
+      return q(val(r, k));
+    }).join(','));
+  });
+  dl(new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }),
+     'KEC-Investor-Log-' + TODAY + '.csv');
+}
+function json () {
+  dl(new Blob([JSON.stringify({ exported: TODAY, records: DATA, owners: OWNERS, columns: COLS }, null, 2)],
+     { type: 'application/json' }), 'KEC-Investor-Log-' + TODAY + '.json');
+}
+function dl (blob, name) {
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+}
+function importJson () {
+  var i = document.createElement('input'); i.type = 'file'; i.accept = '.json';
+  i.onchange = function () {
+    var f = i.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var o = JSON.parse(rd.result);
+        if (!o.records) throw 0;
+        DATA = o.records.map(function (r, n) { r._id = r._id || uid(); r.order = n; return r; });
+        OWNERS = o.owners || OWNERS;
+        if (o.columns && o.columns.length) { COLS = o.columns.filter(function (k) { return !!F[k]; }); writeCols(); }
+        saveAll(); renderAll(); toast('Imported ' + DATA.length + ' records.');
+      } catch (e) { alert('That file is not a KEC Investor Log export.'); }
+    };
+    rd.readAsText(f);
+  };
+  i.click();
+}
+
+
+/* ===================== Excel / CSV intake ==================================
+   A single template, a parser that accepts what Excel actually produces (xlsx
+   when a reader can be loaded, otherwise CSV / TSV / a pasted range), header
+   auto-mapping against the field labels, and value checking against every
+   controlled vocabulary before a single record is written. */
+var IMP = { rows: [], head: [], map: {}, mode: 'append' };
+var TPL_FIELDS = SCHEMA.filter(function (f) {
+  return ['auto', 'calc', 'audit'].indexOf(f.type) < 0;
+});
+function norm (x) { return String(x == null ? '' : x).toLowerCase().replace(/[^a-z0-9]/g, ''); }
+
+function splitCSV (txt) {
+  var tab = txt.indexOf('\t') >= 0 && (txt.indexOf('\t') < (txt.indexOf(',') < 0 ? 1e9 : txt.indexOf(',')));
+  if (tab) return txt.replace(/\r/g, '').split('\n').filter(function (l) { return l.trim() !== ''; })
+                     .map(function (l) { return l.split('\t'); });
+  var rows = [], row = [], cell = '', q = false, i, ch;
+  txt = txt.replace(/^\ufeff/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  for (i = 0; i < txt.length; i++) {
+    ch = txt[i];
+    if (q) {
+      if (ch === '"' && txt[i + 1] === '"') { cell += '"'; i++; }
+      else if (ch === '"') q = false;
+      else cell += ch;
+    } else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cell); cell = ''; }
+    else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+  return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ''; }); });
+}
+function toISO (v) {
+  if (v == null || v === '') return '';
+  if (typeof v === 'number' || /^\d{5}$/.test(v)) {           /* Excel serial */
+    var d = new Date(Date.UTC(1899, 11, 30) + (+v) * 86400000);
+    return d.toISOString().slice(0, 10);
+  }
+  v = String(v).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(v)) return v.slice(0, 10);
+  var m = v.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if (m) {
+    var a = +m[1], bb = +m[2], y = +m[3]; if (y < 100) y += 2000;
+    var day = a > 12 ? a : bb, mon = a > 12 ? bb : a;          /* d/m first, m/d fallback */
+    if (bb > 12) { day = a; mon = bb; }
+    return y + '-' + ('0' + mon).slice(-2) + '-' + ('0' + day).slice(-2);
+  }
+  var p = new Date(v);
+  return isNaN(p) ? '' : p.toISOString().slice(0, 10);
+}
+function coerce (f, raw) {
+  var v = raw == null ? '' : String(raw).trim();
+  if (!v) return { v: (f.type === 'multi' ? [] : ''), bad: false };
+  if (f.type === 'date' || f.type === 'stamp') { var d = toISO(v); return { v: d, bad: !d }; }
+  if (f.type === 'money' || f.type === 'number') {
+    var n = +String(v).replace(/[^0-9.\-]/g, '');
+    return { v: isNaN(n) ? '' : n, bad: isNaN(n) };
+  }
+  if (f.type === 'multi') {
+    var parts = v.split(/[;,|]/).map(function (x) { return x.trim(); }).filter(Boolean);
+    var out = [], bad = false;
+    parts.forEach(function (x) {
+      var hit = f.options.filter(function (o) { return norm(o) === norm(x); })[0];
+      if (hit) out.push(hit); else { out.push(x); bad = true; }
+    });
+    return { v: out, bad: bad };
+  }
+  if (f.type === 'select') {
+    if (f.key === 'stage' && STAGE_ALIAS[v]) v = STAGE_ALIAS[v];
+    var h = f.options.filter(function (o) { return norm(o) === norm(v); })[0];
+    return { v: h || v, bad: !h };
+  }
+  return { v: v, bad: false };
+}
+function autoMap (head) {
+  var m = {};
+  head.forEach(function (h, i) {
+    var n = norm(h);
+    var f = TPL_FIELDS.filter(function (x) {
+      return norm(x.label) === n || norm(x.short || '') === n || norm(x.key) === n;
+    })[0];
+    if (!f) f = TPL_FIELDS.filter(function (x) { return norm(x.label).indexOf(n) === 0 && n.length > 3; })[0];
+    if (f && Object.keys(m).every(function (k) { return m[k] !== f.key; })) m[i] = f.key;
+  });
+  return m;
+}
+function template () {
+  var head = TPL_FIELDS.map(function (f) { return f.label; });
+  var ex = TPL_FIELDS.map(function (f) {
+    if (f.type === 'select') return f.options[0] || '';
+    if (f.type === 'multi')  return (f.options.slice(0, 2) || []).join(', ');
+    if (f.type === 'date' || f.type === 'stamp') return TODAY;
+    if (f.type === 'money')  return 250000000;
+    if (f.type === 'number') return 2011;
+    if (f.key === 'company') return 'Example Investment Company';
+    if (f.key === 'primary_contact') return 'Full Name';
+    if (f.key === 'contact_info') return 'name@company.example';
+    return '';
+  });
+  var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+  var lines = [head.map(q).join(','), ex.map(q).join(',')];
+  lines.push('');
+  lines.push(q('ALLOWED VALUES — delete this block before importing'));
+  TPL_FIELDS.filter(function (f) { return f.options && f.options.length; })
+            .forEach(function (f) { lines.push([q(f.label)].concat(f.options.map(q)).join(',')); });
+  dl(new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }),
+     'KEC-Investor-Log-template.csv');
+  toast('Template downloaded — open it in Excel, fill the rows, save as CSV.');
+}
+
+function impOpen () {
+  IMP = { rows: [], head: [], map: {}, mode: 'append' };
+  impStep1();
+  $('#imp').classList.add('open');
+}
+function impClose () { $('#imp').classList.remove('open'); }
+function impStep1 () {
+  $('#impStep').textContent = 'step 1 of 2';
+  $('#impBack').style.display = 'none';
+  $('#impGo').textContent = 'Read the data';
+  $('#impNote').textContent = 'Excel (.xlsx) is read directly when possible; otherwise save the sheet as CSV.';
+  $('#impBody').innerHTML =
+    '<div class="imp">' +
+      '<div class="imp__row"><span class="imp__h">1 · Start from the template</span>' +
+        '<button class="btn btn--sm" id="impTpl" type="button">Download template</button></div>' +
+      '<div class="imp__drop" id="impDrop">Drop an .xlsx or .csv file here, or ' +
+        '<button class="btn btn--sm" id="impPick" type="button">choose a file</button></div>' +
+      '<div class="imp__h">or paste a range copied straight out of Excel</div>' +
+      '<textarea class="imp__ta" id="impPaste" placeholder="Paste here — the first row must be the column headers"></textarea>' +
+    '</div>';
+  $('#impTpl').onclick = template;
+  $('#impPick').onclick = impPick;
+  var drop = $('#impDrop');
+  drop.addEventListener('dragover', function (e) { e.preventDefault(); drop.classList.add('hot'); });
+  drop.addEventListener('dragleave', function () { drop.classList.remove('hot'); });
+  drop.addEventListener('drop', function (e) {
+    e.preventDefault(); drop.classList.remove('hot');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) impFile(e.dataTransfer.files[0]);
+  });
+}
+function impPick () {
+  var i = document.createElement('input');
+  i.type = 'file'; i.accept = '.csv,.tsv,.txt,.xlsx,.xls';
+  i.onchange = function () { if (i.files[0]) impFile(i.files[0]); };
+  i.click();
+}
+function impFile (file) {
+  if (/\.xlsx?$/i.test(file.name)) {
+    $('#impNote').textContent = 'Reading the workbook…';
+    import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs').then(function (X) {
+      var rd = new FileReader();
+      rd.onload = function () {
+        var wb = X.read(new Uint8Array(rd.result), { type: 'array', cellDates: true });
+        var sh = wb.Sheets[wb.SheetNames[0]];
+        impLoad(X.utils.sheet_to_json(sh, { header: 1, raw: true, defval: '' }));
+      };
+      rd.readAsArrayBuffer(file);
+    }).catch(function () {
+      $('#impNote').textContent = '';
+      alert('This copy cannot open .xlsx without an internet connection.\n\n' +
+            'In Excel: File → Save As → CSV UTF-8, then load that file — or simply copy the ' +
+            'rows in Excel and paste them into the box below.');
+    });
+    return;
+  }
+  var r = new FileReader();
+  r.onload = function () { impLoad(splitCSV(String(r.result))); };
+  r.readAsText(file, 'utf-8');
+}
+function impLoad (rows) {
+  if (!rows || rows.length < 2) { alert('That file has no data rows under a header row.'); return; }
+  IMP.head = rows[0].map(function (h) { return String(h == null ? '' : h).trim(); });
+  IMP.rows = rows.slice(1);
+  IMP.map = autoMap(IMP.head);
+  impStep2();
+}
+function impStep2 () {
+  $('#impStep').textContent = 'step 2 of 2';
+  $('#impBack').style.display = '';
+  $('#impGo').textContent = 'Import';
+  var res = impAnalyse();
+  $('#impBody').innerHTML =
+    '<div class="imp">' +
+      '<div class="imp__s"><span><b>' + IMP.rows.length + '</b> rows read</span>' +
+        '<span><b>' + res.mapped + '</b> of ' + IMP.head.length + ' columns matched</span>' +
+        '<span><b>' + res.named + '</b> rows with a company name</span>' +
+        '<span class="' + (res.bad ? 'warn' : '') + '"><b>' + res.bad + '</b> values outside the allowed lists</span></div>' +
+      '<div class="imp__h">Column mapping — change anything the log guessed wrong</div>' +
+      '<div class="imp__wrap"><table class="imp__t"><thead><tr>' +
+        '<th style="width:34%">Column in your file</th><th style="width:34%">Field in the log</th>' +
+        '<th>First value</th></tr></thead><tbody>' +
+        IMP.head.map(function (h, i) {
+          return '<tr><td>' + esc(h || '(blank)') + '</td>' +
+                 '<td><span class="sel" data-col="' + i + '"></span></td>' +
+                 '<td>' + esc(clipStr((IMP.rows[0] || [])[i])) + '</td></tr>';
+        }).join('') +
+      '</tbody></table></div>' +
+      '<div class="imp__row"><span class="imp__h">On import</span>' +
+        '<span class="sel" id="impMode"></span></div>' +
+    '</div>';
+  var names = TPL_FIELDS.map(function (f) { return f.label; });
+  $$('#impBody .sel[data-col]').forEach(function (host) {
+    var i = +host.dataset.col, cur = IMP.map[i];
+    mountSelect(host, {
+      options: names, autoWidth: false,
+      value: cur ? F[cur].label : '',
+      placeholder: 'Ignore this column',
+      onChange: function (v) {
+        var f = TPL_FIELDS.filter(function (x) { return x.label === v; })[0];
+        Object.keys(IMP.map).forEach(function (k) { if (f && IMP.map[k] === f.key) delete IMP.map[k]; });
+        if (f) IMP.map[i] = f.key; else delete IMP.map[i];
+        impStep2();
+      }
+    });
+  });
+  mountSelect($('#impMode'), {
+    options: ['Add to the existing records', 'Replace every record'],
+    value: IMP.mode === 'append' ? 'Add to the existing records' : 'Replace every record',
+    autoWidth: false, minWidth: 210,
+    onChange: function (v) { IMP.mode = v.indexOf('Replace') === 0 ? 'replace' : 'append'; }
+  });
+  $('#impNote').textContent = res.bad
+    ? 'Values outside a list are kept as typed so nothing is lost — fix them in the log afterwards.'
+    : 'Every value matched its allowed list.';
+}
+function clipStr (v) { v = String(v == null ? '' : v); return v.length > 26 ? v.slice(0, 25) + '…' : v; }
+function impAnalyse () {
+  var mapped = Object.keys(IMP.map).length, bad = 0, named = 0;
+  IMP.rows.forEach(function (row) {
+    var hasName = false;
+    Object.keys(IMP.map).forEach(function (i) {
+      var f = F[IMP.map[i]], c = coerce(f, row[i]);
+      if (c.bad) bad++;
+      if (f.key === 'company' && String(row[i] || '').trim()) hasName = true;
+    });
+    if (hasName) named++;
+  });
+  return { mapped: mapped, bad: bad, named: named };
+}
+function impRun () {
+  var made = [], skipped = 0;
+  IMP.rows.forEach(function (row) {
+    var rec = blank();
+    var any = false;
+    Object.keys(IMP.map).forEach(function (i) {
+      var f = F[IMP.map[i]], c = coerce(f, row[i]);
+      if (c.v !== '' && !(Array.isArray(c.v) && !c.v.length)) { rec[f.key] = c.v; any = true; }
+    });
+    if (!rec.company || !any) { skipped++; return; }
+    if (!rec.entry_date) rec.entry_date = TODAY;
+    made.push(rec);
+  });
+  if (!made.length) { alert('No row carried a Company Name, so nothing was imported.'); return; }
+  if (IMP.mode === 'replace') {
+    if (!confirm('Replace all ' + DATA.length + ' existing records with ' + made.length + ' imported ones?')) return;
+    if (remote) DATA.slice().forEach(drop);
+    DATA = [];
+  }
+  if (!USER) whoami();
+  made.forEach(function (r) { r.record_id = nextId(); r.order = DATA.length; DATA.push(r); stamp(r); });
+  if (remote) made.forEach(save); else Local.write();
+  renderAll(); impClose();
+  toast('Imported ' + made.length + ' record' + (made.length === 1 ? '' : 's') +
+        (skipped ? ' · ' + skipped + ' row' + (skipped === 1 ? '' : 's') + ' skipped without a company name' : ''));
+}
+
+function themeNative (el, cls) {
+  if (!el || el.tagName !== 'SELECT') return;
+  var opts = Array.prototype.map.call(el.options, function (o) { return o.textContent; });
+  var v = el.value, host = document.createElement('span');
+  host.setAttribute('aria-label', el.getAttribute('aria-label') || '');
+  el.parentNode.replaceChild(host, el);
+  mountSelect(host, { options: opts, value: v, autoWidth: false, cls: cls,
+    pad: cls === 'sel--badge' ? 8 : 34,
+    font: cls === 'sel--badge' ? '500 8.5px "Readex Pro", sans-serif'
+                               : '500 9.5px "Readex Pro", sans-serif' });
+}
+
+/* -------------------------------------------------------------- screen fit */
+/* The canvas stays exactly 1280x720 (the print contract). On a large display
+   the whole canvas is scaled so the log fills the screen instead of sitting in
+   the middle at 60%. Below a ~12% gain there is nothing to win. */
+function fitScreen () {
+  var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  var k = Math.min((vw - 24) / 1280, (vh - 24) / 720);
+  if (k >= 1.12 || k <= 0.98) {
+    document.documentElement.style.setProperty('--fit', k.toFixed(4));
+    document.body.classList.add('fitted');
+  } else {
+    document.documentElement.style.setProperty('--fit', '1');
+    document.body.classList.remove('fitted');
+  }
+}
+
+/* -------------------------------------------------------------------- wire */
+function boot () {
+  readCols();
+  try { USER = localStorage.getItem(LSU) || ''; } catch (e) {}
+
+  var refilter = function () { page = 0; renderList(); };
+  mountSelect($('#fDept'),  { key: 'department', options: F.department.options,
+                              placeholder: 'All departments', minWidth: 122, onChange: refilter });
+  mountSelect($('#fStage'), { key: 'stage', options: F.stage.options,
+                              placeholder: 'All stages', minWidth: 122, onChange: refilter });
+  mountSelect($('#fPrio'),  { key: 'priority', options: F.priority.options,
+                              placeholder: 'All priorities', minWidth: 108, onChange: refilter });
+  mountSelect($('#fOwner'), { key: 'assigned_to', options: ['⚑ Overdue only'],
+                              placeholder: 'All owners', minWidth: 116, onChange: refilter });
+
+  $('#q').addEventListener('input', refilter);
+  $('#reset').onclick = function () {
+    $('#q').value = '';
+    ['fDept', 'fStage', 'fPrio', 'fOwner'].forEach(function (i) {
+      var el = $('#' + i); if (el && el._sel) el._sel.set('');
+    });
+    sortKey = null; page = 0; renderList();
+  };
+
+  /* the editable source keeps its own width, like the reference field */
+  var src = document.querySelector('.kec-src');
+  if (src) {
+    var sizeSrc = function () {
+      src.style.width = Math.max(40, Math.ceil(
+        mctx('500 12px "Readex Pro", system-ui, sans-serif').measureText(src.value).width) + 6) + 'px';
+    };
+    src.addEventListener('input', sizeSrc); sizeSrc();
+  }
+  $('#add').onclick   = function () { openDrawer(null); };
+  $('#pPrev').onclick = function () { if (page > 0) { page--; renderList(); } };
+  $('#pNext').onclick = function () { page++; renderList(); };
+
+  $('#cols').onclick = function (e) {
+    e.stopPropagation();
+    var m = $('#colMenu');
+    m.classList.toggle('on');
+    if (m.classList.contains('on')) renderColPanel();
+    $('#moreM').classList.remove('on');
+  };
+  $('#more').onclick = function (e) {
+    e.stopPropagation();
+    $('#moreM').classList.toggle('on'); $('#colMenu').classList.remove('on');
+  };
+  document.addEventListener('click', function () {
+    $('#moreM').classList.remove('on'); $('#colMenu').classList.remove('on');
+    closeSelects(null);
+  });
+  $('#impOpen').onclick = impOpen;
+  $('#tmpl').onclick    = template;
+  $('#impCancel').onclick = impClose;
+  $('#impBack').onclick   = impStep1;
+  $('#impGo').onclick     = function () {
+    if ($('#impStep').textContent.indexOf('1') >= 0) {
+      var t = ($('#impPaste') && $('#impPaste').value || '').trim();
+      if (!t) { alert('Choose a file or paste a range first.'); return; }
+      impLoad(splitCSV(t));
+    } else impRun();
+  };
+  $('#imp').addEventListener('click', function (e) { if (e.target.id === 'imp') impClose(); });
+  $('#eCsv').onclick  = csv;
+  $('#eJson').onclick = json;
+  $('#iJson').onclick = importJson;
+  $('#restore').onclick = restoreSamples;
+  $('#wipe').onclick  = function () {
+    if (!confirm('Remove every record from this log? This cannot be undone.')) return;
+    if (remote) DATA.slice().forEach(drop);
+    DATA = []; if (!remote) Local.write();
+    renderAll(); toast('Log cleared.');
+  };
+
+  GROUPS.forEach(function (g) { $('#tab' + g.id).onclick = function () { tab(g.id); }; });
+  $('#drSave').onclick   = commit;
+  $('#drCancel').onclick = function () { closeDr(true); };
+  $('#drDel').onclick    = function () {
+    var r = DATA.find(function (x) { return x._id === editId; });
+    if (r) { closeDr(); remove(r); }
+  };
+  $('#dr').addEventListener('click', function (e) { if (e.target.id === 'dr') closeDr(true); });
+  document.addEventListener('keydown', function (e) {
+    var open = $('#dr').classList.contains('open');
+    if (e.key === 'Escape' && cellEdit) { cancelEdit(); return; }
+    if (e.key === 'Escape' && open) closeDr(true);
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && open) commit();
+    if (!open && (e.key === 'PageDown' || e.key === 'ArrowRight')) { page++; renderList(); }
+    if (!open && (e.key === 'PageUp'   || e.key === 'ArrowLeft'))  { if (page > 0) { page--; renderList(); } }
+  });
+
+  var per = document.querySelector('.kec-badge--period');
+  if (per) per.value = longToday();
+  themeNative(document.querySelector('.kec-badge--status'), 'sel--badge');
+  themeNative(document.querySelector('.kec-chip'), 'sel--chip');
+
+  fitScreen();
+  window.addEventListener('resize', fitScreen);
+  wire(); wireColPanel(); wireResize(); wireBar();
+  initStore();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { renderList(); });
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+})();
+</script>
+
+  </div>
+  <footer class="kec-foot">
+      <div class="kec-foot__rule"></div>
+      <div class="kec-foot__row">
+        <div class="kec-foot__src"><span class="kec-foot__bar"></span>
+          <div><div class="kec-foot__lbl">Source</div>
+            <div class="kec-foot__val"><input class="kec-src" value="Office of the CEO"
+              aria-label="Source"> | 2026</div></div>
+        </div>
+        <div class="kec-foot__mid"><span class="kec-pagepill">Page 1 of 1</span></div>
+        <div class="kec-foot__cls">
+          <div style="text-align:left"><div class="kec-foot__lbl">Reference</div>
+            <input class="kec-ref" value="KEC-LOG-2026-001" aria-label="Reference"></div>
+          <select class="kec-chip" aria-label="Classification"><option>Public</option><option selected>Internal</option><option>Restricted</option><option>Confidential</option><option>Strictly Confidential</option></select>
+        </div>
+      </div>
+    </footer>
+</section>
+<script>
+(function(){
+  // --- reference input: size to content, always. Never a fixed width. ---------
+  function fit(i){ i.style.width = Math.max(4, i.value.length + 1) + 'ch'; }
+  var refs = document.querySelectorAll('input.kec-ref');
+  refs.forEach(function(i){ fit(i); i.addEventListener('input', function(){ fit(i); }); });
+
+  // --- Ctrl/Cmd+S: save the file WITH the user's current edits ---------------
+  document.addEventListener('keydown', function(e){
+    if(!((e.ctrlKey||e.metaKey) && String(e.key).toLowerCase()==='s')) return;
+    e.preventDefault();
+    document.querySelectorAll('select').forEach(function(s){
+      Array.prototype.forEach.call(s.options,function(o){o.removeAttribute('selected');});
+      if(s.selectedIndex>=0) s.options[s.selectedIndex].setAttribute('selected','selected');
+    });
+    document.querySelectorAll('input').forEach(function(i){ i.setAttribute('value', i.value); });
+    var blob = new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],
+                        {type:'text/html;charset=utf-8'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (document.title||'report').trim()+'.html';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }, true);
+})();
+</script>
+</body></html>
