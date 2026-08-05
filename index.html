@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Investor Registration Log — مدينة المعرفة الاقتصادية</title>
+<title>KEC Register</title>
 <style>@font-face{font-family:'Readex Pro';font-style:normal;font-weight:200 700;font-display:block;src:url('fonts/readex-arabic.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource-variable/readex-pro@5.2.11/files/readex-pro-arabic-wght-normal.woff2') format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF}@font-face{font-family:'Readex Pro';font-style:normal;font-weight:200 700;font-display:block;src:url('fonts/readex-latin.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource-variable/readex-pro@5.2.11/files/readex-pro-latin-wght-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:block;src:url('fonts/plexmono-400.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.6/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:block;src:url('fonts/plexmono-500.woff2') format('woff2'),url('https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.6/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F,U+2070-209F,U+20AA-20BA,U+2122,U+2191,U+2193,U+25B2,U+25BC,U+2212}</style>
 <style>
 :root{
@@ -485,8 +485,8 @@ body.viewer-mode .acts{display:none}
 <div class="auth-overlay" id="authScreen" style="display: none;">
   <div class="auth-box">
     <img src="KEC.png" alt="KEC Logo" onerror="this.style.display='none'">
-    <h2>Investor Registration Log</h2>
-    <p>Live register of investor engagements.<br>Please sign in to continue.</p>
+    <h2 id="authTitle"></h2>
+    <p id="authSub"></p>
     <div class="auth-error" id="authError">Invalid username or password</div>
     <input type="text" id="authUsername" placeholder="Username" autocomplete="off">
     <input type="password" id="authPassword" placeholder="Password">
@@ -533,8 +533,8 @@ body.viewer-mode .acts{display:none}
 <section class="page page--wide">
   <header class="kec-head">
       <div>
-        <h1 class="kec-title">Investor Registration Log</h1>
-        <p class="kec-sub">Investment &amp; Business Development — live register of investor engagements</p>
+        <h1 class="kec-title" id="appTitle"></h1>
+        <p class="kec-sub" id="appSub"></p>
       </div>
       <div class="kec-head__left">
         <img class="kec-logo" src="KEC.png" alt="Knowledge Economic City">
@@ -550,20 +550,17 @@ body.viewer-mode .acts{display:none}
     </header>
   <div class="kec-content">
 
-    <div class="kstrip"><div class="kc" id="k1"><div class="kc__top"><svg class="ic"><use href="#i-users"/></svg><span class="kc__l">Total Records</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k2"><div class="kc__top"><svg class="ic"><use href="#i-trend"/></svg><span class="kc__l">Active Pipeline</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k3"><div class="kc__top"><svg class="ic"><use href="#i-target"/></svg><span class="kc__l">MoU Stage or Later</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k4"><div class="kc__top"><svg class="ic"><use href="#i-star"/></svg><span class="kc__l">High Priority</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k5"><div class="kc__top"><svg class="ic"><use href="#i-clock"/></svg><span class="kc__l">Overdue Follow-up</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div><div class="kc" id="k6"><div class="kc__top"><svg class="ic"><use href="#i-percent"/></svg><span class="kc__l">Average Progress</span></div><div class="kc__v">—</div><div class="kc__d flat">—</div></div></div>
+    <div class="kstrip" id="kstrip"></div>
     
     <div class="card applog">
       <div class="applog__bar">
         <input id="q" class="fld fld--search" placeholder="Search all fields…" aria-label="Search">
-        <span class="sel" id="fDept"  aria-label="Department filter"></span>
-        <span class="sel" id="fStage" aria-label="Stage filter"></span>
-        <span class="sel" id="fPrio"  aria-label="Priority filter"></span>
-        <span class="sel" id="fOwner" aria-label="Owner filter"></span>
+        <span id="filters" style="display:contents"></span>
         <button id="reset" class="btn" type="button">Reset</button>
         <span class="applog__sp"></span>
         <button id="cols" class="btn" type="button">Columns <span class="cnt" id="colCnt">0/0</span></button>
         <button id="settings" class="btn" type="button">Settings</button>
-        <button id="add" class="btn btn--go" type="button">+ New Record</button>
+        <button id="add" class="btn btn--go" type="button">+ New</button>
       </div>
       <div id="scroll"><table class="kec" id="tbl"></table></div>
       
@@ -588,8 +585,8 @@ body.viewer-mode .acts{display:none}
           <span class="dr__t" id="drTitle">New Record</span>
           <span class="dr__id" id="drId">#000</span>
         </div>
-        <div class="dr__tabs"><button class="dr__tab" id="tabA" type="button">A · KEC Registry</button><button class="dr__tab" id="tabB" type="button">B · Investor Profile</button><button class="dr__tab" id="tabC" type="button">C · Business Profile</button><button class="dr__tab" id="tabD" type="button">D · Opportunity &amp; Pipeline</button></div>
-        <div class="dr__b" id="drBody"><div class="dr__pane" id="paneA"></div><div class="dr__pane" id="paneB"></div><div class="dr__pane" id="paneC"></div><div class="dr__pane" id="paneD"></div></div>
+        <div class="dr__tabs" id="drTabs"></div>
+        <div class="dr__b" id="drBody"></div>
         <div class="dr__f">
           <span class="dr__meter">
             <span class="bar__t"><span class="bar__f" id="mFill" style="width:0%"></span></span>
@@ -650,6 +647,743 @@ body.viewer-mode .acts{display:none}
 (function () {
 'use strict';
 
+/* ==========================================================================
+   DOMAIN CONFIGURATION  —  everything specific to this register lives here.
+   The engine below this block is generic. Adapting the register to a different
+   subject means rewriting THIS BLOCK ONLY.
+   ========================================================================== */
+
+var APP = {
+  key:        'investor_log',
+  collection: 'kec_investors',
+  title:      'Investor Registration Log',
+  subtitle:   'Investment & Business Development \u2014 live register of investor engagements',
+  recordNoun: 'Record',
+  reference:  'KEC-LOG-2026-001',
+  source:     'Office of the CEO',
+  year:       '2026',
+  currency:   'SAR',
+
+  titleField: 'company',            // required on save, names the record in prompts
+  stampField: 'entry_date',         // auto-dated when the record is created
+  dueField:   'follow_up',          // drives the overdue highlight; '' to disable
+  pillField:  'priority',           // rendered as a coloured pill; '' to disable
+  tagField:   'nda_signed',         // rendered as a status tag; '' to disable
+
+  /* Percent-complete driven by a single-choice field. Set to null if the subject
+     has no lifecycle. `into` must be a calc field in SCHEMA. */
+  progress:   { from: 'stage', into: 'progress' },
+  /* value \u00d7 progress. Set to null when nothing is weighted. */
+  weighted:   { value: 'deal_value', into: 'weighted_value' },
+  /* Turn a year into an age shown beside it. Set to null if not needed. */
+  age:        { field: 'year_established', unit: 'yrs' }
+};
+
+/* Percent complete for every option of APP.progress.from. */
+var PROGRESS = {
+  "Identification": 10,
+  "Initial Contact": 20,
+  "Introductory Meeting": 35,
+  "Information Exchange": 50,
+  "Opportunity Pitch": 60,
+  "Negotiation": 75,
+  "MoU / Term Sheet": 90,
+  "Signed Agreement": 100,
+  "Closed — Not Completed": 0
+};
+
+/* Form tabs and the banded header above the table. `owner` picks the band colour:
+   'kec' = green (our side of the record), 'inv' = gold (the counterparty's). */
+var GROUPS = [
+  {
+    "id": "A",
+    "label": "KEC Registry",
+    "short": "KEC",
+    "owner": "kec"
+  },
+  {
+    "id": "B",
+    "label": "Investor Profile",
+    "short": "Investor",
+    "owner": "inv"
+  },
+  {
+    "id": "C",
+    "label": "Business Profile",
+    "short": "Business",
+    "owner": "inv"
+  },
+  {
+    "id": "D",
+    "label": "Opportunity & Pipeline",
+    "short": "Pipeline",
+    "owner": "kec"
+  }
+];
+
+/* Field types:
+   text | area | number | money | date | url | select | multi | owner
+   auto  \u2014 sequential record number (exactly one)
+   stamp \u2014 creation date (exactly one)
+   audit \u2014 who changed it last (reserved key: updated_by)
+   calc  \u2014 derived; must have an entry in CALC below                          */
+var SCHEMA = [
+  {
+    "key": "record_id",
+    "label": "Record ID",
+    "short": "#",
+    "group": "A",
+    "type": "auto",
+    "options": [],
+    "help": "Sequential, system-generated",
+    "column": true
+  },
+  {
+    "key": "entry_date",
+    "label": "Entry Date",
+    "short": "Entry",
+    "group": "A",
+    "type": "stamp",
+    "options": [],
+    "help": "Auto-stamped on first save",
+    "column": true
+  },
+  {
+    "key": "department",
+    "label": "Department",
+    "short": "Department",
+    "group": "A",
+    "type": "select",
+    "options": [
+      "Investment",
+      "Business Development"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "assigned_to",
+    "label": "Assigned To",
+    "short": "Owner",
+    "group": "A",
+    "type": "owner",
+    "options": [],
+    "help": "Editable list — add owners inline",
+    "column": true
+  },
+  {
+    "key": "lead_source",
+    "label": "Lead Source",
+    "short": "Source",
+    "group": "A",
+    "type": "select",
+    "options": [
+      "KEC Outreach",
+      "Inbound Enquiry",
+      "Referral",
+      "Executive Referral",
+      "Conference / Exhibition",
+      "Government Channel",
+      "Existing Partner",
+      "Website",
+      "Broker / Advisor",
+      "Other"
+    ],
+    "help": "How the investor reached KEC",
+    "column": true
+  },
+  {
+    "key": "created_by",
+    "label": "Created By",
+    "short": "Created By",
+    "group": "A",
+    "type": "audit",
+    "options": [],
+    "help": "Audit trail",
+    "column": false
+  },
+  {
+    "key": "updated_by",
+    "label": "Last Updated",
+    "short": "Updated",
+    "group": "A",
+    "type": "audit",
+    "options": [],
+    "help": "Who changed it last, and when",
+    "column": true
+  },
+  {
+    "key": "company",
+    "label": "Company Name",
+    "short": "Company",
+    "group": "B",
+    "type": "text",
+    "options": [],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "country",
+    "label": "Country",
+    "short": "Country",
+    "group": "B",
+    "type": "select",
+    "options": [
+      "Saudi Arabia",
+      "United Arab Emirates",
+      "Kuwait",
+      "Qatar",
+      "Bahrain",
+      "Oman",
+      "Egypt",
+      "Jordan",
+      "Lebanon",
+      "Iraq",
+      "Morocco",
+      "Tunisia",
+      "Turkey",
+      "United Kingdom",
+      "France",
+      "Germany",
+      "Switzerland",
+      "United States",
+      "Canada",
+      "China",
+      "India",
+      "Pakistan",
+      "Indonesia",
+      "Malaysia",
+      "Singapore",
+      "Japan",
+      "South Korea",
+      "Other"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "industry",
+    "label": "Industry",
+    "short": "Industry",
+    "group": "B",
+    "type": "select",
+    "options": [
+      "Real Estate Development",
+      "Contracting & Construction",
+      "Hospitality & Hotels",
+      "Pilgrim & Visitor Services",
+      "Retail",
+      "Entertainment & Tourism",
+      "Healthcare",
+      "Education",
+      "Logistics & Transport",
+      "Manufacturing",
+      "Technology",
+      "Financial Services & Investment",
+      "Energy & Utilities",
+      "Food & Beverage",
+      "Endowments (Awqaf)",
+      "Professional Services",
+      "Other"
+    ],
+    "help": "What the company does",
+    "column": true
+  },
+  {
+    "key": "investor_category",
+    "label": "Investor Category",
+    "short": "Category",
+    "group": "B",
+    "type": "select",
+    "options": [
+      "Strategic Investor",
+      "Real Estate Developer",
+      "Investment Fund",
+      "Holding Company",
+      "Family Office",
+      "Institutional Investor",
+      "Operator / Brand",
+      "Individual (HNWI)",
+      "Government / Sovereign",
+      "Endowment (Waqf)",
+      "Technology / Service Partner"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "organization_type",
+    "label": "Organization Type",
+    "short": "Org. Type",
+    "group": "B",
+    "type": "select",
+    "options": [
+      "Listed Joint Stock Company",
+      "Closed Joint Stock Company",
+      "Limited Liability Company",
+      "Single Person Company",
+      "Sole Proprietorship",
+      "Holding Company",
+      "Licensed Investment Fund",
+      "Government Entity",
+      "Semi-Government Entity",
+      "Endowment (Waqf)",
+      "Non-Profit Organization",
+      "Foreign Company Branch"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "year_established",
+    "label": "Year Established",
+    "short": "Founded",
+    "group": "B",
+    "type": "number",
+    "options": [],
+    "help": "Years in business are derived",
+    "column": true
+  },
+  {
+    "key": "primary_contact",
+    "label": "Primary Contact",
+    "short": "Contact",
+    "group": "C",
+    "type": "text",
+    "options": [],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "position",
+    "label": "Position",
+    "short": "Position",
+    "group": "C",
+    "type": "select",
+    "options": [
+      "Chairman",
+      "Board Member",
+      "Chief Executive Officer",
+      "Deputy CEO",
+      "General Manager",
+      "Business Development Manager",
+      "Investment Manager",
+      "Projects Manager",
+      "Chief Financial Officer",
+      "Authorized Representative",
+      "Other"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "contact_info",
+    "label": "Contact Information",
+    "short": "Email / Phone",
+    "group": "C",
+    "type": "text",
+    "options": [],
+    "help": "Email · mobile",
+    "column": true
+  },
+  {
+    "key": "company_size",
+    "label": "Company Size",
+    "short": "Size",
+    "group": "C",
+    "type": "select",
+    "options": [
+      "Micro (1–5)",
+      "Small (6–49)",
+      "Medium (50–249)",
+      "Large (250–999)",
+      "Enterprise (1000+)"
+    ],
+    "help": "Monshaat classification",
+    "column": true
+  },
+  {
+    "key": "project_size",
+    "label": "Project Size",
+    "short": "Project Size",
+    "group": "C",
+    "type": "select",
+    "options": [
+      "Under SAR 50M",
+      "SAR 50–200M",
+      "SAR 200–500M",
+      "SAR 500M–1B",
+      "SAR 1–5B",
+      "Above SAR 5B"
+    ],
+    "help": "Typical project value",
+    "column": true
+  },
+  {
+    "key": "project_locations",
+    "label": "Project Locations",
+    "short": "Locations",
+    "group": "C",
+    "type": "multi",
+    "options": [
+      "Madinah",
+      "Makkah",
+      "Riyadh",
+      "Jeddah",
+      "Eastern Province",
+      "Qassim",
+      "Hail",
+      "Tabuk",
+      "Asir",
+      "NEOM / North-West",
+      "Other KSA Regions",
+      "GCC",
+      "Wider Arab Region",
+      "International"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "major_projects",
+    "label": "Major Projects",
+    "short": "Projects",
+    "group": "C",
+    "type": "area",
+    "options": [],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "business_sectors",
+    "label": "Asset Classes",
+    "short": "Assets",
+    "group": "C",
+    "type": "multi",
+    "options": [
+      "Residential",
+      "Commercial / Retail",
+      "Office",
+      "Hospitality",
+      "Mixed-Use",
+      "Entertainment",
+      "Education",
+      "Healthcare",
+      "Logistics",
+      "Industrial",
+      "Endowments",
+      "Pilgrim & Visitor Services",
+      "Infrastructure"
+    ],
+    "help": "Where they invest",
+    "column": true
+  },
+  {
+    "key": "deal_value",
+    "label": "Deal Value (SAR)",
+    "short": "Deal Value",
+    "group": "D",
+    "type": "money",
+    "options": [],
+    "help": "Expected value of the opportunity",
+    "column": true
+  },
+  {
+    "key": "weighted_value",
+    "label": "Weighted Value",
+    "short": "Weighted",
+    "group": "D",
+    "type": "calc",
+    "options": [],
+    "help": "Deal value × stage probability",
+    "column": true
+  },
+  {
+    "key": "stage",
+    "label": "Current Stage",
+    "short": "Stage",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Identification",
+      "Initial Contact",
+      "Introductory Meeting",
+      "Information Exchange",
+      "Opportunity Pitch",
+      "Negotiation",
+      "MoU / Term Sheet",
+      "Signed Agreement",
+      "Closed — Not Completed"
+    ],
+    "help": "Drives progress and weighting",
+    "column": true
+  },
+  {
+    "key": "progress",
+    "label": "Progress (%)",
+    "short": "Progress",
+    "group": "D",
+    "type": "calc",
+    "options": [],
+    "help": "From stage",
+    "column": true
+  },
+  {
+    "key": "priority",
+    "label": "Priority",
+    "short": "Priority",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Critical",
+      "High",
+      "Medium",
+      "Low"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "rationale",
+    "label": "Opportunity Rationale",
+    "short": "Rationale",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Strong financial standing",
+      "Proven market track record",
+      "Existing presence in Madinah",
+      "Alignment with KEC targets",
+      "Pre-existing relationship",
+      "Owns operator / brand",
+      "High execution speed",
+      "Synergy with an active project",
+      "Executive management referral",
+      "Investor-initiated approach"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "rationale_note",
+    "label": "Rationale Detail",
+    "short": "Rationale Detail",
+    "group": "D",
+    "type": "area",
+    "options": [],
+    "help": "Shown next to the rationale",
+    "column": false
+  },
+  {
+    "key": "opportunity",
+    "label": "Potential Opportunity",
+    "short": "Opportunity",
+    "group": "D",
+    "type": "multi",
+    "options": [
+      "Land Acquisition",
+      "Joint Development (JV)",
+      "Long-Term Usufruct",
+      "Space Leasing",
+      "Asset Operation & Management",
+      "Fund / Instrument Investment",
+      "Contracting & Delivery",
+      "Technology / Service Partnership",
+      "Financing",
+      "Not Yet Defined"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "nda_signed",
+    "label": "NDA",
+    "short": "NDA",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Not Required",
+      "Pending",
+      "Signed",
+      "Expired"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "nda_date",
+    "label": "NDA Date",
+    "short": "NDA Date",
+    "group": "D",
+    "type": "date",
+    "options": [],
+    "help": "Shown next to the NDA status",
+    "column": false
+  },
+  {
+    "key": "last_activity",
+    "label": "Last Activity",
+    "short": "Last Activity",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Phone Call",
+      "In-Person Meeting",
+      "Virtual Meeting",
+      "Email",
+      "Site Visit",
+      "Presentation",
+      "Document Exchange",
+      "Official Correspondence",
+      "No Activity Yet"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "last_activity_date",
+    "label": "Activity Date",
+    "short": "Activity Date",
+    "group": "D",
+    "type": "date",
+    "options": [],
+    "help": "Shown next to the activity",
+    "column": false
+  },
+  {
+    "key": "next_action",
+    "label": "Next Action",
+    "short": "Next Action",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Schedule Meeting",
+      "Send Opportunity Pack",
+      "Follow-up Email",
+      "Prepare Presentation",
+      "Execute NDA",
+      "Arrange Site Visit",
+      "Draft Agreement",
+      "Request Documents",
+      "Escalate to Executive Management",
+      "Awaiting Investor Response",
+      "Close Record"
+    ],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "follow_up",
+    "label": "Follow-up Date",
+    "short": "Follow-up",
+    "group": "D",
+    "type": "date",
+    "options": [],
+    "help": "",
+    "column": true
+  },
+  {
+    "key": "doc_link",
+    "label": "Documents",
+    "short": "Docs",
+    "group": "D",
+    "type": "url",
+    "options": [],
+    "help": "Link to the investor folder",
+    "column": true
+  }
+];
+
+/* Columns shown the first time the register is opened. Keep to about ten. */
+var DEFAULT_COLS = [
+  "record_id",
+  "company",
+  "country",
+  "investor_category",
+  "stage",
+  "deal_value",
+  "weighted_value",
+  "priority",
+  "progress",
+  "follow_up"
+];
+
+/* Values pre-filled on a new record. Each must be a real option of its field. */
+var DEFAULTS = {
+  department: 'Investment',
+  stage: 'Identification',
+  priority: 'Medium',
+  last_activity: 'No Activity Yet',
+  country: 'Saudi Arabia'
+};
+
+/* Toolbar filters \u2014 up to four single-choice or owner fields. */
+var FILTERS = [
+  { id: 'fDept',  key: 'department',  placeholder: 'All departments', w: 122 },
+  { id: 'fStage', key: 'stage',       placeholder: 'All stages',      w: 122 },
+  { id: 'fPrio',  key: 'priority',    placeholder: 'All priorities',  w: 108 },
+  { id: 'fOwner', key: 'assigned_to', placeholder: 'All owners',      w: 116 }
+];
+
+/* Two fields shown as one cell: a status and the date it happened. */
+var COMPOSITES = {
+  last_activity: { with: 'last_activity_date' },
+  nda_signed:    { with: 'nda_date' },
+  rationale:     { with: 'rationale_note', sep: ' \u2014 ' }
+};
+
+/* Derived cell values. Any field of type 'calc' needs an entry here. */
+var CALC = {
+  progress:       function (r) { return progressOf(r) + '%'; },
+  weighted_value: function (r) { return money(weightedOf(r)) || ''; }
+};
+
+/* Colour per value. Tones: green (good) \u00b7 gold (attention) \u00b7 neg (bad) \u00b7 mute (neutral).
+   COLOURED lists the fields whose text is tinted in menus and cells. */
+var TONE = {
+  priority:   { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' },
+  nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' },
+  doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }
+};
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
+
+/* Six headline figures. `calc` receives the live records and returns
+   { v, unit, sub, dir } \u2014 dir is 'up' | 'down' | 'flat' and only tints `sub`.
+   Icons available: i-users i-trend i-target i-star i-clock i-percent           */
+var KPIS = [
+  { icon: 'i-users', label: 'Total Records', calc: function (R) {
+      var open = R.filter(function (r) { var p = progressOf(r); return p > 0 && p < 100; }).length;
+      var done = R.filter(function (r) { return progressOf(r) === 100; }).length;
+      return { v: R.length, unit: plural(R.length, 'record'), sub: open + ' open \u00b7 ' + done + ' signed' };
+  }},
+  { icon: 'i-trend', label: 'Active Pipeline', calc: function (R) {
+      var t = sum(R, function (r) { return progressOf(r) < 100 ? (+r.deal_value || 0) : 0; });
+      return { v: money(t) || '\u2014', sub: 'open opportunities', dir: t ? 'up' : 'flat' };
+  }},
+  { icon: 'i-target', label: 'MoU Stage or Later', calc: function (R) {
+      var t = sum(R, function (r) { return progressOf(r) < 100 ? weightedOf(r) : 0; });
+      return { v: money(t) || '\u2014', sub: 'stage-weighted', dir: t ? 'up' : 'flat' };
+  }},
+  { icon: 'i-star', label: 'High Priority', calc: function (R) {
+      var n = R.filter(function (r) { return progressOf(r) >= 75; }).length;
+      return { v: n, unit: plural(n, 'record'), sub: 'MoU stage or later', dir: n ? 'up' : 'flat' };
+  }},
+  { icon: 'i-clock', label: 'Overdue Follow-up', calc: function (R) {
+      var n = R.filter(isOverdue).length;
+      return { v: n, unit: plural(n, 'record'), sub: n ? 'past follow-up date' : 'all on schedule', dir: n ? 'down' : 'up' };
+  }},
+  { icon: 'i-percent', label: 'Average Progress', calc: function (R) {
+      var a = R.length ? Math.round(sum(R, progressOf) / R.length) : 0;
+      return { v: a, unit: '%', sub: 'across the register' };
+  }}
+];
+
+/* Accounts created on first run. The administrator manages them from Settings
+   afterwards, and these are never read again. */
+var SEED_USERS = { 'samer': '141212', 'zeyad': '121414' };
+
+/* ============================ END DOMAIN ============================ */
+
 /* ===================== FIREBASE CONFIG ===================== */
 var FIREBASE_CONFIG = {
   "apiKey": "AIzaSyBr88VCVXdDkQJdxJqwLJ_HutsFvZR-HJE", 
@@ -659,14 +1393,7 @@ var FIREBASE_CONFIG = {
   "messagingSenderId": "870716823065", 
   "appId": "1:870716823065:web:bde028421733f7d6febc88"
 };          
-var COLLECTION = 'kec_investors';
-
-/* Seed accounts. On first run they are copied into CFG.users, after which the
-   administrator manages accounts from Settings and this table is no longer read. */
-var AUTHORIZED_USERS = {
-    'samer': '141212',
-    'zeyad': '121414'
-};
+var COLLECTION = APP.collection;
 
 var ROLES = [
   { id: 'admin',  label: 'Administrator', note: 'Full control, including deletion and these settings.' },
@@ -689,10 +1416,13 @@ function pwHash (u, p) {
   }
   return ('0000000' + h1.toString(36)).slice(-7) + ('0000000' + h2.toString(36)).slice(-7);
 }
+/* First run only: the seed accounts from the domain block become real accounts,
+   after which the administrator manages them from Settings. */
 function seedUsers () {
   if (CFG.users && CFG.users.length) return;
-  CFG.users = Object.keys(AUTHORIZED_USERS).map(function (u) {
-    return { u: u, h: pwHash(u, AUTHORIZED_USERS[u]), role: 'admin' };
+  var seed = (typeof SEED_USERS === 'object' && SEED_USERS) || {};
+  CFG.users = Object.keys(seed).map(function (u) {
+    return { u: u, h: pwHash(u, seed[u]), role: 'admin' };
   });
 }
 function findUser (u) {
@@ -704,13 +1434,16 @@ var currentUser = null;
 function initAuth() {
     /* Accounts live in the shared configuration, so it has to be read before login. */
     loadConfig(); seedUsers();
+    document.title = 'KEC \u00b7 ' + APP.title;
+    $('#authTitle').textContent = APP.title;
+    $('#authSub').innerHTML = esc(APP.subtitle) + '<br>Please sign in to continue.';
 
-    var storedUser = localStorage.getItem('kec_session_user');
-    var storedRole = localStorage.getItem('kec_session_role');
+    var storedUser = localStorage.getItem(LSU + '_user');
+    var storedRole = localStorage.getItem(LSU + '_role');
 
     if (storedUser && storedRole && storedRole !== 'viewer') {
         var acc = findUser(storedUser);
-        if (!acc) { localStorage.removeItem('kec_session_user'); localStorage.removeItem('kec_session_role'); storedUser = null; }
+        if (!acc) { localStorage.removeItem(LSU + '_user'); localStorage.removeItem(LSU + '_role'); storedUser = null; }
         else storedRole = acc.role;
     }
     if (storedUser && storedRole) {
@@ -727,8 +1460,8 @@ function initAuth() {
     $('#viewerBtn').onclick = loginAsViewer;
     $('#authPassword').onkeydown = function(e) { if(e.key === 'Enter') handleLogin(); };
     $('#logoutBtn').onclick = function() {
-        localStorage.removeItem('kec_session_user');
-        localStorage.removeItem('kec_session_role');
+        localStorage.removeItem(LSU + '_user');
+        localStorage.removeItem(LSU + '_role');
         location.reload();
     };
 
@@ -761,8 +1494,8 @@ function loginAsViewer() {
 }
 
 function proceedLogin() {
-    localStorage.setItem('kec_session_user', currentUser.username);
-    localStorage.setItem('kec_session_role', currentUser.role);
+    localStorage.setItem(LSU + '_user', currentUser.username);
+    localStorage.setItem(LSU + '_role', currentUser.role);
     $('#authScreen').style.display = 'none';
     applyRoleUI();
     bootApp();
@@ -859,14 +1592,13 @@ function updateRemoteMetadata() {
     Local.write();
 }
 
-var SCHEMA = [{"key": "record_id", "label": "Record ID", "short": "#", "group": "A", "type": "auto", "options": [], "help": "Sequential, system-generated", "column": true}, {"key": "entry_date", "label": "Entry Date", "short": "Entry", "group": "A", "type": "stamp", "options": [], "help": "Auto-stamped on first save", "column": true}, {"key": "department", "label": "Department", "short": "Department", "group": "A", "type": "select", "options": ["Investment", "Business Development"], "help": "", "column": true}, {"key": "assigned_to", "label": "Assigned To", "short": "Owner", "group": "A", "type": "owner", "options": [], "help": "Editable list — add owners inline", "column": true}, {"key": "lead_source", "label": "Lead Source", "short": "Source", "group": "A", "type": "select", "options": ["KEC Outreach", "Inbound Enquiry", "Referral", "Executive Referral", "Conference / Exhibition", "Government Channel", "Existing Partner", "Website", "Broker / Advisor", "Other"], "help": "How the investor reached KEC", "column": true}, {"key": "created_by", "label": "Created By", "short": "Created By", "group": "A", "type": "audit", "options": [], "help": "Audit trail", "column": false}, {"key": "updated_by", "label": "Last Updated", "short": "Updated", "group": "A", "type": "audit", "options": [], "help": "Who changed it last, and when", "column": true}, {"key": "company", "label": "Company Name", "short": "Company", "group": "B", "type": "text", "options": [], "help": "", "column": true}, {"key": "country", "label": "Country", "short": "Country", "group": "B", "type": "select", "options": ["Saudi Arabia", "United Arab Emirates", "Kuwait", "Qatar", "Bahrain", "Oman", "Egypt", "Jordan", "Lebanon", "Iraq", "Morocco", "Tunisia", "Turkey", "United Kingdom", "France", "Germany", "Switzerland", "United States", "Canada", "China", "India", "Pakistan", "Indonesia", "Malaysia", "Singapore", "Japan", "South Korea", "Other"], "help": "", "column": true}, {"key": "industry", "label": "Industry", "short": "Industry", "group": "B", "type": "select", "options": ["Real Estate Development", "Contracting & Construction", "Hospitality & Hotels", "Pilgrim & Visitor Services", "Retail", "Entertainment & Tourism", "Healthcare", "Education", "Logistics & Transport", "Manufacturing", "Technology", "Financial Services & Investment", "Energy & Utilities", "Food & Beverage", "Endowments (Awqaf)", "Professional Services", "Other"], "help": "What the company does", "column": true}, {"key": "investor_category", "label": "Investor Category", "short": "Category", "group": "B", "type": "select", "options": ["Strategic Investor", "Real Estate Developer", "Investment Fund", "Holding Company", "Family Office", "Institutional Investor", "Operator / Brand", "Individual (HNWI)", "Government / Sovereign", "Endowment (Waqf)", "Technology / Service Partner"], "help": "", "column": true}, {"key": "organization_type", "label": "Organization Type", "short": "Org. Type", "group": "B", "type": "select", "options": ["Listed Joint Stock Company", "Closed Joint Stock Company", "Limited Liability Company", "Single Person Company", "Sole Proprietorship", "Holding Company", "Licensed Investment Fund", "Government Entity", "Semi-Government Entity", "Endowment (Waqf)", "Non-Profit Organization", "Foreign Company Branch"], "help": "", "column": true}, {"key": "year_established", "label": "Year Established", "short": "Founded", "group": "B", "type": "number", "options": [], "help": "Years in business are derived", "column": true}, {"key": "primary_contact", "label": "Primary Contact", "short": "Contact", "group": "C", "type": "text", "options": [], "help": "", "column": true}, {"key": "position", "label": "Position", "short": "Position", "group": "C", "type": "select", "options": ["Chairman", "Board Member", "Chief Executive Officer", "Deputy CEO", "General Manager", "Business Development Manager", "Investment Manager", "Projects Manager", "Chief Financial Officer", "Authorized Representative", "Other"], "help": "", "column": true}, {"key": "contact_info", "label": "Contact Information", "short": "Email / Phone", "group": "C", "type": "text", "options": [], "help": "Email · mobile", "column": true}, {"key": "company_size", "label": "Company Size", "short": "Size", "group": "C", "type": "select", "options": ["Micro (1–5)", "Small (6–49)", "Medium (50–249)", "Large (250–999)", "Enterprise (1000+)"], "help": "Monshaat classification", "column": true}, {"key": "project_size", "label": "Project Size", "short": "Project Size", "group": "C", "type": "select", "options": ["Under SAR 50M", "SAR 50–200M", "SAR 200–500M", "SAR 500M–1B", "SAR 1–5B", "Above SAR 5B"], "help": "Typical project value", "column": true}, {"key": "project_locations", "label": "Project Locations", "short": "Locations", "group": "C", "type": "multi", "options": ["Madinah", "Makkah", "Riyadh", "Jeddah", "Eastern Province", "Qassim", "Hail", "Tabuk", "Asir", "NEOM / North-West", "Other KSA Regions", "GCC", "Wider Arab Region", "International"], "help": "", "column": true}, {"key": "major_projects", "label": "Major Projects", "short": "Projects", "group": "C", "type": "area", "options": [], "help": "", "column": true}, {"key": "business_sectors", "label": "Asset Classes", "short": "Assets", "group": "C", "type": "multi", "options": ["Residential", "Commercial / Retail", "Office", "Hospitality", "Mixed-Use", "Entertainment", "Education", "Healthcare", "Logistics", "Industrial", "Endowments", "Pilgrim & Visitor Services", "Infrastructure"], "help": "Where they invest", "column": true}, {"key": "deal_value", "label": "Deal Value (SAR)", "short": "Deal Value", "group": "D", "type": "money", "options": [], "help": "Expected value of the opportunity", "column": true}, {"key": "weighted_value", "label": "Weighted Value", "short": "Weighted", "group": "D", "type": "calc", "options": [], "help": "Deal value × stage probability", "column": true}, {"key": "stage", "label": "Current Stage", "short": "Stage", "group": "D", "type": "select", "options": ["Identification", "Initial Contact", "Introductory Meeting", "Information Exchange", "Opportunity Pitch", "Negotiation", "MoU / Term Sheet", "Signed Agreement", "Closed — Not Completed"], "help": "Drives progress and weighting", "column": true}, {"key": "progress", "label": "Progress (%)", "short": "Progress", "group": "D", "type": "calc", "options": [], "help": "From stage", "column": true}, {"key": "priority", "label": "Priority", "short": "Priority", "group": "D", "type": "select", "options": ["Critical", "High", "Medium", "Low"], "help": "", "column": true}, {"key": "rationale", "label": "Opportunity Rationale", "short": "Rationale", "group": "D", "type": "select", "options": ["Strong financial standing", "Proven market track record", "Existing presence in Madinah", "Alignment with KEC targets", "Pre-existing relationship", "Owns operator / brand", "High execution speed", "Synergy with an active project", "Executive management referral", "Investor-initiated approach"], "help": "", "column": true}, {"key": "rationale_note", "label": "Rationale Detail", "short": "Rationale Detail", "group": "D", "type": "area", "options": [], "help": "Shown next to the rationale", "column": false}, {"key": "opportunity", "label": "Potential Opportunity", "short": "Opportunity", "group": "D", "type": "multi", "options": ["Land Acquisition", "Joint Development (JV)", "Long-Term Usufruct", "Space Leasing", "Asset Operation & Management", "Fund / Instrument Investment", "Contracting & Delivery", "Technology / Service Partnership", "Financing", "Not Yet Defined"], "help": "", "column": true}, {"key": "nda_signed", "label": "NDA", "short": "NDA", "group": "D", "type": "select", "options": ["Not Required", "Pending", "Signed", "Expired"], "help": "", "column": true}, {"key": "nda_date", "label": "NDA Date", "short": "NDA Date", "group": "D", "type": "date", "options": [], "help": "Shown next to the NDA status", "column": false}, {"key": "last_activity", "label": "Last Activity", "short": "Last Activity", "group": "D", "type": "select", "options": ["Phone Call", "In-Person Meeting", "Virtual Meeting", "Email", "Site Visit", "Presentation", "Document Exchange", "Official Correspondence", "No Activity Yet"], "help": "", "column": true}, {"key": "last_activity_date", "label": "Activity Date", "short": "Activity Date", "group": "D", "type": "date", "options": [], "help": "Shown next to the activity", "column": false}, {"key": "next_action", "label": "Next Action", "short": "Next Action", "group": "D", "type": "select", "options": ["Schedule Meeting", "Send Opportunity Pack", "Follow-up Email", "Prepare Presentation", "Execute NDA", "Arrange Site Visit", "Draft Agreement", "Request Documents", "Escalate to Executive Management", "Awaiting Investor Response", "Close Record"], "help": "", "column": true}, {"key": "follow_up", "label": "Follow-up Date", "short": "Follow-up", "group": "D", "type": "date", "options": [], "help": "", "column": true}, {"key": "doc_link", "label": "Documents", "short": "Docs", "group": "D", "type": "url", "options": [], "help": "Link to the investor folder", "column": true}], GROUPS = [{"id": "A", "label": "KEC Registry", "short": "KEC", "owner": "kec"}, {"id": "B", "label": "Investor Profile", "short": "Investor", "owner": "inv"}, {"id": "C", "label": "Business Profile", "short": "Business", "owner": "inv"}, {"id": "D", "label": "Opportunity & Pipeline", "short": "Pipeline", "owner": "kec"}];
-var DEFAULT_COLS = ["record_id", "company", "country", "investor_category", "stage", "deal_value", "weighted_value", "priority", "progress", "follow_up"];
-var STAGE_PROGRESS = {"Identification": 10, "Initial Contact": 20, "Introductory Meeting": 35, "Information Exchange": 50, "Opportunity Pitch": 60, "Negotiation": 75, "MoU / Term Sheet": 90, "Signed Agreement": 100, "Closed — Not Completed": 0};
 var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function isoToday () { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
 function longToday () { var d = new Date(); return ('0' + d.getDate()).slice(-2) + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(); }
 var TODAY = isoToday();
-var LS = 'kec_investor_log_v1', LSC = 'kec_investor_log_cols_v1', LSU = 'kec_investor_log_user_v1';
+var LS  = 'kec_' + APP.key + '_v1',
+    LSC = 'kec_' + APP.key + '_cols_v1',
+    LSU = 'kec_' + APP.key + '_user_v1';
 var BUILD = 7, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
@@ -880,7 +1612,7 @@ var GMETA = {}; GROUPS.forEach(function (g) { GMETA[g.id] = g; });
 var FACTORY = {
   schema: JSON.parse(JSON.stringify(SCHEMA)),
   groups: JSON.parse(JSON.stringify(GROUPS)),
-  stages: Object.assign({}, STAGE_PROGRESS)
+  stages: Object.assign({}, PROGRESS)
 };
 
 var DATA = [], OWNERS = [], COLS = DEFAULT_COLS.slice(), MANUAL = {}, remote = null;
@@ -915,32 +1647,61 @@ function fmtDate (s) {
   if (!s) return ''; var d = new Date(s + 'T00:00:00'); if (isNaN(d)) return s;
   return ('0' + d.getDate()).slice(-2) + ' ' + MON[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2);
 }
-function progressOf (r) { return STAGE_PROGRESS[r.stage] != null ? STAGE_PROGRESS[r.stage] : 0; }
-function yearsOf (r) { var y = parseInt(r.year_established, 10); return y > 1200 && y <= +TODAY.slice(0, 4) ? (+TODAY.slice(0, 4) - y) : ''; }
-function isOverdue (r) { return r.follow_up && r.follow_up < TODAY && progressOf(r) < 100; }
+/* True for the single-choice field that drives percent complete. */
+function isProgressKey (k) { return !!(APP.progress && k === APP.progress.from); }
+function progressOf (r) {
+  if (!APP.progress) return 0;
+  var v = PROGRESS[r[APP.progress.from]];
+  return v != null ? v : 0;
+}
+function yearsOf (r) {
+  if (!APP.age) return '';
+  var y = parseInt(r[APP.age.field], 10), c = +TODAY.slice(0, 4);
+  return (y > 1200 && y <= c) ? (c - y) : '';
+}
+function isOverdue (r) {
+  if (!APP.dueField) return false;
+  return r[APP.dueField] && r[APP.dueField] < TODAY && progressOf(r) < 100;
+}
+function sum (arr, f) { return arr.reduce(function (a, r) { return a + (+f(r) || 0); }, 0); }
+function plural (n, one, many) { return n === 1 ? one : (many || one + 's'); }
 function nextId () { return DATA.reduce(function (m, r) { return Math.max(m, +r.record_id || 0); }, 0) + 1; }
 function uid () { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 function pid (r) { return ('00' + (r.record_id || 0)).slice(-3); }
 function money (v) {
   v = +v; if (!v || isNaN(v)) return ''; var a = Math.abs(v);
-  if (a >= 1e9) return 'SAR ' + (v / 1e9).toFixed(a >= 1e10 ? 0 : 1) + 'B';
-  if (a >= 1e6) return 'SAR ' + (v / 1e6).toFixed(a >= 1e8 ? 0 : 1) + 'M';
-  if (a >= 1e3) return 'SAR ' + Math.round(v / 1e3) + 'K';
-  return 'SAR ' + v;
+  var c = APP.currency ? APP.currency + ' ' : '';
+  if (a >= 1e9) return c + (v / 1e9).toFixed(a >= 1e10 ? 0 : 1) + 'B';
+  if (a >= 1e6) return c + (v / 1e6).toFixed(a >= 1e8 ? 0 : 1) + 'M';
+  if (a >= 1e3) return c + Math.round(v / 1e3) + 'K';
+  return c + v;
 }
-function weightedOf (r) { return Math.round((+r.deal_value || 0) * progressOf(r) / 100); }
+function weightedOf (r) {
+  if (!APP.weighted) return 0;
+  return Math.round((+r[APP.weighted.value] || 0) * progressOf(r) / 100);
+}
+/* The string a field shows in the table. Driven entirely by CALC, COMPOSITES and
+   the field's own type, so a new subject needs no changes here. */
 function text (r, k) {
-  switch (k) {
-    case 'progress': return progressOf(r) + '%';
-    case 'deal_value': return money(r.deal_value);
-    case 'weighted_value': return money(weightedOf(r));
-    case 'year_established': var y = yearsOf(r); return r.year_established ? (r.year_established + (y === '' ? '' : ' · ' + y + ' yrs')) : '';
-    case 'rationale': var b = (r.rationale_note || '').trim(); return r.rationale ? (b ? r.rationale + ' — ' + b : r.rationale) : b;
-    case 'last_activity': var d = fmtDate(r.last_activity_date); return r.last_activity ? (d ? r.last_activity + ' · ' + d : r.last_activity) : '';
-    case 'nda_signed': var n = fmtDate(r.nda_date); return r.nda_signed ? (n ? r.nda_signed + ' · ' + n : r.nda_signed) : '';
-    case 'updated_by': var u = r.updated_by || '', t = fmtDate(r.updated_at); return u ? (t ? u + ' · ' + t : u) : t;
-    case 'doc_link': return r.doc_link ? 'Open folder' : '';
-    case 'entry_date': case 'follow_up': case 'last_activity_date': case 'nda_date': return fmtDate(r[k]);
+  var f = F[k]; if (!f) return '';
+  if (CALC[k]) return CALC[k](r);
+  if (f.type === 'audit') {
+    var u = r.updated_by || '', t = fmtDate(r.updated_at);
+    return u ? (t ? u + ' \u00b7 ' + t : u) : t;
+  }
+  if (f.type === 'money') return money(r[k]);
+  if (f.type === 'date' || f.type === 'stamp') return fmtDate(r[k]);
+  if (f.type === 'url') return r[k] ? 'Open' : '';
+  if (APP.age && k === APP.age.field) {
+    var y = yearsOf(r);
+    return r[k] ? (r[k] + (y === '' ? '' : ' \u00b7 ' + y + ' ' + (APP.age.unit || 'yrs'))) : '';
+  }
+  var c = COMPOSITES[k];
+  if (c) {
+    var head = String(r[k] == null ? '' : r[k]).trim();
+    var wf = F[c.with], tail = wf ? String(text(r, c.with) || '').trim() : '';
+    var sep = c.sep || ' \u00b7 ';
+    return head ? (tail ? head + sep + tail : head) : tail;
   }
   return val(r, k);
 }
@@ -949,21 +1710,30 @@ function stamp (r) {
   r.updated_at = TODAY;
   if (!r.created_by) r.created_by = r.updated_by;
 }
-function prioClass (p) { return { Critical: 'crit', High: 'high', Medium: 'med', Low: 'low' }[p] || 'low'; }
+var PILL_OF = { neg: 'crit', gold: 'high', green: 'med', mute: 'low' };
+var TAG_OF  = { green: 'ok', gold: 'wait', neg: 'bad', mute: 'na' };
+function pillClass (k, v) { return PILL_OF[toneOf(k, v)] || 'low'; }
+function tagClass  (k, v) { return TAG_OF[toneOf(k, v)] || 'na'; }
 
 var Local = {
   read:  function () { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } },
   write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH })); } catch (e) {} }
 };
 function readCols () {
-  try {
-    var c = JSON.parse(localStorage.getItem(LSC) || 'null');
-    if (c && !Array.isArray(c) && c.v === BUILD && c.cols) {
-      COLS = c.cols.filter(function (k) { return F[k] && F[k].column !== false; });
-      MANUAL = c.w || {};
-    }
-  } catch (e) {}
-  if (!COLS.length) { COLS = DEFAULT_COLS.slice(); MANUAL = {}; }
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem(LSC) || 'null'); } catch (e) {}
+  if (stored && !Array.isArray(stored) && stored.v === BUILD && stored.cols) {
+    COLS = stored.cols.filter(function (k) { return F[k] && F[k].column !== false; });
+    MANUAL = stored.w || {};
+  } else { COLS = []; MANUAL = {}; }
+  if (!COLS.length) {
+    /* First run: the starting columns are re-sorted into section order so the banded
+       header reads as three or four continuous bands rather than a stripe per
+       column. A stored preference is left exactly as the person arranged it. */
+    COLS = DEFAULT_COLS.slice().filter(function (k) { return F[k] && F[k].column !== false; });
+    MANUAL = {};
+    normalizeCols();
+  }
 }
 function writeCols () { try { localStorage.setItem(LSC, JSON.stringify({ v: BUILD, cols: COLS, w: MANUAL })); } catch (e) {} }
 
@@ -973,7 +1743,7 @@ function autoWidth (k, list) {
   var c = mctx();
   list.forEach(function (r) {
     var t = text(r, k); if (!t) return;
-    var tw = c.measureText(t).width + 20 + (k === 'priority' ? 16 : 0);
+    var tw = c.measureText(t).width + 20 + (k === APP.pillField ? 16 : 0);
     if (tw > w) w = tw;
   });
   var cap = (F[k].type === 'area') ? 520 : MAX_W; 
@@ -1127,9 +1897,8 @@ var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
 function toneOf (key, v) {
   if (!v) return 'mute';
   if (TONE[key] && TONE[key][v]) return TONE[key][v];
-  if (key === 'stage') {
-    if (v.indexOf('Closed') === 0) return 'neg';
-    var p = STAGE_PROGRESS[v]; return p >= 75 ? 'green' : (p >= 35 ? 'gold' : 'mute');
+  if (isProgressKey(key)) {
+    var p = PROGRESS[v]; return p >= 75 ? 'green' : (p >= 35 ? 'gold' : 'mute');
   }
   return 'green';
 }
@@ -1365,14 +2134,14 @@ function filtered () {
   var raw = ($('#q').value || '').trim();
   /* a leading # is how people type a record number */
   var toks = raw ? normQ(raw).split(/\s+/).map(function (t) { return t.replace(/^#+/, ''); }).filter(Boolean) : [];
-  var fd = readVal($('#fDept')), fst = readVal($('#fStage')),
-      fp = readVal($('#fPrio')),  fo = readVal($('#fOwner'));
+  var picks = FILTERS.map(function (x) { return { key: x.key, v: readVal($('#' + x.id)) }; })
+                     .filter(function (x) { return !!x.v; });
   var out = DATA.filter(function (r) {
     if (r._draft) return false;
-    if (fd && r.department !== fd) return false;
-    if (fst && r.stage !== fst) return false;
-    if (fp && r.priority !== fp) return false;
-    if (fo && r.assigned_to !== fo) return false;
+    for (var i = 0; i < picks.length; i++) {
+      var pk = picks[i], rv = r[pk.key];
+      if (Array.isArray(rv) ? rv.indexOf(pk.v) < 0 : rv !== pk.v) return false;
+    }
     if (!toks.length) return true;
     var h = haystack(r);
     /* every word must appear somewhere in the record — narrows as you type */
@@ -1389,28 +2158,31 @@ function filtered () {
   return out;
 }
 
+/* The strip is built once from KPIS, then only its numbers are refreshed so the
+   count-up animation fires on the figures that actually changed. */
+function buildKpis () {
+  var el = $('#kstrip'); if (!el) return;
+  el.innerHTML = KPIS.slice(0, 6).map(function (k, i) {
+    return '<div class="kc" id="k' + i + '"><div class="kc__top">' +
+      '<svg class="ic"><use href="#' + esc(k.icon || 'i-target') + '"/></svg>' +
+      '<span class="kc__l">' + esc(k.label) + '</span></div>' +
+      '<div class="kc__v">\u2014</div><div class="kc__d flat">\u2014</div></div>';
+  }).join('');
+}
 function renderKpis () {
-  var DATA = live(), n = DATA.length, pl = function (v) { return v === 1 ? 'record' : 'records'; };
-  var open   = DATA.filter(function (r) { var p = progressOf(r); return p > 0 && p < 100; });
-  var pipe   = DATA.reduce(function (s, r) { return s + (progressOf(r) < 100 ? (+r.deal_value || 0) : 0); }, 0);
-  var wtd    = DATA.reduce(function (s, r) { return s + (progressOf(r) < 100 ? weightedOf(r) : 0); }, 0);
-  var neg    = DATA.filter(function (r) { return progressOf(r) >= 75; }).length;
-  var over   = DATA.filter(isOverdue).length;
-  var avg    = n ? Math.round(DATA.reduce(function (s, r) { return s + progressOf(r); }, 0) / n) : 0;
-  var signed = DATA.filter(function (r) { return progressOf(r) === 100; }).length;
-  set('k1', n,            pl(n),  open.length + ' open · ' + signed + ' signed', 'flat');
-  set('k2', money(pipe)  || '—', '', 'open opportunities', pipe ? 'up' : 'flat');
-  set('k3', money(wtd)   || '—', '', 'stage-weighted', wtd ? 'up' : 'flat');
-  set('k4', neg,          pl(neg), 'MoU stage or later', neg ? 'up' : 'flat');
-  set('k5', over,         pl(over), over ? 'past follow-up date' : 'all on schedule', over ? 'down' : 'up');
-  set('k6', avg,          '%',     'across the register', 'flat');
-  function set (id, v, unit, delta, dir) {
-    var c = $('#' + id); if (!c) return;
-    var box = c.querySelector('.kc__v'), txt = esc(v) + (unit ? '<span class="kc__u">' + esc(unit) + '</span>' : '');
+  var R = live();
+  KPIS.slice(0, 6).forEach(function (k, i) {
+    var c = $('#k' + i); if (!c) return;
+    var o = {};
+    try { o = k.calc(R) || {}; } catch (e) { o = { v: '\u2014' }; }
+    var box = c.querySelector('.kc__v');
+    var txt = esc(o.v == null || o.v === '' ? '\u2014' : o.v) +
+              (o.unit ? '<span class="kc__u">' + esc(o.unit) + '</span>' : '');
     if (box.innerHTML !== txt) { box.innerHTML = txt; c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
     var d = c.querySelector('.kc__d');
-    d.className = 'kc__d ' + dir; d.textContent = delta;
-  }
+    d.className = 'kc__d ' + (o.dir || 'flat');
+    d.textContent = o.sub == null ? '' : o.sub;
+  });
 }
 
 function actions () {
@@ -1432,21 +2204,19 @@ function cellHtml (r, key, px, sticky) {
   function td (inner, extra, title) {
     return '<td class="' + cls.concat(extra || []).join(' ') + '"' + at + (title ? ' title="' + esc(title) + '"' : '') + '>' + inner + '</td>';
   }
-  if (key === 'record_id') return '<td class="id ' + (sticky != null ? 'stick' : '') + (COLS.indexOf(key) === FREEZE - 1 ? ' edge' : '') + '"' + (sticky != null ? st : '') + '>' + pid(r) + '</td>';
-  if (key === 'progress') {
+  if (f.type === 'auto') return '<td class="id ' + (sticky != null ? 'stick' : '') + (COLS.indexOf(key) === FREEZE - 1 ? ' edge' : '') + '"' + (sticky != null ? st : '') + '>' + pid(r) + '</td>';
+  if (APP.progress && key === APP.progress.into) {
     var p = progressOf(r);
     return td('<span class="bar"><span class="bar__t"><span class="bar__f" style="width:' + p + '%"></span></span><span class="bar__n">' + p + '%</span></span>');
   }
-  if (key === 'priority') return td(r.priority ? '<span class="pill pill--' + prioClass(r.priority) + '">' + esc(r.priority) + '</span>' : '—');
-  if (key === 'nda_signed') {
-    var s2 = (r.nda_signed || '').toLowerCase();
-    var m2 = s2.indexOf('signed') === 0 ? 'ok' : (s2.indexOf('pending') === 0 ? 'wait' : (s2.indexOf('expired') === 0 ? 'bad' : 'na'));
-    return td(r.nda_signed ? '<span class="tag tag--' + m2 + '">' + esc(fitText(text(r, key), w)) + '</span>' : '—', null, text(r, key));
+  if (key === APP.pillField) return td(r[key] ? '<span class="pill pill--' + pillClass(key, r[key]) + '">' + esc(fitText(String(r[key]), w)) + '</span>' : '\u2014', null, r[key]);
+  if (key === APP.tagField) {
+    return td(r[key] ? '<span class="tag tag--' + tagClass(key, r[key]) + '">' + esc(fitText(text(r, key), w)) + '</span>' : '\u2014', null, text(r, key));
   }
-  if (key === 'doc_link') return td(r.doc_link ? '<a class="lnk" href="' + esc(r.doc_link) + '" target="_blank" rel="noopener">Open</a>' : '—');
-  if (key === 'follow_up' || key === 'entry_date') {
-    var t = text(r, key) || '—';
-    return td(esc(t), key === 'follow_up' && isOverdue(r) ? ['due'] : null);
+  if (f.type === 'url') return td(r[key] ? '<a class="lnk" href="' + esc(r[key]) + '" target="_blank" rel="noopener">Open</a>' : '\u2014');
+  if (f.type === 'date' || f.type === 'stamp') {
+    var t = text(r, key) || '\u2014';
+    return td(esc(t), (key === APP.dueField && isOverdue(r)) ? ['due'] : null);
   }
   var v = text(r, key);
   return td(v ? esc(fitValue(r, key, w)) : '—', null, v);
@@ -1502,7 +2272,7 @@ function renderTable (list) {
   var start = pageStart(page), slice = list.slice(start, start + pageSize(page)), body;
   if (!slice.length) {
     var qv = ($('#q').value || '').trim();
-    var anyFilter = qv || readVal($('#fDept')) || readVal($('#fStage')) || readVal($('#fPrio')) || readVal($('#fOwner'));
+    var anyFilter = qv || FILTERS.some(function (x) { return !!readVal($('#' + x.id)); });
     body = '<tr><td colspan="' + (COLS.length + 1) + '"><div class="empty">' +
       (DATA.length && anyFilter ? 'No record matches ' + (qv ? '\u201C' + esc(qv) + '\u201D' : 'these filters') : 'No records') +
       '</div></td></tr>';
@@ -1587,7 +2357,7 @@ function renderList () {
 function renderAll () { renderKpis(); syncOwnerSelects(); renderList(); }
 function resetFilters () {
   $('#q').value = '';
-  ['fDept', 'fStage', 'fPrio', 'fOwner'].forEach(function (i) { var el = $('#' + i); if (el && el._sel) el._sel.set(''); });
+  FILTERS.forEach(function (x) { var el = $('#' + x.id); if (el && el._sel) el._sel.set(''); });
   sortKey = null; page = 0; renderList();
 }
 /* Two document-level lists that belong to the sheet, not to any record. They are
@@ -1800,25 +2570,24 @@ function moveTo (fromId, toId) {
 }
 
 function blank () {
-  var r = { _id: uid(), record_id: nextId(), entry_date: TODAY, order: DATA.length, _draft: true };
+  var r = { _id: uid(), record_id: nextId(), order: DATA.length, _draft: true };
+  if (APP.stampField) r[APP.stampField] = TODAY;
   SCHEMA.forEach(function (f) { if (r[f.key] == null) r[f.key] = (f.type === 'multi') ? [] : ''; });
-  /* Defaults must be real option values, or Progress and Weighted Value read 0
-     for every new record. */
-  r.department = 'Investment'; r.stage = 'Identification';
-  r.priority = 'Medium';
-  r.last_activity = 'No Activity Yet'; r.country = 'Saudi Arabia';
+  /* Defaults must be real option values, or anything derived from them reads zero
+     on every new record. */
+  Object.keys(DEFAULTS).forEach(function (k) { if (F[k]) r[k] = DEFAULTS[k]; });
   return r;
 }
 function duplicate (r) {
   var c = Object.assign({}, r);
   delete c._draft;
   c._id = uid(); c.record_id = nextId(); c.entry_date = TODAY; c.order = DATA.length;
-  c.company = (r.company || '') + ' (copy)';
+  c[APP.titleField] = (r[APP.titleField] || '') + ' (copy)';
   DATA.push(c); save(c); renderAll(); revealRecord(c._id); toast('Record duplicated as #' + pid(c));
 }
 function remove (r) {
   if (!canDelete()) { toast('Your account cannot delete records.'); return; }
-  askDelete('Move ' + (r.company || 'this record') + ' to the recycle bin? It stays recoverable for ' +
+  askDelete('Move ' + (r[APP.titleField] || ('this ' + APP.recordNoun.toLowerCase())) + ' to the recycle bin? It stays recoverable for ' +
     TRASH_DAYS + ' days, then it is removed for good.', function (confirm) {
       if (!confirm) return;
       var id = r._id, num = pid(r);
@@ -1849,7 +2618,7 @@ function fieldHtml (f, r) {
   else if (f.type === 'money') inp = '<input class="f__i" id="' + id + '" type="number" step="1000" min="0" value="' + esc(v || '') + '">';
   else if (f.type === 'audit') inp = ro(id, (r.updated_by || '—') + (r.updated_at ? ' · ' + fmtDate(r.updated_at) : ''));
   else if (f.type === 'area')  inp = '<textarea class="f__i" id="' + id + '">' + esc(v || '') + '</textarea>';
-  else if (f.type === 'calc')  inp = ro(id, f.key === 'progress' ? progressOf(r) + '%' : f.key === 'weighted_value' ? (money(weightedOf(r)) || '—') : (yearsOf(r) === '' ? '—' : yearsOf(r) + ' years'));
+  else if (f.type === 'calc')  inp = ro(id, (CALC[f.key] ? CALC[f.key](r) : '') || '\u2014');
   else if (f.type === 'owner') inp = '<span class="sel sel--field" id="' + id + '"></span>';
   else if (f.type === 'multi') inp = '<div class="chips" id="' + id + '">' + getOptionsForField(f.key).map(function (o) {
       return '<span class="chip' + ((v || []).indexOf(o) >= 0 ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</span>'; }).join('') + '<span class="chip chip-add" data-k="'+f.key+'" style="border:1px dashed var(--kec-hairline);">+ Add new</span></div>';
@@ -1861,7 +2630,7 @@ function openDrawer (id, atTab) {
   var r = id ? DATA.find(function (x) { return x._id === id; }) : blank();
   editId = r._id;
   if (!id) DATA.push(r);
-  $('#drTitle').textContent = id ? 'Edit Record' : 'New Record';
+  $('#drTitle').textContent = (id ? 'Edit ' : 'New ') + APP.recordNoun;
   $('#drId').textContent = '#' + pid(r);
   
   if (currentUser && currentUser.role === 'viewer') {
@@ -1926,29 +2695,30 @@ function openDrawer (id, atTab) {
   $$('#drBody input, #drBody textarea').forEach(function (el) {
     el.addEventListener('change', function () { formChanged(el.id.slice(2), el.value); });
   });
-  tab(atTab || 'A'); meter();
+  tab(atTab || GROUPS[0].id); meter();
   $('#dr').classList.add('open');
 }
+/* Derived fields refresh as the form is filled in, without waiting for a save. */
 function formChanged (key, v) {
-  if (key === 'stage') {
-    var p = $('#x_progress'); if (p) p.value = (STAGE_PROGRESS[v] || 0) + '%';
-    var w = $('#x_weighted_value'), dv = $('#x_deal_value');
-    if (w) w.value = money(Math.round((+(dv ? dv.value : 0) || 0) * (STAGE_PROGRESS[v] || 0) / 100)) || '—';
-  }
-  if (key === 'deal_value') {
-    var st = readVal($('#x_stage')), w2 = $('#x_weighted_value');
-    if (w2) w2.value = money(Math.round((+v || 0) * (STAGE_PROGRESS[st] || 0) / 100)) || '—';
-  }
-  if (key === 'year_established') {
-    var y = parseInt(v, 10), c = +TODAY.slice(0, 4), yb = $('#x_years_in_business');
-    if (yb) yb.value = (y > 1200 && y <= c) ? (c - y) + ' years' : '—';
+  var pg = APP.progress, wt = APP.weighted;
+  if (pg && (key === pg.from || (wt && key === wt.value))) {
+    var stv = pg.from === key ? v : readVal($('#x_' + pg.from));
+    var pct = PROGRESS[stv] || 0;
+    var pe = $('#x_' + pg.into); if (pe) pe.value = pct + '%';
+    if (wt) {
+      var dv = wt.value === key ? v : (($('#x_' + wt.value) || {}).value);
+      var we = $('#x_' + wt.into);
+      if (we) we.value = money(Math.round((+dv || 0) * pct / 100)) || '\u2014';
+    }
   }
   meter();
 }
 function tab (g) {
+  if (!GMETA[g]) g = GROUPS[0].id;
   GROUPS.forEach(function (x) {
-    $('#tab' + x.id).classList.toggle('on', x.id === g);
-    $('#pane' + x.id).classList.toggle('on', x.id === g);
+    var t = $('#tab' + x.id), pn = $('#pane' + x.id);
+    if (t) t.classList.toggle('on', x.id === g);
+    if (pn) pn.classList.toggle('on', x.id === g);
   });
 }
 function collect () {
@@ -1979,7 +2749,13 @@ function commit () {
   if (!r && editId) { r = { _id: editId, order: DATA.length, entry_date: TODAY }; DATA.push(r); }
   if (!r) return;
   Object.assign(r, collect());
-  if (!r.company) { toast('Company Name is required.'); tab('B'); var cf = $('#x_company'); if (cf) cf.focus(); return; }
+  var tf = F[APP.titleField];
+  if (tf && !r[APP.titleField]) {
+    toast(tf.label + ' is required.');
+    tab(tf.group);
+    var cf = $('#x_' + APP.titleField); if (cf && cf.focus) cf.focus();
+    return;
+  }
   r.record_id = +r.record_id || nextId();
   delete r._draft;
   save(r); renderAll(); closeDr();
@@ -1999,15 +2775,20 @@ function closeDr (discard) {
   $('#dr').classList.remove('open'); editId = null;
 }
 
+function ownerUsage (v) { return ownerKeys().reduce(function (a, k) { return a + countUsage(k, v); }, 0); }
+function ownerKeys () { return SCHEMA.filter(function (f) { return f.type === 'owner'; }).map(function (f) { return f.key; }); }
 function syncOwnerSelects (sel) {
-  var f = $('#fOwner');
-  if (f && f._sel) {
+  FILTERS.forEach(function (x) {
+    if (!F[x.key] || F[x.key].type !== 'owner') return;
+    var f = $('#' + x.id); if (!f || !f._sel) return;
     var cur = f._sel.value;
     f._sel.setOptions(OWNERS.slice());
     f._sel.set(OWNERS.indexOf(cur) >= 0 ? cur : '');
-  }
-  var d = $('#x_assigned_to');
-  if (d && d._sel) { d._sel.setOptions(OWNERS); if (sel) d._sel.set(sel); }
+  });
+  ownerKeys().forEach(function (k) {
+    var d = $('#x_' + k);
+    if (d && d._sel) { d._sel.setOptions(OWNERS); if (sel) d._sel.set(sel); }
+  });
 }
 
 function fitScreen () {
@@ -2022,6 +2803,20 @@ function fitScreen () {
   }
 }
 
+/* Every visible string that names the subject comes from APP, so the shell needs
+   no editing when the register changes. */
+function applyCopy () {
+  document.title = 'KEC \u00b7 ' + APP.title;
+  $('#appTitle').textContent = APP.title;
+  $('#appSub').textContent   = APP.subtitle;
+  $('#authTitle').textContent = APP.title;
+  $('#refNo').value  = APP.reference;
+  $('#srcName').value = APP.source;
+  $('#footYear').textContent = APP.year;
+  $('#add').textContent = '+ New ' + APP.recordNoun;
+  $('#drSave').textContent = 'Save ' + APP.recordNoun;
+}
+
 function bootApp () {
   /* `.page` gets transform:scale() when body.fitted, which turns it into the containing
      block for position:fixed children and clips them (overflow:hidden). The record modal
@@ -2034,15 +2829,21 @@ function bootApp () {
 
   loadConfig();
   rebuildSchema();
+  applyCopy();
+  buildKpis();
+  buildTabs();
   refreshGroupTabs();
   readCols();
   syncColCount();
 
   var refilter = function () { page = 0; renderList(); };
-  mountSelect($('#fDept'),  { key: 'department', options: getOptionsForField('department'), placeholder: 'All departments', minWidth: 122, onChange: refilter });
-  mountSelect($('#fStage'), { key: 'stage', options: getOptionsForField('stage'), placeholder: 'All stages', minWidth: 122, onChange: refilter });
-  mountSelect($('#fPrio'),  { key: 'priority', options: getOptionsForField('priority'), placeholder: 'All priorities', minWidth: 108, onChange: refilter });
-  mountSelect($('#fOwner'), { key: 'assigned_to', options: OWNERS.slice(), placeholder: 'All owners', minWidth: 116, onChange: refilter });
+  $('#filters').innerHTML = FILTERS.filter(function (x) { return !!F[x.key]; })
+    .map(function (x) { return '<span class="sel" id="' + x.id + '" aria-label="' + esc(x.placeholder) + '"></span>'; }).join('');
+  FILTERS.forEach(function (x) {
+    var host = $('#' + x.id); if (!host || !F[x.key]) return;
+    mountSelect(host, { key: x.key, options: getOptionsForField(x.key),
+      placeholder: x.placeholder, minWidth: x.w || 120, onChange: refilter });
+  });
 
   $('#q').addEventListener('input', refilter);
   $('#reset').onclick = resetFilters;
@@ -2087,7 +2888,6 @@ function bootApp () {
     closePops();
   });
 
-  GROUPS.forEach(function (g) { $('#tab' + g.id).onclick = function () { tab(g.id); }; });
   $('#drSave').onclick   = commit;
   $('#drCancel').onclick = function () { closeDr(true); };
   $('#drDel').onclick    = function () {
@@ -2125,7 +2925,7 @@ function bootApp () {
    kept untouched so any override can be rolled back, and CFG is replayed over
    it by rebuildSchema() on every load and every edit.
    ========================================================================== */
-var LSCFG = 'kec_investor_log_config_v1';
+var LSCFG = 'kec_' + APP.key + '_config_v1';
 var CFG = { opts: {}, labels: {}, fields: [], groups: {}, stages: {} };
 
 function normCfg (c) {
@@ -2191,12 +2991,12 @@ function rebuildSchema () {
   });
   GMETA = {}; GROUPS.forEach(function (g) { GMETA[g.id] = g; });
 
-  Object.keys(STAGE_PROGRESS).forEach(function (k) { delete STAGE_PROGRESS[k]; });
-  Object.keys(FACTORY.stages).forEach(function (k) { STAGE_PROGRESS[k] = FACTORY.stages[k]; });
-  Object.keys(CFG.stages || {}).forEach(function (k) { STAGE_PROGRESS[k] = CFG.stages[k]; });
+  Object.keys(PROGRESS).forEach(function (k) { delete PROGRESS[k]; });
+  Object.keys(FACTORY.stages).forEach(function (k) { PROGRESS[k] = FACTORY.stages[k]; });
+  Object.keys(CFG.stages || {}).forEach(function (k) { PROGRESS[k] = CFG.stages[k]; });
   /* A stage the admin invented has no probability yet — default it to the midpoint
      rather than silently weighting the whole pipeline at zero. */
-  getOptionsForField('stage').forEach(function (o) { if (STAGE_PROGRESS[o] == null) STAGE_PROGRESS[o] = 50; });
+  if (APP.progress) getOptionsForField(APP.progress.from).forEach(function (o) { if (PROGRESS[o] == null) PROGRESS[o] = 50; });
 
   COLS = COLS.filter(function (k) { return F[k] && F[k].column !== false; });
   if (COLS.length < 2) COLS = DEFAULT_COLS.slice();
@@ -2227,6 +3027,14 @@ function normalizeCols () {
     var ga = order.indexOf((F[a] || {}).group), gb = order.indexOf((F[b] || {}).group);
     return ga === gb ? idx[a] - idx[b] : ga - gb;
   });
+  /* The two frozen columns only earn their place if they say which record you are
+     looking at, so the record number and the title field are pinned there whatever
+     sections they belong to. */
+  [APP.titleField, SCHEMA.filter(function (f) { return f.type === 'auto'; }).map(function (f) { return f.key; })[0]]
+    .forEach(function (k) {
+      var i = COLS.indexOf(k);
+      if (i > 0) COLS.unshift(COLS.splice(i, 1)[0]);
+    });
 }
 function groupOfKey (k) { return (CFG.groupOf && CFG.groupOf[k]) || ((F[k] || {}).group); }
 /* Drop a field into `group`, immediately before `beforeKey` (or at the end of that
@@ -2252,10 +3060,21 @@ function moveField (key, group, beforeKey) {
   refreshGroupTabs();
   syncColCount();
 }
+/* Tabs and panes follow GROUPS, so a register with three or five sections works
+   without touching the shell. */
+function buildTabs () {
+  $('#drTabs').innerHTML = GROUPS.map(function (g) {
+    return '<button class="dr__tab" id="tab' + g.id + '" type="button">' + esc(g.id + ' \u00b7 ' + g.label) + '</button>';
+  }).join('');
+  $('#drBody').innerHTML = GROUPS.map(function (g) {
+    return '<div class="dr__pane" id="pane' + g.id + '"></div>';
+  }).join('');
+  GROUPS.forEach(function (g) { $('#tab' + g.id).onclick = function () { tab(g.id); }; });
+}
 function refreshGroupTabs () {
   GROUPS.forEach(function (g) {
     var t = $('#tab' + g.id);
-    if (t) t.textContent = g.id + ' · ' + g.label;
+    if (t) t.textContent = g.id + ' \u00b7 ' + g.label;
   });
 }
 
@@ -2461,7 +3280,7 @@ function wireColPanel () {
 /* ==========================================================================
    ADMIN CONSOLE
    ========================================================================== */
-var stTab = '1', stKey = 'department', stAddOpen = false;
+var stTab = '1', stKey = '', stAddOpen = false;
 
 function openSettings () {
   if (!currentUser || currentUser.role !== 'admin') { toast('Administrator access is required.'); return; }
@@ -2507,14 +3326,16 @@ function renderStLists () {
   }).join('');
 
   if (!stKey) { $('#stListMain').innerHTML = '<div class="st__empty">No list fields defined.</div>'; return; }
-  var f = F[stKey], opts = getOptionsForField(stKey), isStage = (stKey === 'stage'), isDoc = !!f.virtual;
+  var f = F[stKey], opts = getOptionsForField(stKey), isStage = isProgressKey(stKey), isDoc = !!f.virtual;
   $('#stListMain').innerHTML =
     '<div class="st__ttl">' + esc(f.label) + '</div>' +
     '<div class="st__sub">' + (isDoc ? 'Shown on every page of the register — ' + (stKey === 'doc_status' ? 'the status box beside the logo.' : 'the chip beside the reference number in the footer.')
         : (f.type === 'multi' ? 'Multi-select list — a record can hold several of these.' : 'Single-select list.') +
           ' Renaming an option rewrites it across every record that uses it.') +
       ' Drag an option by its handle to reorder it, or drop it onto another list in the sidebar to move it there.</div>' +
-    (isStage ? '<div class="st__note">Each stage carries a completion probability. It drives the Progress column and the stage-weighted pipeline value, so give any new stage a realistic figure.</div>' : '') +
+    (isStage ? '<div class="st__note">Each value carries a completion percentage. It drives the ' +
+        esc((F[APP.progress.into] || {}).label || 'progress') + ' column' +
+        (APP.weighted ? ' and the weighted total' : '') + ', so give any new one a realistic figure.</div>' : '') +
     (isDoc ? '<div class="st__note">Keep these short. Both boxes are fixed-width, so a long value is shortened on the page.</div>' : '') +
     '<div class="st__row"><input class="st__in st__in--grow" id="stNewOpt" placeholder="Add an option to this list…">' +
       '<button class="btn btn--go" id="stAddOpt" type="button">Add</button></div>' +
@@ -2524,7 +3345,7 @@ function renderStLists () {
         '<span class="grip" title="Drag to reorder, or onto another list to move it"></span>' +
         '<span class="cm__n">' + (i + 1) + '</span>' +
         '<span class="t">' + esc(o) + '</span>' +
-        (isStage ? '<input class="st__in st__in--num stp" type="number" min="0" max="100" value="' + (STAGE_PROGRESS[o] || 0) + '" title="Completion %">' : '') +
+        (isStage ? '<input class="st__in st__in--num stp" type="number" min="0" max="100" value="' + (PROGRESS[o] || 0) + '" title="Completion %">' : '') +
         (isDoc ? (cur ? '<span class="u hot">in use</span>' : '<button class="st__ib use" type="button">Set current</button>')
                : '<span class="u' + (u ? ' hot' : '') + '">' + u + ' rec</span>') +
         '<button class="st__ib up" type="button" title="Move up">▲</button>' +
@@ -2549,8 +3370,8 @@ function moveOptionToList (fromKey, toKey, v) {
   function go () {
     FL.splice(FL.indexOf(v), 1);
     TL.push(v);
-    if (fromKey === 'stage') delete CFG.stages[v];
-    if (toKey === 'stage' && STAGE_PROGRESS[v] == null) CFG.stages[v] = 50;
+    if (isProgressKey(fromKey)) delete CFG.stages[v];
+    if (isProgressKey(toKey) && PROGRESS[v] == null) CFG.stages[v] = 50;
     if (!fromDoc) clearValueInRecords(fromKey, v);
     else {
       var ck = fromKey === 'doc_status' ? 'docStatus' : 'docClass';
@@ -2671,7 +3492,7 @@ function wireStLists () {
         if (!nv || nv === v) return;
         if (L.indexOf(nv) >= 0) { toast('That option already exists.'); return; }
         L[L.indexOf(v)] = nv;
-        if (stKey === 'stage') { CFG.stages[nv] = STAGE_PROGRESS[v] != null ? STAGE_PROGRESS[v] : 50; delete CFG.stages[v]; }
+        if (isProgressKey(stKey)) { CFG.stages[nv] = PROGRESS[v] != null ? PROGRESS[v] : 50; delete CFG.stages[v]; }
         var n = isDoc ? 0 : renameValueInRecords(stKey, v, nv);
         if (isDoc) { var ck = stKey === 'doc_status' ? 'docStatus' : 'docClass'; if (CFG[ck] === v) CFG[ck] = nv; }
         saveConfig(); syncDocSelects(); renderStLists();
@@ -2685,7 +3506,7 @@ function wireStLists () {
       askDelete('Delete the option "' + v + '"?' + (u ? ' It is used by ' + u + ' record' + (u === 1 ? '' : 's') + ', which will be cleared.' : ''), function (ok) {
         if (!ok) return;
         L.splice(L.indexOf(v), 1);
-        if (stKey === 'stage') delete CFG.stages[v];
+        if (isProgressKey(stKey)) delete CFG.stages[v];
         if (!isDoc) clearValueInRecords(stKey, v);
         saveConfig(); syncDocSelects(); renderStLists(); stFlash('Option deleted.');
       });
@@ -2696,7 +3517,7 @@ function wireStLists () {
     var L = optListOf(stKey);
     if (L.indexOf(v) >= 0) { toast('That option already exists.'); return; }
     L.push(v);
-    if (stKey === 'stage' && STAGE_PROGRESS[v] == null) CFG.stages[v] = 50;
+    if (isProgressKey(stKey) && PROGRESS[v] == null) CFG.stages[v] = 50;
     saveConfig(); syncDocSelects(); renderStLists(); stFlash('"' + v + '" added.');
     var n = $('#stNewOpt'); if (n) n.focus();
   }
@@ -2866,7 +3687,7 @@ function renderStOwners () {
     '<div class="st__row"><input class="st__in st__in--grow" id="stNewOwner" placeholder="Add an owner…">' +
       '<button class="btn btn--go" id="stAddOwner" type="button">Add</button></div>' +
     '<ul class="st__ol">' + (OWNERS.length ? OWNERS.map(function (o, i) {
-      var u = countUsage('assigned_to', o);
+      var u = ownerUsage(o);
       return '<li class="st__o" data-v="' + esc(o) + '" data-i="' + i + '">' +
         '<span class="cm__n">' + (i + 1) + '</span><span class="t">' + esc(o) + '</span>' +
         '<span class="u' + (u ? ' hot' : '') + '">' + u + ' rec</span>' +
@@ -2887,18 +3708,18 @@ function wireStOwners () {
         if (!nv || nv === v) return;
         if (OWNERS.indexOf(nv) >= 0) { toast('That owner already exists.'); return; }
         OWNERS[OWNERS.indexOf(v)] = nv;
-        var n = renameValueInRecords('assigned_to', v, nv);
+        var n = ownerKeys().reduce(function (a, k) { return a + renameValueInRecords(k, v, nv); }, 0);
         saveConfig(); renderStOwners(); syncOwnerSelects();
         stFlash('Renamed' + (n ? ' — ' + n + ' record' + (n === 1 ? '' : 's') + ' reassigned.' : '.'));
       }, v);
       return;
     }
     if (b.classList.contains('del')) {
-      var u = countUsage('assigned_to', v);
+      var u = ownerUsage(v);
       askDelete('Remove "' + v + '" from the owner list?' + (u ? ' ' + u + ' record' + (u === 1 ? '' : 's') + ' will become unassigned.' : ''), function (ok) {
         if (!ok) return;
         OWNERS.splice(OWNERS.indexOf(v), 1);
-        clearValueInRecords('assigned_to', v);
+        ownerKeys().forEach(function (k) { clearValueInRecords(k, v); });
         saveConfig(); renderStOwners(); syncOwnerSelects(); stFlash('Owner removed.');
       });
     }
@@ -2957,11 +3778,11 @@ function exportCsv () {
     return fields.map(function (f) { return csvCell(val(r, f.key)); })
       .concat([progressOf(r), weightedOf(r)]).join(',');
   });
-  dl('KEC-investor-log-' + TODAY + '.csv', 'text/csv;charset=utf-8', '\uFEFF' + [head].concat(rows).join('\n'));
+  dl('KEC-' + APP.key + '-' + TODAY + '.csv', 'text/csv;charset=utf-8', '\uFEFF' + [head].concat(rows).join('\n'));
   stFlash('CSV exported — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
 }
 function exportJson () {
-  dl('KEC-investor-log-backup-' + TODAY + '.json', 'application/json',
+  dl('KEC-' + APP.key + '-backup-' + TODAY + '.json', 'application/json',
      JSON.stringify({ v: BUILD, exported: TODAY, records: DATA, owners: OWNERS, config: CFG, cols: COLS, trash: TRASH }, null, 2));
   stFlash('Backup exported.');
 }
@@ -3047,7 +3868,7 @@ function renderStTrash () {
     var left = daysLeft(t), soon = left <= 2;
     return '<li class="st__o" data-id="' + esc(t._id) + '">' +
       '<span class="cm__n">#' + esc(pid(t)) + '</span>' +
-      '<span class="t">' + esc(t.company || 'Untitled record') + '</span>' +
+      '<span class="t">' + esc(t[APP.titleField] || ('Untitled ' + APP.recordNoun.toLowerCase())) + '</span>' +
       '<span class="u">' + esc(t._deletedBy || '—') + '</span>' +
       '<span class="u">' + esc(fmtStamp(t._deletedAt)) + '</span>' +
       '<span class="u' + (soon ? ' hot' : '') + '">' + left + (left === 1 ? ' day' : ' days') + ' left</span>' +
@@ -3098,7 +3919,7 @@ function wireStTrash () {
     }
     if (b.classList.contains('pur')) {
       var t = TRASH.filter(function (x) { return x._id === id; })[0]; if (!t) return;
-      askDelete('Permanently delete ' + (t.company || 'this record') + '? This cannot be undone.', function (ok) {
+      askDelete('Permanently delete ' + (t[APP.titleField] || ('this ' + APP.recordNoun.toLowerCase())) + '? This cannot be undone.', function (ok) {
         if (!ok) return;
         purgeOne(id); saveTrash(); renderStTrash(); stFlash('Record permanently deleted.');
       });
@@ -3232,14 +4053,14 @@ else initAuth();
         <div class="kec-foot__src"><span class="kec-foot__bar"></span>
           <div class="kec-foot__meta">
             <div class="kec-foot__lbl">Source</div>
-            <div class="kec-foot__val"><input class="kec-src" id="srcName" value="Office of the CEO" aria-label="Source"><span class="kec-foot__sep">|</span>2026</div>
+            <div class="kec-foot__val"><input class="kec-src" id="srcName" value="" aria-label="Source"><span class="kec-foot__sep">|</span><span id="footYear"></span></div>
           </div>
         </div>
         <div class="kec-foot__mid"><span class="kec-pagepill" id="pagePill">Page 1 of 1</span></div>
         <div class="kec-foot__cls">
           <div class="kec-foot__meta">
             <div class="kec-foot__lbl">Reference</div>
-            <div class="kec-foot__val"><input class="kec-ref" id="refNo" value="KEC-LOG-2026-001" aria-label="Reference"></div>
+            <div class="kec-foot__val"><input class="kec-ref" id="refNo" value="" aria-label="Reference"></div>
           </div>
           <span class="sel sel--chip" id="docClass" aria-label="Classification"></span>
         </div>
