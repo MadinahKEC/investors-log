@@ -48,7 +48,7 @@ html,body{background:#e9ece7;font-family:var(--kec-font);color:var(--kec-ink);
 
 /* The logo, the identity line and the two identity boxes are one right-aligned
    stack. They share the page's right edge with the gold accent under the rule. */
-.kec-head__left{display:flex;flex-direction:column;align-items:flex-end;gap:5px;
+.kec-head__left{display:flex;flex-direction:column;align-items:flex-end;gap:7px;
   width:auto;min-width:var(--logo-w);flex:none;text-align:right}
 .kec-logo{width:var(--logo-w);height:var(--logo-h);object-fit:contain;object-position:right center;display:block}
 /* Both header badges are pills on one baseline. The status badge is the standard
@@ -269,7 +269,7 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .sel__t{display:inline-flex;align-items:center;gap:6px;width:100%;height:25px;padding:0 7px 0 9px;border:1px solid var(--kec-hairline);border-radius:6px;background:#fff;cursor:pointer;font-family:var(--kec-font);font-size:var(--fs-small);color:var(--kec-ink);line-height:1;white-space:nowrap;transition:border-color .14s ease,box-shadow .14s ease,background .14s ease}
 .sel__t:hover{border-color:var(--kec-badge-green-bd);background:var(--kec-paper)}
 .sel.open .sel__t{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
-.sel__v{flex:1;min-width:0;text-align:left;overflow:hidden}
+.sel__v{flex:1;min-width:0;text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .sel__v.empty{color:var(--kec-muted)}
 .sel__c{flex:none;width:8px;height:8px;border-right:1.4px solid var(--kec-muted);border-bottom:1.4px solid var(--kec-muted);transform:rotate(45deg) translate(-2px,-2px);transition:transform .18s ease}
 .sel.open .sel__c{transform:rotate(225deg) translate(-3px,-3px);border-color:var(--kec-green)}
@@ -315,17 +315,56 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .toast.on{display:flex;animation:krise .2s ease}
 @keyframes krise{0%{opacity:0; transform:translateY(10px)}100%{opacity:1; transform:translateY(0)}}
 
-.auth-overlay { position: fixed; inset: 0; background: rgba(240, 245, 236, 0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-.auth-box { background: #fff; padding: 35px 30px; border-radius: 14px; border: 1px solid var(--kec-hairline); box-shadow: 0 18px 60px rgba(20,61,30,.15); width: 380px; text-align: center; animation: krise 0.3s ease-out; }
-.auth-box img { width: 140px; margin-bottom: 25px; }
-.auth-box h2 { font-size: 18px; color: var(--kec-green-deep); margin-bottom: 8px; font-weight: 700; letter-spacing: -0.3px; }
-.auth-box p { font-size: var(--fs-small); color: var(--kec-muted); margin-bottom: 25px; line-height: 1.5; }
-.auth-box input { width: 100%; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--kec-hairline); border-radius: 8px; font-family: var(--kec-font); font-size: var(--fs-body); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; background: var(--kec-paper); }
+/* Sign-in is a full-screen split: the identity on the left, the form on the right.
+   It sits outside the scaled sheet, so everything here is at true size. */
+.auth-overlay{position:fixed;inset:0;z-index:9999;display:none;background:#fff}
+.auth-brand{flex:1 1 50%;min-width:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--kec-green-deep) 0%,var(--kec-green) 55%,#4E7F3A 100%);
+  position:relative;overflow:hidden}
+.auth-brand::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 30% 20%,rgba(255,255,255,.10),transparent 60%)}
+.auth-brand__in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px}
+.auth-mark{background:#fff;border-radius:22px;padding:26px 30px;box-shadow:0 18px 50px rgba(0,0,0,.18);margin-bottom:34px}
+.auth-mark img{width:172px;display:block}
+.auth-mark--none{display:none}
+.auth-brand__t{font-size:30px;font-weight:700;color:#fff;letter-spacing:-.4px;line-height:1.2;max-width:14ch}
+.auth-brand__s{font-size:14px;color:rgba(255,255,255,.82);margin-top:10px;font-weight:500}
+.auth-brand__rule{display:block;width:112px;height:2px;background:var(--kec-gold);border-radius:2px;margin-top:26px}
+.auth-panel{flex:1 1 50%;min-width:0;display:flex;align-items:center;justify-content:center;padding:40px;background:var(--kec-paper)}
+.auth-form{width:min(400px,100%)}
+.auth-form__t{font-size:24px;font-weight:700;color:var(--kec-title);letter-spacing:-.4px;margin-bottom:7px}
+.auth-form__s{font-size:13px;color:var(--kec-muted);margin-bottom:26px;line-height:1.5}
+.auth-lb{display:block;font-size:12.5px;font-weight:600;color:var(--kec-green-deep);margin-bottom:6px}
+.auth-form input[type=email],.auth-form input[type=password]{width:100%;margin-bottom:18px;padding:0 14px;height:44px;
+  border:1px solid var(--kec-hairline);border-radius:9px;font-family:var(--kec-font);font-size:14px;color:var(--kec-ink);
+  outline:none;background:#fff;transition:border-color .18s ease,box-shadow .18s ease}
+.auth-form input::placeholder{color:#A9B3A4}
+.auth-form input[type=email]:focus,.auth-form input[type=password]:focus{border-color:var(--kec-green);box-shadow:0 0 0 3px var(--kec-badge-green-bg)}
+.auth-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 20px}
+.auth-chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--kec-ink);cursor:pointer;user-select:none}
+.auth-chk input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--kec-hairline);
+  border-radius:4px;background:#fff;cursor:pointer;flex:none;transition:background .14s ease,border-color .14s ease;position:relative}
+.auth-chk input:checked{background:var(--kec-green);border-color:var(--kec-green)}
+.auth-chk input:checked::after{content:'';position:absolute;left:5px;top:1.5px;width:4px;height:8px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+.auth-link{font-size:12.5px;font-weight:600;color:var(--kec-green);cursor:pointer}
+.auth-link:hover{color:var(--kec-green-deep);text-decoration:underline}
+.auth-go{width:100%;height:44px;font-size:14px;border-radius:9px;justify-content:center}
+.auth-note{font-size:11.5px;color:var(--kec-muted);line-height:1.6;margin-top:18px;
+  padding-top:16px;border-top:1px solid var(--kec-hairline)}
+.auth-pow{font-size:10.5px;color:#B7BFB2;text-align:center;margin-top:18px;letter-spacing:.3px}
+.auth-error{color:var(--kec-neg);font-size:12.5px;margin-bottom:16px;display:none;background:#F7E9E5;
+  padding:10px 12px;border-radius:8px;border:1px solid #E7CCC4;line-height:1.45}
+@media (max-width:860px){ .auth-brand{display:none} .auth-panel{flex:1 1 100%} }
+
+/* the small overlay dialogs keep the old centred card */
+#customPrompt,#deletePrompt{background:rgba(240,245,236,.95);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.auth-box { background: #fff; padding: 25px 30px; border-radius: 14px; border: 1px solid var(--kec-hairline); box-shadow: 0 18px 60px rgba(20,61,30,.15); width: 380px; text-align: center; animation: krise 0.3s ease-out; }
+.auth-box h2 { font-size: 16px; color: var(--kec-green-deep); margin-bottom: 8px; font-weight: 700; letter-spacing: -0.3px; }
+.auth-box p { font-size: var(--fs-small); color: var(--kec-muted); margin-bottom: 20px; line-height: 1.5; }
+.auth-box input { width: 100%; margin-bottom: 12px; padding: 11px 13px; border: 1px solid var(--kec-hairline); border-radius: 8px; font-family: var(--kec-font); font-size: var(--fs-body); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; background: var(--kec-paper); }
 .auth-box input:focus { border-color: var(--kec-green); background: #fff; box-shadow: 0 0 0 3px var(--kec-badge-green-bg); }
-.auth-box .btn { width: 100%; padding: 12px; font-size: var(--fs-body); border-radius: 8px; height: auto; justify-content: center; margin-bottom: 8px; }
-.auth-error { color: var(--kec-neg); font-size: var(--fs-small); margin-bottom: 15px; display: none; background: #F7E9E5; padding: 8px; border-radius: 6px; border: 1px solid #E7CCC4; }
-.auth-sep { margin: 20px 0; border-top: 1px dashed var(--kec-hairline); position: relative; }
-.auth-sep span { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 10px; font-size: 10px; color: var(--kec-muted); font-weight: 500; }
+.auth-box .btn { padding: 10px; font-size: var(--fs-body); border-radius: 8px; height: auto; justify-content: center; }
 
 /* VIEWER MODE: structural control is via JS, CSS only handles pointer events */
 body.viewer-mode #add { display: none !important; }
@@ -338,14 +377,70 @@ body.viewer-mode #drBody .chips { pointer-events: none; opacity: 0.8; }
 body.viewer-mode #drBody .chip-add { display: none !important; }
 
 /* HEADER USER INFO */
-.user-badge{display:flex;align-items:center;justify-content:flex-end;gap:6px;
+.user-badge{display:flex;align-items:center;justify-content:flex-end;gap:8px;
   font-size:var(--fs-badge);color:var(--kec-muted);line-height:1.5;white-space:nowrap}
+.user-badge #displayUser{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.user-badge__who{overflow:hidden;text-overflow:ellipsis}
 .user-badge b{color:var(--kec-green-deep);font-weight:600}
-.user-badge__r{font-family:var(--kec-mono);font-size:8px;line-height:1.4;color:var(--kec-green);
-  background:var(--kec-surface);border:1px solid var(--kec-badge-green-bd);padding:0 6px;border-radius:9px}
-.logout-btn{color:var(--kec-neg);cursor:pointer;text-decoration:none;padding-left:7px;
-  border-left:1px solid var(--kec-hairline);border-bottom:1px solid transparent}
+.user-badge__r{font-family:var(--kec-mono);font-size:8px;line-height:1.6;color:var(--kec-green);
+  background:var(--kec-surface);border:1px solid var(--kec-badge-green-bd);padding:1px 7px;border-radius:9px;
+  text-transform:uppercase;letter-spacing:.5px;flex:none}
+.logout-btn{color:var(--kec-neg);cursor:pointer;text-decoration:none;padding-left:8px;margin-left:1px;
+  border-left:1px solid var(--kec-hairline);border-bottom:1px solid transparent;flex:none}
 .logout-btn:hover{border-bottom-color:var(--kec-neg)}
+
+/* ===================== DATE PICKER =====================
+   The browser's own calendar is operating-system chrome and cannot be styled, so
+   dates use a calendar built from the same tokens as everything else. It lives in
+   the portal layer for the same containing-block reason as the select panels. */
+.dpk{position:fixed;top:0;left:0;z-index:9600;display:none;background:#fff;
+  border:1px solid var(--kec-hairline);border-radius:12px;box-shadow:0 16px 46px rgba(20,61,30,.18);
+  transform-origin:top left;font-family:var(--kec-font);color:var(--kec-ink);direction:ltr;
+  width:250px;padding:11px 12px 10px;user-select:none}
+.dpk.open{display:block;animation:selin .13s ease}
+.dpk__h{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.dpk__t{flex:1;text-align:center;font-size:12px;font-weight:600;color:var(--kec-green-deep);cursor:pointer;
+  padding:3px 6px;border-radius:6px}
+.dpk__t:hover{background:var(--kec-surface)}
+.dpk__nav{width:24px;height:24px;flex:none;border:1px solid var(--kec-hairline);background:#fff;border-radius:6px;
+  cursor:pointer;color:var(--kec-green-deep);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--kec-font);transition:background .12s ease,border-color .12s ease}
+.dpk__nav:hover{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd)}
+.dpk__g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dpk__w{font-size:9px;font-weight:600;color:var(--kec-muted);text-align:center;padding:3px 0 5px;text-transform:uppercase;letter-spacing:.4px}
+.dpk__d{height:27px;border:none;background:transparent;border-radius:6px;font-family:var(--kec-font);font-size:11.5px;
+  color:var(--kec-ink);cursor:pointer;transition:background .1s ease,color .1s ease;font-feature-settings:'tnum' 1}
+.dpk__d:hover{background:var(--kec-surface-2);color:var(--kec-green-deep)}
+.dpk__d.out{color:#C3CBBE}
+.dpk__d.today{box-shadow:inset 0 0 0 1px var(--kec-badge-green-bd);font-weight:600}
+.dpk__d.on{background:var(--kec-green);color:#fff;font-weight:600}
+.dpk__d.on:hover{background:var(--kec-green-deep);color:#fff}
+.dpk__m{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.dpk__m button{height:32px;border:1px solid var(--kec-hairline);background:#fff;border-radius:7px;cursor:pointer;
+  font-family:var(--kec-font);font-size:11.5px;color:var(--kec-ink)}
+.dpk__m button:hover{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd);color:var(--kec-green-deep)}
+.dpk__m button.on{background:var(--kec-green);border-color:var(--kec-green);color:#fff;font-weight:600}
+.dpk__f{display:flex;gap:6px;margin-top:9px;padding-top:8px;border-top:1px solid var(--kec-hairline)}
+.dpk__f .btn{flex:1;justify-content:center;height:26px;font-size:11px}
+
+/* the date field itself: a button that reads like every other input */
+.f__i--date,.cell-in--date{cursor:pointer;text-align:left}
+.f__i--date .dv,.cell-in--date .dv{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f__i--date .dic,.cell-in--date .dic{flex:none;opacity:.55}
+.f__i--date{display:flex;align-items:center;gap:8px}
+.f__i--date.ph .dv{color:#A9B3A4}
+
+/* inline cell editor — matches the density of the row it replaces */
+.cell-in{width:100%;font-family:var(--kec-font);font-size:var(--fs-small);line-height:1.4;color:var(--kec-ink);
+  border:1px solid var(--kec-green);border-radius:5px;padding:2px 6px;height:22px;background:#fff;outline:none;
+  box-shadow:0 0 0 2px var(--kec-badge-green-bg);-webkit-appearance:none;appearance:none;margin:0}
+.cell-in[type=number]{text-align:right;font-family:var(--kec-mono);font-size:9px;letter-spacing:-.1px}
+.cell-in::-webkit-outer-spin-button,.cell-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.cell-in[type=number]{-moz-appearance:textfield}
+.cell-in--date{display:flex;align-items:center;gap:6px;text-align:left}
+.cell-in--date .dv{font-family:var(--kec-font);font-size:var(--fs-small)}
+.applog td.editing{padding-top:2px;padding-bottom:2px}
+@media print{.dpk{display:none !important}}
 
 /* ===================== PORTALED POPOVER =====================
    Same containing-block problem as the dropdown panels: anything anchored to a
@@ -423,6 +518,7 @@ select.st__in{cursor:pointer;-webkit-appearance:none;appearance:none;padding-rig
 .st__fg{display:flex;flex-direction:column;min-width:0}
 .st__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 13px;margin-bottom:12px}
 .st__ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.st__dim{font-size:10.5px;color:var(--kec-muted);font-family:var(--kec-mono)}
 .st__o{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--kec-hairline);
   border-radius:7px;background:#fff;transition:border-color .12s ease}
 .st__o:hover{border-color:var(--kec-badge-green-bd);background:var(--kec-paper)}
@@ -477,22 +573,45 @@ body.viewer-mode #settings{display:none !important}
 body.viewer-mode .acts{display:none}
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
+/* Sign-in gate: keep the register hidden until Firebase has resolved the session, so
+   the sheet never flashes on screen before the login page. The overlay covers it from
+   the first frame, and the form itself stays hidden until we know a login is needed. */
+body.auth-checking .page{visibility:hidden}
+body.auth-checking .auth-form{visibility:hidden}
 </style>
 </head>
-<body>
+<body class="auth-checking">
 
 <!-- AUTH OVERLAY -->
-<div class="auth-overlay" id="authScreen" style="display: none;">
-  <div class="auth-box">
-    <img src="KEC.png" alt="KEC Logo" onerror="this.style.display='none'">
-    <h2 id="authTitle"></h2>
-    <p id="authSub"></p>
-    <div class="auth-error" id="authError">Invalid username or password</div>
-    <input type="text" id="authUsername" placeholder="Username" autocomplete="off">
-    <input type="password" id="authPassword" placeholder="Password">
-    <button class="btn btn--go" id="authBtn">Sign In securely</button>
-    <div class="auth-sep"><span>OR</span></div>
-    <button class="btn" id="viewerBtn">Continue as Viewer (Read-only)</button>
+<div class="auth-overlay" id="authScreen" style="display: flex;">
+  <div class="auth-brand">
+    <div class="auth-brand__in">
+      <div class="auth-mark"><img src="KEC.png" alt="Knowledge Economic City" onerror="this.parentNode.classList.add('auth-mark--none')"></div>
+      <h1 class="auth-brand__t" id="authTitle"></h1>
+      <p class="auth-brand__s">Knowledge Economic City</p>
+      <span class="auth-brand__rule"></span>
+    </div>
+  </div>
+  <div class="auth-panel">
+    <form class="auth-form" id="authForm" autocomplete="on" novalidate>
+      <h2 class="auth-form__t">Welcome back</h2>
+      <p class="auth-form__s" id="authSub"></p>
+      <div class="auth-error" id="authError">That email and password do not match an account.</div>
+
+      <label class="auth-lb" for="authEmail">Email</label>
+      <input type="email" id="authEmail" placeholder="name@madinahkec.com" autocomplete="username" spellcheck="false">
+
+      <label class="auth-lb" for="authPassword">Password</label>
+      <input type="password" id="authPassword" placeholder="Password" autocomplete="current-password">
+
+      <div class="auth-row">
+        <label class="auth-chk"><input type="checkbox" id="authRemember"><span>Keep me signed in on this device</span></label>
+      </div>
+
+      <button class="btn btn--go auth-go" id="authBtn" type="submit">Sign In securely</button>
+      <p class="auth-note">Every account is issued by an administrator. Viewers sign in with their own account and see the register read-only.</p>
+      <p class="auth-pow">Powered By : Sa^^3R</p>
+    </form>
   </div>
 </div>
 
@@ -622,6 +741,7 @@ body.viewer-mode .acts{display:none}
           <button class="dr__tab" id="stTab5" type="button" data-t="5">Data &amp; Reset</button>
           <button class="dr__tab" id="stTab6" type="button" data-t="6">Recycle Bin <span class="cnt" id="binCnt">0</span></button>
           <button class="dr__tab" id="stTab7" type="button" data-t="7">Users</button>
+          <button class="dr__tab" id="stTab8" type="button" data-t="8">Sign-in Log</button>
         </div>
         <div class="dr__b st__b">
           <div class="st__pane" id="stPane1"><div class="st2">
@@ -634,6 +754,7 @@ body.viewer-mode .acts{display:none}
           <div class="st__pane" id="stPane5"><div class="st__main" id="stData" style="width:100%"></div></div>
           <div class="st__pane" id="stPane6"><div class="st__main" id="stTrash" style="width:100%"></div></div>
           <div class="st__pane" id="stPane7"><div class="st__main" id="stUsers" style="width:100%"></div></div>
+          <div class="st__pane" id="stPane8"><div class="st__main" id="stLogins" style="width:100%"></div></div>
         </div>
         <div class="dr__f">
           <span style="font-size:11px;color:var(--kec-muted)" id="stStatus">Every change is saved immediately.</span>
@@ -674,7 +795,7 @@ var APP = {
      has no lifecycle. `into` must be a calc field in SCHEMA. */
   progress:   { from: 'stage', into: 'progress' },
   /* value \u00d7 progress. Set to null when nothing is weighted. */
-  weighted:   { value: 'deal_value', into: 'weighted_value' },
+  weighted:   null,
   /* Turn a year into an age shown beside it. Set to null if not needed. */
   age:        { field: 'year_established', unit: 'yrs' }
 };
@@ -1089,16 +1210,6 @@ var SCHEMA = [
     "column": true
   },
   {
-    "key": "weighted_value",
-    "label": "Weighted Value",
-    "short": "Weighted",
-    "group": "D",
-    "type": "calc",
-    "options": [],
-    "help": "Deal value × stage probability",
-    "column": true
-  },
-  {
     "key": "stage",
     "label": "Current Stage",
     "short": "Stage",
@@ -1302,7 +1413,7 @@ var DEFAULT_COLS = [
   "investor_category",
   "stage",
   "deal_value",
-  "weighted_value",
+  "next_action",
   "priority",
   "progress",
   "follow_up"
@@ -1335,7 +1446,7 @@ var COMPOSITES = {
 /* Derived cell values. Any field of type 'calc' needs an entry here. */
 var CALC = {
   progress:       function (r) { return progressOf(r) + '%'; },
-  weighted_value: function (r) { return money(weightedOf(r)) || ''; }
+  /* this register carries no weighted figure */
 };
 
 /* Colour per value. Tones: green (good) \u00b7 gold (attention) \u00b7 neg (bad) \u00b7 mute (neutral).
@@ -1356,17 +1467,23 @@ var KPIS = [
       var done = R.filter(function (r) { return progressOf(r) === 100; }).length;
       return { v: R.length, unit: plural(R.length, 'record'), sub: open + ' open \u00b7 ' + done + ' signed' };
   }},
+  { icon: 'i-target', label: 'Total Deal Value', calc: function (R) {
+      var t = sum(R, function (r) { return +r.deal_value || 0; });
+      var n = R.filter(function (r) { return +r.deal_value > 0; }).length;
+      return { v: money(t) || '\u2014', sub: n ? 'across ' + n + ' ' + plural(n, 'record') : 'nothing valued yet',
+               dir: t ? 'up' : 'flat' };
+  }},
   { icon: 'i-trend', label: 'Active Pipeline', calc: function (R) {
       var t = sum(R, function (r) { return progressOf(r) < 100 ? (+r.deal_value || 0) : 0; });
-      return { v: money(t) || '\u2014', sub: 'open opportunities', dir: t ? 'up' : 'flat' };
-  }},
-  { icon: 'i-target', label: 'MoU Stage or Later', calc: function (R) {
-      var t = sum(R, function (r) { return progressOf(r) < 100 ? weightedOf(r) : 0; });
-      return { v: money(t) || '\u2014', sub: 'stage-weighted', dir: t ? 'up' : 'flat' };
+      var signed = sum(R, function (r) { return progressOf(r) === 100 ? (+r.deal_value || 0) : 0; });
+      return { v: money(t) || '\u2014', sub: signed ? money(signed) + ' signed' : 'open opportunities',
+               dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-star', label: 'High Priority', calc: function (R) {
-      var n = R.filter(function (r) { return progressOf(r) >= 75; }).length;
-      return { v: n, unit: plural(n, 'record'), sub: 'MoU stage or later', dir: n ? 'up' : 'flat' };
+      var n = R.filter(function (r) { return r.priority === 'Critical' || r.priority === 'High'; }).length;
+      var crit = R.filter(function (r) { return r.priority === 'Critical'; }).length;
+      return { v: n, unit: plural(n, 'record'), sub: crit ? crit + ' critical' : 'critical or high',
+               dir: n ? 'up' : 'flat' };
   }},
   { icon: 'i-clock', label: 'Overdue Follow-up', calc: function (R) {
       var n = R.filter(isOverdue).length;
@@ -1378,9 +1495,12 @@ var KPIS = [
   }}
 ];
 
-/* Accounts created on first run. The administrator manages them from Settings
-   afterwards, and these are never read again. */
-var SEED_USERS = { 'samer': '141212', 'zeyad': '121414' };
+/* Accounts created on first run, keyed by work email. Every account — including
+   viewers — is managed from Settings afterwards; nobody signs in without one. */
+var SEED_USERS = {
+  'shamdan@madinahkec.com':     { password: '141212', name: 'Samer Hamdan',   role: 'admin' },
+  'zalshowaier@madinahkec.com': { password: '121414', name: 'Z. Al-Showaier', role: 'admin' }
+};
 
 /* ============================ END DOMAIN ============================ */
 
@@ -1398,17 +1518,20 @@ var COLLECTION = APP.collection;
 var ROLES = [
   { id: 'admin',  label: 'Administrator', note: 'Full control, including deletion and these settings.' },
   { id: 'editor', label: 'Contributor',   note: 'Adds and edits records. Cannot delete anything.' },
-  { id: 'viewer', label: 'Viewer',        note: 'Read-only. Can still choose which columns to see.' }
+  { id: 'viewer', label: 'Viewer',        note: 'Read-only. Signs in with their own account and can still choose which columns to see.' }
 ];
 function roleLabel (id) { var r = ROLES.filter(function (x) { return x.id === id; })[0]; return r ? r.label : id; }
 function isRole (id) { return !!(currentUser && currentUser.role === id); }
 function canDelete () { return isRole('admin'); }
 function canEdit ()   { return isRole('admin') || isRole('editor'); }
 
+function normEmail (v) { return String(v || '').trim().toLowerCase(); }
+function isEmail (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normEmail(v)); }
+
 /* Not cryptography — the whole register is a local file. This only keeps passwords
    from sitting in plain sight in localStorage, and is stated as such in Settings. */
 function pwHash (u, p) {
-  var s = 'kec\u0001' + String(u).toLowerCase() + '\u0002' + String(p), h1 = 0x811c9dc5, h2 = 0x1000193;
+  var s = 'kec\u0001' + normEmail(u) + '\u0002' + String(p), h1 = 0x811c9dc5, h2 = 0x1000193;
   for (var i = 0; i < s.length; i++) {
     var c = s.charCodeAt(i);
     h1 = ((h1 ^ c) * 16777619) >>> 0;
@@ -1417,53 +1540,46 @@ function pwHash (u, p) {
   return ('0000000' + h1.toString(36)).slice(-7) + ('0000000' + h2.toString(36)).slice(-7);
 }
 /* First run only: the seed accounts from the domain block become real accounts,
-   after which the administrator manages them from Settings. */
+   after which the administrator manages them from Settings.
+   Also repairs accounts written by an earlier build that signed in by username —
+   those cannot log in any more, so the seeded ones are restored by email and the
+   rest are dropped for the administrator to re-issue. */
 function seedUsers () {
-  if (CFG.users && CFG.users.length) return;
+  CFG.users = CFG.users || [];
   var seed = (typeof SEED_USERS === 'object' && SEED_USERS) || {};
-  CFG.users = Object.keys(seed).map(function (u) {
-    return { u: u, h: pwHash(u, seed[u]), role: 'admin' };
+  var legacy = CFG.users.filter(function (x) { return !x.e; }).length;
+  if (legacy) CFG.users = CFG.users.filter(function (x) { return !!x.e; });
+  Object.keys(seed).forEach(function (e) {
+    if (findUser(e)) return;
+    var d = seed[e];
+    CFG.users.push({ e: normEmail(e), h: pwHash(e, d.password), role: d.role || 'admin', name: d.name || '' });
   });
 }
-function findUser (u) {
-  u = String(u || '').trim().toLowerCase();
-  return (CFG.users || []).filter(function (x) { return x.u === u; })[0] || null;
+function findUser (e) {
+  e = normEmail(e);
+  return (CFG.users || []).filter(function (x) { return normEmail(x.e) === e; })[0] || null;
 }
-var currentUser = null; 
+function userName (x) { return (x && (x.name || String(x.e || '').split('@')[0])) || ''; }
+var currentUser = null;
+/* Firebase handles (app/auth/firestore modules) once initialised, plus one-shot boot
+   guards. Login is now Firebase Email/Password — see initFirebase / resolveAndBoot. */
+var FB = null, booted = false, pendingSignInLog = false;
 
 function initAuth() {
-    /* Accounts live in the shared configuration, so it has to be read before login. */
+    /* Accounts (role + display name) live in the shared configuration; the passwords
+       live in Firebase Authentication. Load the cached config so the role map is
+       available, then let Firebase's own persisted session decide who is signed in. */
     loadConfig(); seedUsers();
+    /* The log has to be in memory before the first sign-in is appended, or each
+       sign-in starts from an empty array and overwrites the history. */
+    try { LOGINS = JSON.parse(localStorage.getItem(LSU + '_logins') || '[]') || []; } catch (e) { LOGINS = []; }
+    purgeLogins();
     document.title = 'KEC \u00b7 ' + APP.title;
     $('#authTitle').textContent = APP.title;
-    $('#authSub').innerHTML = esc(APP.subtitle) + '<br>Please sign in to continue.';
+    $('#authSub').textContent = 'Sign in to access the ' + APP.title;
 
-    var storedUser = localStorage.getItem(LSU + '_user');
-    var storedRole = localStorage.getItem(LSU + '_role');
-
-    if (storedUser && storedRole && storedRole !== 'viewer') {
-        var acc = findUser(storedUser);
-        if (!acc) { localStorage.removeItem(LSU + '_user'); localStorage.removeItem(LSU + '_role'); storedUser = null; }
-        else storedRole = acc.role;
-    }
-    if (storedUser && storedRole) {
-        currentUser = { username: storedUser, role: storedRole };
-        applyRoleUI();
-        $('#authScreen').style.display = 'none';
-        bootApp(); 
-    } else {
-        $('#authScreen').style.display = 'flex';
-        $('#authUsername').focus();
-    }
-
-    $('#authBtn').onclick = handleLogin;
-    $('#viewerBtn').onclick = loginAsViewer;
-    $('#authPassword').onkeydown = function(e) { if(e.key === 'Enter') handleLogin(); };
-    $('#logoutBtn').onclick = function() {
-        localStorage.removeItem(LSU + '_user');
-        localStorage.removeItem(LSU + '_role');
-        location.reload();
-    };
+    $('#authForm').onsubmit = function (e) { e.preventDefault(); handleLogin(); };
+    $('#logoutBtn').onclick = function () { doLogout(); };
 
     // Custom Prompts
     $('#cpCancel').onclick = function() { closePrompt(false); };
@@ -1474,31 +1590,170 @@ function initAuth() {
     };
     $('#dpCancel').onclick = function() { closeDelete(false); };
     $('#dpConfirm').onclick = function() { closeDelete(true); };
+
+    /* Bring Firebase up, then hand control to the auth-state listener. A persisted
+       session boots straight into the register; otherwise the sign-in screen shows. */
+    initFirebase().then(function () {
+        FB.authMod.onAuthStateChanged(FB.auth, function (user) {
+            if (user && user.email) { resolveAndBoot(user); }
+            else { resetAuthBtn(); showAuth(); }
+        });
+    }).catch(function () {
+        showAuth();
+        showAuthError('Cannot reach the sign-in service. Check your connection and reload the page.');
+    });
+}
+
+/* Load the Firebase SDK once and keep the module + instance handles. Both the
+   sign-in flow and the live data listeners reuse this single connection. */
+function initFirebase () {
+    if (FB) return Promise.resolve(FB);
+    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.projectId) return Promise.reject(new Error('no-config'));
+    return Promise.all([
+        import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js'),
+        import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js')
+    ]).then(function (m) {
+        var app = m[0].initializeApp(FIREBASE_CONFIG);
+        FB = { appMod: m[0], fs: m[1], authMod: m[2], app: app,
+               db: m[1].getFirestore(app), auth: m[2].getAuth(app) };
+        remote = { fs: FB.fs, db: FB.db };
+        return FB;
+    });
+}
+
+function showAuth () {
+    document.body.classList.remove('auth-checking');   // reveal the form; stop hiding the sheet
+    $('#authScreen').style.display = 'flex';
+    setTimeout(function () { var e = $('#authEmail'); if (e) e.focus(); }, 60);
+}
+function showAuthError (msg) {
+    var err = $('#authError'); if (!err) return;
+    if (!msg) { err.style.display = 'none'; err.textContent = ''; return; }
+    err.textContent = msg; err.style.display = 'block';
+}
+function resetAuthBtn () {
+    var btn = $('#authBtn'); if (btn) { btn.disabled = false; btn.textContent = 'Sign In securely'; }
+}
+
+/* A session is an email plus an expiry. "Remember me" makes it a week; otherwise it
+   lasts until the tab is closed. The role is re-read from the account on every load,
+   so a change an administrator makes takes effect without the person being deleted. */
+function readSession () {
+    try {
+        var raw = localStorage.getItem(LSU + '_sess') || sessionStorage.getItem(LSU + '_sess');
+        if (!raw) return null;
+        var s = JSON.parse(raw);
+        if (!s || !s.e) return null;
+        if (s.exp && Date.now() > s.exp) { clearSession(); return null; }
+        return s;
+    } catch (e) { return null; }
+}
+function writeSession (email, remember) {
+    var s = JSON.stringify({ e: normEmail(email), exp: remember ? Date.now() + 7 * 864e5 : 0 });
+    try {
+        clearSession();
+        if (remember) localStorage.setItem(LSU + '_sess', s);
+        else sessionStorage.setItem(LSU + '_sess', s);
+    } catch (e) {}
+}
+function clearSession () {
+    try {
+        localStorage.removeItem(LSU + '_sess'); sessionStorage.removeItem(LSU + '_sess');
+        localStorage.removeItem(LSU + '_user'); localStorage.removeItem(LSU + '_role');
+    } catch (e) {}
 }
 
 function handleLogin() {
-    var u = $('#authUsername').value.trim().toLowerCase();
-    var p = $('#authPassword').value.trim();
-    var acc = findUser(u);
-    if (acc && acc.h === pwHash(u, p)) {
-        currentUser = { username: acc.u, role: acc.role };
-        proceedLogin();
-    } else {
-        $('#authError').style.display = 'block';
-    }
+    var e = normEmail($('#authEmail').value), p = $('#authPassword').value;
+    if (!isEmail(e)) { showAuthError('Enter a valid email address.'); $('#authEmail').focus(); return; }
+    if (!p) { showAuthError('Enter your password.'); $('#authPassword').focus(); return; }
+    if (!FB) { showAuthError('Sign-in service is still loading — try again in a moment.'); return; }
+    var btn = $('#authBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+    var A = FB.authMod;
+    var persist = $('#authRemember').checked ? A.browserLocalPersistence : A.browserSessionPersistence;
+    A.setPersistence(FB.auth, persist).catch(function () {}).then(function () {
+        return A.signInWithEmailAndPassword(FB.auth, e, p);
+    }).then(function () {
+        showAuthError('');
+        $('#authPassword').value = '';
+        pendingSignInLog = true;   // resolveAndBoot (via onAuthStateChanged) records it
+    }).catch(function (ex) {
+        resetAuthBtn();
+        var c = (ex && ex.code) || '';
+        if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-email')
+            showAuthError('That email and password do not match an account.');
+        else if (c === 'auth/too-many-requests')
+            showAuthError('Too many attempts. Wait a minute, then try again.');
+        else if (c === 'auth/network-request-failed')
+            showAuthError('Network problem — check your connection and try again.');
+        else showAuthError('Sign-in failed' + (c ? ' (' + c + ')' : '') + '.');
+        $('#authPassword').select();
+    });
 }
 
-function loginAsViewer() {
-    currentUser = { username: 'Guest Viewer', role: 'viewer' };
-    proceedLogin();
+/* Signed in with Firebase. Pull the freshest role map, confirm this email is
+   provisioned in the register, then boot. An authenticated email that has no
+   account here is refused rather than shown someone else's data. */
+function resolveAndBoot (user) {
+    var proceed = function () {
+        seedUsers();
+        var acc = findUser(user.email);
+        if (!acc) {
+            showAuth();
+            showAuthError('This email is signed in but has no access to the register. Ask an administrator to add you under Settings › Users.');
+            resetAuthBtn();
+            try { FB.authMod.signOut(FB.auth); } catch (e) {}
+            return;
+        }
+        currentUser = { email: acc.e, username: userName(acc), role: acc.role, uid: user.uid };
+        applyRoleUI();
+        if (pendingSignInLog) { pendingSignInLog = false; recordSignIn(acc); }
+        document.body.classList.remove('auth-checking');   // reveal the register
+        $('#authScreen').style.display = 'none';
+        if (!booted) { booted = true; bootApp(); }
+        else { renderAll(); }
+    };
+    FB.fs.getDoc(FB.fs.doc(FB.db, COLLECTION, '_metadata')).then(function (snap) {
+        if (snap.exists()) {
+            var d = snap.data();
+            if (d.config) CFG = normCfg(d.config);
+            if (d.owners) OWNERS = d.owners;
+            if (d.options) DYNAMIC_OPTS = d.options;
+        }
+    }).catch(function () {}).then(proceed);
 }
 
-function proceedLogin() {
-    localStorage.setItem(LSU + '_user', currentUser.username);
-    localStorage.setItem(LSU + '_role', currentUser.role);
-    $('#authScreen').style.display = 'none';
-    applyRoleUI();
-    bootApp();
+function handleForgot () {
+    var e = normEmail($('#authEmail').value);
+    if (!isEmail(e)) { showAuthError('Type your email above first, then tap Forgot password.'); $('#authEmail').focus(); return; }
+    if (!FB) { showAuthError('Sign-in service is still loading — try again in a moment.'); return; }
+    FB.authMod.sendPasswordResetEmail(FB.auth, e).then(function () {
+        showAuthError('');
+        toast('A password-reset link has been sent to ' + e + '.');
+    }).catch(function (ex) {
+        toast('Could not send the reset link: ' + ((ex && ex.code) || 'unknown') + '.');
+    });
+}
+
+function doLogout () {
+    var done = function () { location.reload(); };
+    if (FB && FB.auth) { FB.authMod.signOut(FB.auth).then(done, done); }
+    else done();
+}
+
+/* Create a real Firebase Email/Password account without disturbing the admin's own
+   session, by doing it on a throwaway secondary app instance that is then discarded. */
+function createFirebaseUser (email, password) {
+    if (!FB) return Promise.reject({ code: 'no-firebase' });
+    var secApp = FB.appMod.initializeApp(FIREBASE_CONFIG, 'kec-provision-' + Date.now());
+    var secAuth = FB.authMod.getAuth(secApp);
+    var cleanup = function () { try { FB.appMod.deleteApp(secApp); } catch (e) {} };
+    return FB.authMod.createUserWithEmailAndPassword(secAuth, email, password)
+        .then(function (cred) {
+            return FB.authMod.signOut(secAuth).catch(function () {}).then(function () { return cred.user.uid; });
+        })
+        .then(function (uid) { cleanup(); return uid; }, function (err) { cleanup(); throw err; });
 }
 
 function applyRoleUI() {
@@ -1506,9 +1761,8 @@ function applyRoleUI() {
     var disp = document.getElementById('displayUser');
     var logout = document.getElementById('logoutBtn');
     if (disp && logout) {
-        disp.innerHTML = 'Logged in as <b>' + esc(currentUser.username) + '</b>' +
-            '<span class="user-badge__r">' + esc(currentUser.role) + '</span>';
-        disp.title = roleLabel(currentUser.role);
+        disp.innerHTML = '<span class="user-badge__who">Signed in as <b>' + esc(currentUser.username) + '</b></span>';
+        disp.title = (currentUser.email || '') + ' \u2014 ' + roleLabel(currentUser.role);
         logout.style.display = 'inline';
     }
     document.body.classList.toggle('viewer-mode', currentUser.role === 'viewer');
@@ -1603,6 +1857,9 @@ var BUILD = 7, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZ
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
 var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
+/* Sign-in history: who opened the register, when, from where. Capped so the
+   document never grows without bound. */
+var LOGINS = [], LOGIN_KEEP = 300, LOGIN_DAYS = 90, CLIENT_IP = '';
 
 var F = {}; SCHEMA.forEach(function (f) { F[f.key] = f; });
 var COLFIELDS = SCHEMA.filter(function (f) { return f.column !== false; });
@@ -1717,7 +1974,7 @@ function tagClass  (k, v) { return TAG_OF[toneOf(k, v)] || 'na'; }
 
 var Local = {
   read:  function () { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } },
-  write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH })); } catch (e) {} }
+  write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH, logins: LOGINS })); } catch (e) {} }
 };
 function readCols () {
   var stored = null;
@@ -1773,6 +2030,7 @@ function initLocal () {
       OWNERS = s.owners || [];
       DYNAMIC_OPTS = s.options || {};
       TRASH = Array.isArray(s.trash) ? s.trash : [];
+      if (Array.isArray(s.logins) && s.logins.length >= LOGINS.length) LOGINS = s.logins;
       /* the purge has to be written back, or an expired record reappears next load */
       if (purgeTrash()) Local.write();
       if (s.config) { CFG = normCfg(s.config); seedUsers(); rebuildSchema(); refreshGroupTabs(); }
@@ -1780,14 +2038,14 @@ function initLocal () {
   renderAll(); syncColCount();
 }
 function initStore () {
-  if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.projectId) { initLocal(); return; }
-  Promise.all([
-    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js')
-  ]).then(function (m) {
-    var app = m[0].initializeApp(FIREBASE_CONFIG), fs = m[1], db = fs.getFirestore(app);
-    remote = { fs: fs, db: db };
-    
+  /* Firebase is already initialised and the current user is signed in with their own
+     Email/Password account (see initFirebase / resolveAndBoot). We only wire the live
+     listeners here and reuse that one authenticated connection. */
+  if (!FB) { initLocal(); return; }
+  var fs = FB.fs, db = FB.db;
+  remote = { fs: fs, db: db };
+  {
+
     fs.onSnapshot(fs.doc(db, COLLECTION, '_metadata'), function (docSnap) {
       if (docSnap.exists()) {
         var data = docSnap.data();
@@ -1803,6 +2061,19 @@ function initStore () {
       }
     });
 
+    fs.onSnapshot(fs.doc(db, COLLECTION, '_logins'), function (docSnap) {
+      var d = docSnap.exists() ? docSnap.data() : null;
+      var remoteLogins = (d && Array.isArray(d.items)) ? d.items : [];
+      /* Merge rather than replace: this browser may hold entries the document has
+         not received yet. */
+      var seen = {}, merged = remoteLogins.concat(LOGINS).filter(function (x) {
+        if (!x || !x.id || seen[x.id]) return false; seen[x.id] = 1; return true;
+      });
+      merged.sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+      LOGINS = merged; purgeLogins();
+      if ($('#st').classList.contains('open')) renderStLogins();
+    });
+
     fs.onSnapshot(fs.doc(db, COLLECTION, '_trash'), function (docSnap) {
       var d = docSnap.exists() ? docSnap.data() : null;
       TRASH = (d && Array.isArray(d.items)) ? d.items : [];
@@ -1816,21 +2087,28 @@ function initStore () {
          Without carrying the draft across, the open form loses its record and the
          Save button silently does nothing. */
       var drafts = DATA.filter(function (r) { return r._draft; });
-      DATA = snap.docs.filter(function(d) { return d.id !== '_metadata' && d.id !== '_trash'; })
+      DATA = snap.docs.filter(function(d) { return d.id.charAt(0) !== '_'; })
                       .map(function (d) { var o = d.data(); o._id = d.id; return o; })
                       .sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
       drafts.forEach(function (d) {
         if (!DATA.some(function (r) { return r._id === d._id; })) DATA.push(d);
       });
       renderAll();
-    }, function () { remote = null; initLocal(); });
-  }).catch(function () { initLocal(); });
+    }, function (e) { console.warn('[KEC] records listener error', e && e.code); remote = null; initLocal(); });
+  }
 }
 function bare (r) { var o = Object.assign({}, r); delete o._id; delete o._draft; return o; }
 function save (rec) {
   stamp(rec);
-  if (remote) remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, rec._id), bare(rec));
-  else { Local.write(); renderAll(); }
+  if (remote) {
+    /* Surface write failures instead of swallowing them — a silently dropped write is
+       exactly why a record could look saved on screen yet never reach the database. */
+    remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, rec._id), bare(rec))
+      .catch(function (e) {
+        toast('Could not save #' + pid(rec) + ' to the database (' + ((e && e.code) || 'error') + '). It is kept on this device only.');
+      });
+    Local.write();
+  } else { Local.write(); renderAll(); }
 }
 function saveAll () {
   if (remote) DATA.forEach(function (r) { remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, r._id), bare(r)); });
@@ -1842,6 +2120,54 @@ function drop (rec) {
 }
 
 /* ===================== RECYCLE BIN ===================== */
+/* Best effort only: the lookup is a third-party call that fails offline, behind a
+   proxy, or when the page is opened from disk without a network. The entry is
+   written either way — the address is a nice-to-have, not a gate. */
+function resolveIp (cb) {
+  if (CLIENT_IP) { cb(CLIENT_IP); return; }
+  var done = false, finish = function (v) { if (done) return; done = true; CLIENT_IP = v || ''; cb(CLIENT_IP); };
+  setTimeout(function () { finish(''); }, 2500);
+  try {
+    fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { finish(j && j.ip); })
+      .catch(function () { finish(''); });
+  } catch (e) { finish(''); }
+}
+function saveLogins () {
+  if (remote) remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, '_logins'), { items: LOGINS });
+  try { localStorage.setItem(LSU + '_logins', JSON.stringify(LOGINS)); } catch (e) {}
+}
+function purgeLogins () {
+  var cut = Date.now() - LOGIN_DAYS * DAY_MS, before = LOGINS.length;
+  LOGINS = LOGINS.filter(function (x) { var t = Date.parse(x.at); return !isFinite(t) || t > cut; });
+  if (LOGINS.length > LOGIN_KEEP) LOGINS = LOGINS.slice(0, LOGIN_KEEP);
+  return before - LOGINS.length;
+}
+function deviceLabel () {
+  var u = navigator.userAgent || '';
+  var os = /Windows/.test(u) ? 'Windows' : /Mac OS X|Macintosh/.test(u) ? 'macOS'
+         : /Android/.test(u) ? 'Android' : /iPhone|iPad/.test(u) ? 'iOS'
+         : /Linux/.test(u) ? 'Linux' : 'Unknown';
+  var br = /Edg\//.test(u) ? 'Edge' : /OPR\//.test(u) ? 'Opera' : /Chrome\//.test(u) ? 'Chrome'
+         : /Firefox\//.test(u) ? 'Firefox' : /Safari\//.test(u) ? 'Safari' : 'Browser';
+  return br + ' \u00b7 ' + os;
+}
+function recordSignIn (acc) {
+  var entry = {
+    id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    e: acc.e, name: userName(acc), role: acc.role,
+    at: new Date().toISOString(), ip: '', dev: deviceLabel()
+  };
+  LOGINS.unshift(entry); purgeLogins();
+  try { localStorage.setItem(LSU + '_logins', JSON.stringify(LOGINS)); } catch (e) {}
+  resolveIp(function (ip) {
+    entry.ip = ip;
+    saveLogins();
+    if ($('#st') && $('#st').classList.contains('open')) renderStLogins();
+  });
+}
+
 function saveTrash () {
   if (remote) remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, '_trash'), { items: TRASH });
   Local.write();
@@ -1951,8 +2277,12 @@ function repositionPortals () {
 window.addEventListener('scroll', function (e) {
   if (e.target && e.target.classList && (e.target.classList.contains('sel__p') || e.target.closest('.kpop'))) return;
   repositionPortals(); repositionPops();
+  if (DPK && DPK.classList.contains('open')) placeDpk();
 }, true);
-window.addEventListener('resize', function () { repositionPortals(); repositionPops(); });
+window.addEventListener('resize', function () {
+  repositionPortals(); repositionPops();
+  if (DPK && DPK.classList.contains('open')) placeDpk();
+});
 
 function mountSelect (host, cfg) {
   if (!host) return null;
@@ -1983,8 +2313,10 @@ function mountSelect (host, cfg) {
   function paint () {
     var t = toneOf(st.key, st.v);
     lab.className = 'sel__v' + (st.v ? (COLOURED[st.key] ? ' tone--' + t : '') : ' empty');
-    var room = (host.offsetWidth || host.getBoundingClientRect().width) - (cfg.pad == null ? 36 : cfg.pad);
-    lab.textContent = room > 14 ? fitText(st.v || st.ph, room, cfg.font) : (st.v || st.ph);
+    /* Show the full value and let CSS ellipsis clip only when there is genuinely no
+       room. The old fitText pass mis-measured the space left of the chevron, which
+       cut long values mid-word (e.g. "Financial Services & Investm"). */
+    lab.textContent = st.v || st.ph;
     lab.title = st.v || st.ph;
   }
   function fill () {
@@ -2419,14 +2751,22 @@ function startEdit (td) {
     cellEdit.host = host;
     return;
   }
+  if (f.type === 'date' || f.type === 'stamp') {
+    var dh = document.createElement('span');
+    dh.className = 'cell-in cell-in--date';
+    td.innerHTML = ''; td.appendChild(dh);
+    mountDate(dh, r[k] || '', function (iso) { applyCell(iso); });
+    cellEdit.host = dh;
+    openDpk(dh, dh._date);
+    return;
+  }
   var el = document.createElement('input');
-  el.type = (f.type === 'date' || f.type === 'stamp') ? 'date' : (f.type === 'money' || f.type === 'number') ? 'number' : 'text';
+  el.type = (f.type === 'money' || f.type === 'number') ? 'number' : 'text';
   el.value = r[k] == null ? '' : r[k];
   if (f.type === 'money') el.step = '1000';
   el.className = 'cell-in';
   td.innerHTML = ''; td.appendChild(el);
   el.focus(); if (el.select && el.type === 'text') el.select();
-  if (el.type === 'date' && el.showPicker) { try { el.showPicker(); } catch (e) {} }
   el.addEventListener('keydown', function (e) {
     if (e.key === 'Enter')  { e.preventDefault(); commitEdit(); }
     if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
@@ -2442,7 +2782,10 @@ function cancelEdit () {
   cellEdit = null;
 }
 document.addEventListener('mousedown', function (e) {
-  if (cellEdit && cellEdit.host && !e.target.closest('.sel') && !e.target.closest('.sel__p') && !e.target.closest('.auth-box')) { cellEdit = null; renderList(); }
+  if (cellEdit && cellEdit.host && !e.target.closest('.sel') && !e.target.closest('.sel__p') &&
+      !e.target.closest('.dpk') && !e.target.closest('.cell-in--date') && !e.target.closest('.auth-box')) {
+    cellEdit = null; closeDpk(); renderList();
+  }
 });
 function applyCell (v) {
   if (!cellEdit) return;
@@ -2611,8 +2954,8 @@ function fieldHtml (f, r) {
   var hint = f.help ? '<div class="f__h">' + esc(f.help) + '</div>' : '';
   var inp;
   if (f.type === 'auto')        inp = ro(id, pid(r));
-  else if (f.type === 'stamp')  inp = '<input class="f__i" id="' + id + '" type="date" value="' + esc(v || TODAY) + '">';
-  else if (f.type === 'date')   inp = '<input class="f__i" id="' + id + '" type="date" value="' + esc(v || '') + '">';
+  else if (f.type === 'stamp')  inp = '<span class="f__i f__i--date" id="' + id + '" data-date="' + esc(v || TODAY) + '" tabindex="0"></span>';
+  else if (f.type === 'date')   inp = '<span class="f__i f__i--date" id="' + id + '" data-date="' + esc(v || '') + '" tabindex="0"></span>';
   else if (f.type === 'number') inp = '<input class="f__i" id="' + id + '" type="number" min="1200" max="' + TODAY.slice(0, 4) + '" value="' + esc(v || '') + '">';
   else if (f.type === 'text' || f.type === 'url') inp = '<input class="f__i" id="' + id + '"' + (f.type === 'url' ? ' type="url"' : '') + ' value="' + esc(v || '') + '">';
   else if (f.type === 'money') inp = '<input class="f__i" id="' + id + '" type="number" step="1000" min="0" value="' + esc(v || '') + '">';
@@ -2645,6 +2988,14 @@ function openDrawer (id, atTab) {
 
   GROUPS.forEach(function (g) {
     $('#pane' + g.id).innerHTML = SCHEMA.filter(function (f) { return f.group === g.id; }).map(function (f) { return fieldHtml(f, r); }).join('');
+  });
+  /* Date controls are elements, not inputs, so they are mounted after the markup. */
+  $$('#drBody .f__i--date').forEach(function (host) {
+    var key = host.id.replace(/^x_/, '');
+    mountDate(host, host.dataset.date || '', function (iso) { formChanged(key, iso); });
+    host.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); host.click(); }
+    });
   });
   SCHEMA.forEach(function (f) {
     if (f.type !== 'select' && f.type !== 'owner') return;
@@ -2726,6 +3077,7 @@ function collect () {
   SCHEMA.forEach(function (f) {
     var el = $('#x_' + f.key); if (!el) return;
     if (f.type === 'multi') o[f.key] = $$('.chip.on', el).map(function (c) { return c.dataset.v; });
+    else if (f.type === 'date' || f.type === 'stamp') o[f.key] = el._date || '';
     else if (f.type === 'calc' || f.type === 'auto') { /* derived */ }
     else if (f.type === 'money' || f.type === 'number') o[f.key] = el.value === '' ? '' : +el.value;
     else o[f.key] = readVal(el);
@@ -2884,6 +3236,7 @@ function bootApp () {
   document.addEventListener('click', function (e) {
     if (e.target.closest && (e.target.closest('.sel__p') || e.target.closest('.sel'))) return;
     closeSelects(null);
+    if (!(e.target.closest && (e.target.closest('.dpk') || e.target.closest('.f__i--date') || e.target.closest('.cell-in--date')))) closeDpk();
     if (e.target.closest && (e.target.closest('.kpop') || e.target.closest('#cols'))) return;
     closePops();
   });
@@ -2898,6 +3251,7 @@ function bootApp () {
   document.addEventListener('keydown', function (e) {
     var open = $('#dr').classList.contains('open');
     if (e.key === 'Escape' && cellEdit) { cancelEdit(); return; }
+    if (e.key === 'Escape' && DPK && DPK.classList.contains('open')) { closeDpk(); return; }
     if (e.key === 'Escape' && $('#colPanel').classList.contains('open')) { closePops(); return; }
     if (e.key === 'Escape' && $('#st').classList.contains('open')) { closeSettings(); return; }
     if ($('#st').classList.contains('open')) return;
@@ -3115,6 +3469,131 @@ function clearValueInRecords (key, v) {
 }
 
 /* ==========================================================================
+   DATE PICKER
+   One instance, portaled to <body>, opened against whichever date control asked
+   for it. Attaching to any element gives that element the same calendar, so the
+   record form and the inline cell editor never diverge.
+   ========================================================================== */
+var DPK = null, dpkHost = null, dpkOn = null, dpkView = null, dpkMonths = false;
+/* MON is the engine's three-letter table format; the calendar header wants the
+   long form, so it gets its own array rather than shadowing that one. */
+var DPK_MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var WD = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+function isoOf (d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+function parseISO (v) {
+  var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || ''));
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function ensureDpk () {
+  if (DPK) return DPK;
+  DPK = document.createElement('div');
+  DPK.className = 'dpk';
+  document.body.appendChild(DPK);
+  DPK.addEventListener('mousedown', function (e) { e.preventDefault(); e.stopPropagation(); });
+  DPK.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.nav) { dpkView.setMonth(dpkView.getMonth() + (+b.dataset.nav)); drawDpk(); return; }
+    if (b.dataset.yr)  { dpkView.setFullYear(dpkView.getFullYear() + (+b.dataset.yr)); drawDpk(); return; }
+    if (b.dataset.mon != null) { dpkView.setMonth(+b.dataset.mon); dpkMonths = false; drawDpk(); return; }
+    if (b.dataset.toggle) { dpkMonths = !dpkMonths; drawDpk(); return; }
+    if (b.dataset.today) { setDpk(TODAY); return; }
+    if (b.dataset.clear) { setDpk(''); return; }
+    if (b.dataset.d) { setDpk(b.dataset.d); return; }
+  });
+  return DPK;
+}
+function setDpk (iso) {
+  if (dpkHost && dpkHost._onDate) dpkHost._onDate(iso);
+  closeDpk();
+}
+function closeDpk () {
+  if (DPK) DPK.classList.remove('open');
+  if (dpkHost) dpkHost.classList.remove('open');
+  dpkHost = null; dpkMonths = false;
+}
+function drawDpk () {
+  var head = '<div class="dpk__h">' +
+    '<button class="dpk__nav" type="button" data-yr="-1" title="Previous year">\u00ab</button>' +
+    '<button class="dpk__nav" type="button" data-nav="-1" title="Previous month">\u2039</button>' +
+    '<button class="dpk__t" type="button" data-toggle="1">' + DPK_MON[dpkView.getMonth()] + ' ' + dpkView.getFullYear() + '</button>' +
+    '<button class="dpk__nav" type="button" data-nav="1" title="Next month">\u203a</button>' +
+    '<button class="dpk__nav" type="button" data-yr="1" title="Next year">\u00bb</button></div>';
+
+  var body;
+  if (dpkMonths) {
+    body = '<div class="dpk__m">' + MON.map(function (m, i) {
+      return '<button type="button" data-mon="' + i + '" class="' + (i === dpkView.getMonth() ? 'on' : '') + '">' + m + '</button>';
+    }).join('') + '</div>';
+  } else {
+    var first = new Date(dpkView.getFullYear(), dpkView.getMonth(), 1);
+    var start = new Date(first); start.setDate(1 - first.getDay());
+    var cells = '';
+    for (var i = 0; i < 42; i++) {
+      var d = new Date(start); d.setDate(start.getDate() + i);
+      var iso = isoOf(d), out = d.getMonth() !== dpkView.getMonth();
+      cells += '<button type="button" class="dpk__d' + (out ? ' out' : '') +
+        (iso === TODAY ? ' today' : '') + (iso === dpkOn ? ' on' : '') +
+        '" data-d="' + iso + '">' + d.getDate() + '</button>';
+      if (i >= 34 && d.getMonth() !== dpkView.getMonth() && d.getDay() === 6) break;
+    }
+    body = '<div class="dpk__g">' + WD.map(function (w) { return '<div class="dpk__w">' + w + '</div>'; }).join('') + cells + '</div>';
+  }
+  DPK.innerHTML = head + body +
+    '<div class="dpk__f"><button class="btn btn--sm" type="button" data-clear="1">Clear</button>' +
+    '<button class="btn btn--sm btn--go" type="button" data-today="1">Today</button></div>';
+  placeDpk();
+}
+function placeDpk () {
+  if (!dpkHost || !document.body.contains(dpkHost)) { closeDpk(); return; }
+  var r = dpkHost.getBoundingClientRect(), k = scaleOf(dpkHost), M = 8, gap = 5 * k;
+  DPK.style.transformOrigin = 'top left';
+  DPK.style.transform = k === 1 ? 'none' : 'scale(' + k + ')';
+  var w = DPK.offsetWidth * k, h = DPK.offsetHeight * k;
+  var top = r.bottom + gap;
+  if (top + h > window.innerHeight - M) { var up = r.top - gap - h; top = up >= M ? up : Math.max(M, window.innerHeight - h - M); }
+  var left = r.left;
+  if (left + w > window.innerWidth - M) left = window.innerWidth - w - M;
+  if (left < M) left = M;
+  DPK.style.top = Math.round(top) + 'px';
+  DPK.style.left = Math.round(left) + 'px';
+}
+function openDpk (host, iso) {
+  ensureDpk();
+  closeSelects(null); closePops();
+  dpkHost = host; dpkOn = iso || '';
+  dpkView = parseISO(iso) || parseISO(TODAY) || new Date();
+  dpkView = new Date(dpkView.getFullYear(), dpkView.getMonth(), 1);
+  dpkMonths = false;
+  host.classList.add('open');
+  DPK.classList.add('open');
+  drawDpk();
+}
+/* Turns any element into a date control: it displays the value and opens the
+   calendar on click. `onDate` receives the new ISO string, or '' when cleared. */
+function mountDate (host, value, onDate) {
+  host._date = value || '';
+  host._onDate = function (iso) { host._date = iso; paintDate(host); onDate(iso); };
+  paintDate(host);
+  host.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (DPK && DPK.classList.contains('open') && dpkHost === host) { closeDpk(); return; }
+    openDpk(host, host._date);
+  });
+  return host;
+}
+function paintDate (host) {
+  var v = host._date;
+  host.classList.toggle('ph', !v);
+  host.innerHTML = '<span class="dv">' + (v ? esc(fmtDate(v)) : 'Select a date\u2026') + '</span>' +
+    '<svg class="dic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>';
+}
+
+/* ==========================================================================
    PORTALED POPOVER  (same containing-block constraint as the select panels)
    ========================================================================== */
 var POPS = [];
@@ -3293,12 +3772,12 @@ function openSettings () {
 function closeSettings () { closeSelects(null); $('#st').classList.remove('open'); }
 function stSwitch (t) {
   stTab = t;
-  ['1','2','3','4','5','6','7'].forEach(function (x) {
+  ['1','2','3','4','5','6','7','8'].forEach(function (x) {
     $('#stTab' + x).classList.toggle('on', x === t);
     $('#stPane' + x).classList.toggle('on', x === t);
   });
 }
-function renderSettings () { renderStLists(); renderStFields(); renderStOwners(); renderStGroups(); renderStData(); renderStTrash(); renderStUsers(); }
+function renderSettings () { renderStLists(); renderStFields(); renderStOwners(); renderStGroups(); renderStData(); renderStTrash(); renderStUsers(); renderStLogins(); }
 function syncBinCount () { var c = $('#binCnt'); if (c) c.textContent = TRASH.length; }
 function stFlash (m) { var e = $('#stStatus'); if (!e) return; e.textContent = m; clearTimeout(e._t); e._t = setTimeout(function () { e.textContent = 'Every change is saved immediately.'; }, 3500); }
 
@@ -3930,97 +4409,186 @@ function wireStTrash () {
 /* ---- 7 · users ----------------------------------------------------------- */
 var stUserAdd = false;
 function adminCount () { return (CFG.users || []).filter(function (x) { return x.role === 'admin'; }).length; }
+function lastSeen (email) {
+  var e = normEmail(email);
+  var hit = LOGINS.filter(function (x) { return normEmail(x.e) === e; })[0];
+  return hit ? fmtStamp(hit.at) : 'never';
+}
 function renderStUsers () {
   seedUsers();
-  var me = currentUser ? currentUser.username : '';
+  var me = currentUser ? normEmail(currentUser.email) : '';
   var rows = (CFG.users || []).map(function (x) {
-    var self = x.u === me, lastAdmin = x.role === 'admin' && adminCount() <= 1;
-    return '<li class="st__o" data-u="' + esc(x.u) + '">' +
-      '<span class="t">' + esc(x.u) + (self ? ' <span class="st__tag">you</span>' : '') + '</span>' +
+    var self = normEmail(x.e) === me, lastAdmin = x.role === 'admin' && adminCount() <= 1;
+    return '<li class="st__o" data-e="' + esc(x.e) + '">' +
+      '<span class="t"><b>' + esc(userName(x)) + '</b>' + (self ? ' <span class="st__tag">you</span>' : '') +
+        '<br><span class="st__dim">' + esc(x.e) + '</span></span>' +
+      '<span class="u" title="Last signed in">' + esc(lastSeen(x.e)) + '</span>' +
       '<select class="st__in st__in--role rl"' + (lastAdmin ? ' disabled title="At least one administrator must remain"' : '') + '>' +
         ROLES.map(function (r) { return '<option value="' + r.id + '"' + (r.id === x.role ? ' selected' : '') + '>' + r.label + '</option>'; }).join('') +
       '</select>' +
-      '<button class="st__ib pw" type="button">Set password</button>' +
+      '<button class="st__ib pw" type="button">Reset password</button>' +
       (self || lastAdmin ? '' : '<button class="st__ib dg rm" type="button">Remove</button>') +
       '</li>';
   }).join('');
 
   $('#stUsers').innerHTML =
     '<div class="st__ttl">Users</div>' +
-    '<div class="st__sub">Accounts and what each one is allowed to do. Changes take effect the next time that person signs in.</div>' +
-    '<div class="st__note">Sign-in here controls who can change what inside this register. It is not a security boundary — anyone with the file can read its contents. Do not reuse a password from another system.</div>' +
+    '<div class="st__sub">Everyone signs in with their own work email \u2014 including viewers, so every sign-in is attributable to a person. A role change takes effect the next time they load the register.</div>' +
+    '<div class="st__note">This decides who can change what inside the register. It is not a security boundary on its own \u2014 anyone holding the file can read its contents \u2014 so pair it with the Firestore rules. Do not reuse a password from another system.</div>' +
     '<div class="st__row"><button class="btn' + (stUserAdd ? '' : ' btn--go') + '" id="nuToggle" type="button">' +
       (stUserAdd ? 'Cancel' : '+ Add a user') + '</button></div>' +
     (!stUserAdd ? '' :
-     '<div class="st__card"><h4>New user</h4><p>Pick the narrowest role that lets them do their job.</p>' +
+     '<div class="st__card"><h4>New user</h4><p>Pick the narrowest role that lets them do their job. A viewer still needs an account of their own.</p>' +
        '<div class="st__grid">' +
-         '<div class="st__fg"><label class="st__lb">Username</label><input class="st__in" id="nuName" placeholder="e.g. layla" autocomplete="off"></div>' +
-         '<div class="st__fg"><label class="st__lb">Password</label><input class="st__in" id="nuPass" type="password" placeholder="At least 4 characters" autocomplete="new-password"></div>' +
+         '<div class="st__fg"><label class="st__lb">Work email</label><input class="st__in" id="nuEmail" type="email" placeholder="name@madinahkec.com" autocomplete="off" spellcheck="false"></div>' +
+         '<div class="st__fg"><label class="st__lb">Display name</label><input class="st__in" id="nuName" placeholder="e.g. Layla Al-Harbi" autocomplete="off"></div>' +
          '<div class="st__fg"><label class="st__lb">Role</label><select class="st__in" id="nuRole">' +
            ROLES.map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'editor' ? ' selected' : '') + '>' + r.label + '</option>'; }).join('') + '</select></div>' +
+         '<div class="st__fg"><label class="st__lb">Temporary password</label><input class="st__in" id="nuPass" type="password" placeholder="At least 6 characters" autocomplete="new-password"></div>' +
        '</div>' +
        '<div class="st__acts"><button class="btn btn--go" id="nuAdd" type="button">Create user</button></div></div>') +
     '<ul class="st__ol">' + rows + '</ul>' +
     '<div class="st__sec">What each role can do</div>' +
     '<ul class="st__ol">' + ROLES.map(function (r) {
       return '<li class="st__o"><span class="st__tag' + (r.id === 'admin' ? '' : ' cust') + '">' + esc(r.id) + '</span>' +
-        '<span class="t"><b>' + esc(r.label) + '</b> — ' + esc(r.note) + '</span></li>';
+        '<span class="t"><b>' + esc(r.label) + '</b> \u2014 ' + esc(r.note) + '</span></li>';
     }).join('') + '</ul>';
 }
+
 function wireStUsers () {
   var host = $('#stUsers');
   host.addEventListener('change', function (e) {
     if (!e.target.classList.contains('rl')) return;
-    var li = e.target.closest('.st__o'), u = li.dataset.u, acc = findUser(u);
+    var li = e.target.closest('.st__o'), acc = findUser(li.dataset.e);
     if (!acc) return;
     var next = e.target.value;
     if (acc.role === 'admin' && next !== 'admin' && adminCount() <= 1) {
       toast('At least one administrator must remain.'); renderStUsers(); return;
     }
     acc.role = next; saveConfig(true); renderStUsers();
-    stFlash('"' + u + '" is now a ' + roleLabel(next) + '.');
+    stFlash(userName(acc) + ' is now a ' + roleLabel(next) + '.');
   });
   host.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && (e.target.id === 'nuName' || e.target.id === 'nuPass')) { e.preventDefault(); addUser(); }
+    if (e.key === 'Enter' && /^nu(Email|Name|Pass)$/.test(e.target.id)) { e.preventDefault(); addUser(); }
   });
   host.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.id === 'nuToggle') { stUserAdd = !stUserAdd; renderStUsers(); return; }
     if (b.id === 'nuAdd') { addUser(); return; }
-    var li = b.closest('.st__o'); if (!li || !li.dataset.u) return;
-    var u = li.dataset.u, acc = findUser(u);
+    var li = b.closest('.st__o'); if (!li || !li.dataset.e) return;
+    var acc = findUser(li.dataset.e); if (!acc) return;
     if (b.classList.contains('pw')) {
-      askPrompt('Set password', 'New password for "' + u + '".', 'At least 4 characters…', function (v) {
-        v = (v || '').trim();
-        if (v.length < 4) { toast('Use at least four characters.'); return; }
-        acc.h = pwHash(u, v); saveConfig(true);
-        stFlash('Password updated for "' + u + '".');
-      });
+      askDelete('Send a password-reset link to ' + acc.e + '? They set a new password from the email \u2014 passwords live in Firebase, not in the register.', function (ok) {
+        if (!ok) return;
+        if (!FB) { toast('Not connected to Firebase yet \u2014 try again in a moment.'); return; }
+        FB.authMod.sendPasswordResetEmail(FB.auth, acc.e).then(function () {
+          stFlash('Reset link sent to ' + acc.e + '.');
+        }).catch(function (ex) { toast('Could not send the link: ' + ((ex && ex.code) || 'unknown') + '.'); });
+      }, { neutral: true, title: 'Reset password', confirm: 'Send link' });
       return;
     }
     if (b.classList.contains('rm')) {
-      askDelete('Remove the account "' + u + '"? They will no longer be able to sign in.', function (ok) {
+      askDelete('Remove ' + acc.e + ' from the register? They lose access immediately. Their Firebase sign-in stays until you delete it in the Firebase console.', function (ok) {
         if (!ok) return;
-        CFG.users = CFG.users.filter(function (x) { return x.u !== u; });
-        saveConfig(true); renderStUsers(); stFlash('"' + u + '" removed.');
+        CFG.users = CFG.users.filter(function (x) { return normEmail(x.e) !== normEmail(acc.e); });
+        saveConfig(true); renderStUsers(); stFlash(acc.e + ' removed.');
       });
     }
   });
   function addUser () {
-    var u = ($('#nuName').value || '').trim().toLowerCase();
-    var pw = ($('#nuPass').value || '').trim();
-    if (!/^[a-z0-9._-]{2,24}$/.test(u)) { toast('Usernames use letters, numbers, dot, dash or underscore.'); return; }
-    if (findUser(u)) { toast('That username already exists.'); return; }
-    if (pw.length < 4) { toast('Use at least four characters for the password.'); return; }
-    CFG.users.push({ u: u, h: pwHash(u, pw), role: $('#nuRole').value });
-    stUserAdd = false;
-    saveConfig(true); renderStUsers();
-    stFlash('"' + u + '" created as ' + roleLabel(CFG.users[CFG.users.length - 1].role) + '.');
+    var em = normEmail($('#nuEmail').value), nm = ($('#nuName').value || '').trim(), pw = ($('#nuPass').value || '').trim();
+    if (!isEmail(em)) { toast('Enter a valid work email address.'); return; }
+    if (findUser(em)) { toast('That email already has an account in the register.'); return; }
+    if (pw.length < 6) { toast('Use at least six characters for the password.'); return; }
+    var role = $('#nuRole').value;
+    var btn = $('#nuAdd'); if (btn) { btn.disabled = true; btn.textContent = 'Creating…'; }
+    /* Role + display name live in the register; the actual login lives in Firebase Auth. */
+    var addMapping = function (msg) {
+      CFG.users.push({ e: em, name: nm, role: role });
+      stUserAdd = false; saveConfig(true); renderStUsers(); stFlash(msg);
+    };
+    createFirebaseUser(em, pw).then(function () {
+      addMapping(em + ' created as ' + roleLabel(role) + '. Give them the password to sign in with.');
+    }).catch(function (ex) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Create user'; }
+      var c = (ex && ex.code) || '';
+      if (c === 'auth/email-already-in-use') {
+        addMapping(em + ' already had a Firebase login — added to the register as ' + roleLabel(role) + '. Use Reset password if the password is unknown.');
+      } else if (c === 'auth/weak-password') { toast('Password is too weak — use at least six characters.'); }
+      else if (c === 'auth/invalid-email') { toast('That email address is not valid.'); }
+      else if (c === 'no-firebase') { toast('Not connected to Firebase yet — try again in a moment.'); }
+      else { toast('Could not create the account: ' + (c || (ex && ex.message) || 'unknown') + '.'); }
+    });
   }
 }
 
+/* ---- 8 \u00b7 sign-in log --------------------------------------------------- */
+var stLogQ = '';
+function renderStLogins () {
+  purgeLogins();
+  var q = stLogQ.trim().toLowerCase();
+  var rows = LOGINS.filter(function (x) {
+    return !q || (normEmail(x.e) + ' ' + (x.name || '') + ' ' + (x.ip || '') + ' ' + (x.dev || '')).toLowerCase().indexOf(q) >= 0;
+  });
+  var people = {}; LOGINS.forEach(function (x) { people[normEmail(x.e)] = 1; });
+  var today = LOGINS.filter(function (x) { return String(x.at).slice(0, 10) === TODAY; }).length;
+
+  $('#stLogins').innerHTML =
+    '<div class="st__ttl">Sign-in Log</div>' +
+    '<div class="st__sub">Every successful sign-in, newest first. Entries are kept for ' + LOGIN_DAYS +
+      ' days and the most recent ' + LOGIN_KEEP + ' are retained. The address is looked up from the browser and is blank when the lookup is unavailable.</div>' +
+    '<div class="st__row" style="gap:14px;font-size:11.5px;color:var(--kec-muted)">' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + LOGINS.length + '</b> recorded</span>' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + Object.keys(people).length + '</b> ' + plural(Object.keys(people).length, 'person', 'people') + '</span>' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + today + '</b> today</span>' +
+      '<span class="applog__sp"></span>' +
+      '<input class="st__in" id="logQ" placeholder="Filter by name, email, address\u2026" value="' + esc(stLogQ) + '" style="width:250px;height:30px">' +
+      (LOGINS.length ? '<button class="btn btn--sm" id="logExport" type="button">Export CSV</button>' +
+                       '<button class="btn btn--sm btn--danger" id="logClear" type="button">Clear</button>' : '') +
+    '</div>' +
+    (rows.length ? '<ul class="st__ol">' + rows.map(function (x) {
+      return '<li class="st__o">' +
+        '<span class="st__tag' + (x.role === 'admin' ? '' : ' cust') + '">' + esc(x.role || '?') + '</span>' +
+        '<span class="t"><b>' + esc(x.name || userNameFromEmail(x.e)) + '</b><br><span class="st__dim">' + esc(x.e) + '</span></span>' +
+        '<span class="u">' + esc(fmtStamp(x.at)) + '</span>' +
+        '<span class="u">' + esc(x.dev || '\u2014') + '</span>' +
+        '<span class="u' + (x.ip ? ' hot' : '') + '" style="font-family:var(--kec-mono)">' + esc(x.ip || 'no address') + '</span>' +
+        '</li>';
+    }).join('') + '</ul>'
+    : '<div class="st__empty">' + (LOGINS.length ? 'No sign-in matches that filter.' : 'No sign-ins recorded yet.') + '</div>');
+}
+function userNameFromEmail (e) { return String(e || '').split('@')[0]; }
+function wireStLogins () {
+  var host = $('#stLogins');
+  host.addEventListener('input', function (e) {
+    if (e.target.id !== 'logQ') return;
+    stLogQ = e.target.value;
+    var pos = e.target.selectionStart;
+    renderStLogins();
+    var q = $('#logQ'); if (q) { q.focus(); try { q.setSelectionRange(pos, pos); } catch (x) {} }
+  });
+  host.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'logExport') {
+      var head = ['Name', 'Email', 'Role', 'Signed in', 'Device', 'IP address'].join(',');
+      var body = LOGINS.map(function (x) {
+        return [x.name || userNameFromEmail(x.e), x.e, x.role, fmtStamp(x.at), x.dev || '', x.ip || ''].map(csvCell).join(',');
+      });
+      dl('KEC-' + APP.key + '-signins-' + TODAY + '.csv', 'text/csv;charset=utf-8', '\uFEFF' + [head].concat(body).join('\n'));
+      stFlash('Sign-in log exported.');
+      return;
+    }
+    if (b.id === 'logClear') {
+      askDelete('Clear the entire sign-in log? This cannot be undone.', function (ok) {
+        if (!ok) return;
+        LOGINS = []; saveLogins(); renderStLogins(); stFlash('Sign-in log cleared.');
+      });
+    }
+  });
+}
+
 function wireAdmin () {
-  wireColPanel(); wireStLists(); wireStFields(); wireStOwners(); wireStGroups(); wireStData(); wireStTrash(); wireStUsers();
+  wireColPanel(); wireStLists(); wireStFields(); wireStOwners(); wireStGroups(); wireStData(); wireStTrash(); wireStUsers(); wireStLogins();
   $('#cols').addEventListener('click', function (e) {
     e.stopPropagation();
     var p = $('#colPanel');
@@ -4030,7 +4598,7 @@ function wireAdmin () {
   $('#settings').addEventListener('click', function (e) { e.stopPropagation(); openSettings(); });
   $('#stClose').addEventListener('click', closeSettings);
   $('#st').addEventListener('click', function (e) { if (e.target.id === 'st') closeSettings(); });
-  ['1','2','3','4','5','6','7'].forEach(function (t) { $('#stTab' + t).addEventListener('click', function () { stSwitch(t); }); });
+  ['1','2','3','4','5','6','7','8'].forEach(function (t) { $('#stTab' + t).addEventListener('click', function () { stSwitch(t); }); });
   /* Footer inputs size themselves to their content so the reference number always
      sits flush against the gold rule. */
   ['#refNo', '#srcName'].forEach(function (sel) {
