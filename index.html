@@ -241,7 +241,7 @@ body.resizing{cursor:col-resize;user-select:none}
 .dr__h{display:flex;align-items:center;gap:10px;padding:15px 22px;border-bottom:1px solid var(--kec-hairline);background:#fff}
 .dr__t{font-size:17px;font-weight:700;color:var(--kec-green-deep);letter-spacing:-.2px}
 .dr__id{font-family:var(--kec-mono);font-size:11.5px;color:var(--kec-green);background:var(--kec-surface);padding:3px 9px;border-radius:5px}
-.dr__tabs{display:flex;gap:6px;padding:11px 22px 0;background:#fff}
+.dr__tabs{display:flex;flex-wrap:wrap;gap:6px;padding:11px 22px 0;background:#fff}
 .dr__tab{font-family:var(--kec-font);font-size:12px;font-weight:500;padding:7px 15px;border-radius:8px 8px 0 0;border:1px solid var(--kec-hairline);border-bottom:none;background:var(--kec-paper);color:var(--kec-muted);cursor:pointer;transition:background .14s ease,color .14s ease}
 .dr__tab:hover{background:var(--kec-surface);color:var(--kec-green-deep)}
 .dr__tab.on{background:var(--kec-surface);color:var(--kec-green-deep);font-weight:600;box-shadow:inset 0 2px 0 var(--kec-green)}
@@ -399,7 +399,7 @@ body.viewer-mode #drBody .chip-add { display: none !important; }
   width:250px;padding:11px 12px 10px;user-select:none}
 .dpk.open{display:block;animation:selin .13s ease}
 .dpk__h{display:flex;align-items:center;gap:6px;margin-bottom:9px}
-.dpk__t{flex:1;text-align:center;font-size:12px;font-weight:600;color:var(--kec-green-deep);cursor:pointer;
+.dpk__t{flex:1;text-align:center;font-family:var(--kec-font);font-size:12px;font-weight:600;color:var(--kec-green-deep);cursor:pointer;
   padding:3px 6px;border-radius:6px}
 .dpk__t:hover{background:var(--kec-surface)}
 .dpk__nav{width:24px;height:24px;flex:none;border:1px solid var(--kec-hairline);background:#fff;border-radius:6px;
@@ -536,6 +536,7 @@ select.st__in{cursor:pointer;-webkit-appearance:none;appearance:none;padding-rig
 .st__tag{font-family:var(--kec-mono);font-size:9px;padding:2px 7px;border-radius:9px;flex:none;
   background:var(--kec-badge-green-bg);color:var(--kec-green);border:1px solid var(--kec-badge-green-bd)}
 .st__tag.cust{background:var(--kec-badge-gold-bg);color:var(--kec-badge-gold-tx);border-color:var(--kec-badge-gold-bd)}
+.st__tag.del{background:#F7E9E5;color:var(--kec-neg);border-color:#E7CCC4}
 .st__sec{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .st__sec em{font-style:normal;font-weight:400;text-transform:none;letter-spacing:0;
   font-family:var(--kec-mono);font-size:9.5px;color:var(--kec-muted)}
@@ -573,17 +574,29 @@ body.viewer-mode #settings{display:none !important}
 body.viewer-mode .acts{display:none}
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
-/* Sign-in gate: keep the register hidden until Firebase has resolved the session, so
-   the sheet never flashes on screen before the login page. The overlay covers it from
-   the first frame, and the form itself stays hidden until we know a login is needed. */
-body.auth-checking .page{visibility:hidden}
-body.auth-checking .auth-form{visibility:hidden}
+/* Boot splash: a neutral, branded loading screen that covers everything from the very
+   first frame until Firebase has settled the session (authStateReady). This is what
+   removes the "login page flashes for a second, then the register appears" problem:
+   neither the register nor the sign-in form is shown until we know which one to show. */
+#bootSplash{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;background:var(--kec-paper)}
+#bootSplash.hidden{display:none}
+#bootSplash img{width:132px;height:auto;display:block}
+.boot-spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--kec-hairline);
+  border-top-color:var(--kec-green);animation:bootspin .8s linear infinite}
+@keyframes bootspin{to{transform:rotate(360deg)}}
 </style>
 </head>
-<body class="auth-checking">
+<body>
+
+<!-- BOOT SPLASH (covers everything until the session is resolved) -->
+<div id="bootSplash">
+  <img src="KEC.png" alt="Knowledge Economic City" onerror="this.style.display='none'">
+  <div class="boot-spin"></div>
+</div>
 
 <!-- AUTH OVERLAY -->
-<div class="auth-overlay" id="authScreen" style="display: flex;">
+<div class="auth-overlay" id="authScreen" style="display: none;">
   <div class="auth-brand">
     <div class="auth-brand__in">
       <div class="auth-mark"><img src="KEC.png" alt="Knowledge Economic City" onerror="this.parentNode.classList.add('auth-mark--none')"></div>
@@ -742,6 +755,7 @@ body.auth-checking .auth-form{visibility:hidden}
           <button class="dr__tab" id="stTab6" type="button" data-t="6">Recycle Bin <span class="cnt" id="binCnt">0</span></button>
           <button class="dr__tab" id="stTab7" type="button" data-t="7">Users</button>
           <button class="dr__tab" id="stTab8" type="button" data-t="8">Sign-in Log</button>
+          <button class="dr__tab" id="stTab9" type="button" data-t="9">Change Log</button>
         </div>
         <div class="dr__b st__b">
           <div class="st__pane" id="stPane1"><div class="st2">
@@ -755,6 +769,7 @@ body.auth-checking .auth-form{visibility:hidden}
           <div class="st__pane" id="stPane6"><div class="st__main" id="stTrash" style="width:100%"></div></div>
           <div class="st__pane" id="stPane7"><div class="st__main" id="stUsers" style="width:100%"></div></div>
           <div class="st__pane" id="stPane8"><div class="st__main" id="stLogins" style="width:100%"></div></div>
+          <div class="st__pane" id="stPane9"><div class="st__main" id="stAudit" style="width:100%"></div></div>
         </div>
         <div class="dr__f">
           <span style="font-size:11px;color:var(--kec-muted)" id="stStatus">Every change is saved immediately.</span>
@@ -1125,8 +1140,8 @@ var SCHEMA = [
   },
   {
     "key": "project_size",
-    "label": "Project Size",
-    "short": "Project Size",
+    "label": "Projects Size",
+    "short": "Projects Size",
     "group": "C",
     "type": "select",
     "options": [
@@ -1137,7 +1152,7 @@ var SCHEMA = [
       "SAR 1–5B",
       "Above SAR 5B"
     ],
-    "help": "Typical project value",
+    "help": "Typical value across their projects",
     "column": true
   },
   {
@@ -1498,8 +1513,7 @@ var KPIS = [
 /* Accounts created on first run, keyed by work email. Every account — including
    viewers — is managed from Settings afterwards; nobody signs in without one. */
 var SEED_USERS = {
-  'shamdan@madinahkec.com':     { password: '141212', name: 'Samer Hamdan',   role: 'admin' },
-  'zalshowaier@madinahkec.com': { password: '121414', name: 'Z. Al-Showaier', role: 'admin' }
+  'shamdan@madinahkec.com': { password: '141212', name: 'Samer Hamdan', role: 'admin' }
 };
 
 /* ============================ END DOMAIN ============================ */
@@ -1563,7 +1577,7 @@ function userName (x) { return (x && (x.name || String(x.e || '').split('@')[0])
 var currentUser = null;
 /* Firebase handles (app/auth/firestore modules) once initialised, plus one-shot boot
    guards. Login is now Firebase Email/Password — see initFirebase / resolveAndBoot. */
-var FB = null, booted = false, pendingSignInLog = false;
+var FB = null, booted = false, booting = false, pendingSignInLog = false;
 
 function initAuth() {
     /* Accounts (role + display name) live in the shared configuration; the passwords
@@ -1573,7 +1587,8 @@ function initAuth() {
     /* The log has to be in memory before the first sign-in is appended, or each
        sign-in starts from an empty array and overwrites the history. */
     try { LOGINS = JSON.parse(localStorage.getItem(LSU + '_logins') || '[]') || []; } catch (e) { LOGINS = []; }
-    purgeLogins();
+    try { AUDIT = JSON.parse(localStorage.getItem(LSU + '_audit') || '[]') || []; } catch (e) { AUDIT = []; }
+    purgeLogins(); purgeAudit();
     document.title = 'KEC \u00b7 ' + APP.title;
     $('#authTitle').textContent = APP.title;
     $('#authSub').textContent = 'Sign in to access the ' + APP.title;
@@ -1591,14 +1606,24 @@ function initAuth() {
     $('#dpCancel').onclick = function() { closeDelete(false); };
     $('#dpConfirm').onclick = function() { closeDelete(true); };
 
-    /* Bring Firebase up, then hand control to the auth-state listener. A persisted
-       session boots straight into the register; otherwise the sign-in screen shows. */
+    /* Bring Firebase up. Wait for the INITIAL session state to settle (authStateReady)
+       so the sign-in form never flashes before a restored session is known, THEN attach
+       ONE persistent listener that drives everything:
+         • a signed-in email  -> boot the register (fresh login OR restored session)
+         • no session          -> show the sign-in form
+         • signed out later    -> reload back to the sign-in form
+       resolveAndBoot() self-guards, so repeat firings (e.g. token refresh) are ignored. */
     initFirebase().then(function () {
-        FB.authMod.onAuthStateChanged(FB.auth, function (user) {
-            if (user && user.email) { resolveAndBoot(user); }
-            else { resetAuthBtn(); showAuth(); }
+        var ready = FB.auth.authStateReady ? FB.auth.authStateReady() : Promise.resolve();
+        ready.catch(function () {}).then(function () {
+            FB.authMod.onAuthStateChanged(FB.auth, function (user) {
+                if (user && user.email) { resolveAndBoot(user); }
+                else if (booted) { location.reload(); }
+                else { hideSplash(); resetAuthBtn(); showAuth(); }
+            });
         });
     }).catch(function () {
+        hideSplash();
         showAuth();
         showAuthError('Cannot reach the sign-in service. Check your connection and reload the page.');
     });
@@ -1622,8 +1647,11 @@ function initFirebase () {
     });
 }
 
+function hideSplash () {
+    var s = document.getElementById('bootSplash'); if (s) s.classList.add('hidden');
+}
 function showAuth () {
-    document.body.classList.remove('auth-checking');   // reveal the form; stop hiding the sheet
+    hideSplash();
     $('#authScreen').style.display = 'flex';
     setTimeout(function () { var e = $('#authEmail'); if (e) e.focus(); }, 60);
 }
@@ -1673,12 +1701,14 @@ function handleLogin() {
     var A = FB.authMod;
     var persist = $('#authRemember').checked ? A.browserLocalPersistence : A.browserSessionPersistence;
     A.setPersistence(FB.auth, persist).catch(function () {}).then(function () {
+        pendingSignInLog = true;   // a fresh, human sign-in — resolveAndBoot logs it
         return A.signInWithEmailAndPassword(FB.auth, e, p);
     }).then(function () {
         showAuthError('');
         $('#authPassword').value = '';
-        pendingSignInLog = true;   // resolveAndBoot (via onAuthStateChanged) records it
+        /* onAuthStateChanged fires with the new user and boots the register. */
     }).catch(function (ex) {
+        pendingSignInLog = false;
         resetAuthBtn();
         var c = (ex && ex.code) || '';
         if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-email')
@@ -1696,10 +1726,13 @@ function handleLogin() {
    provisioned in the register, then boot. An authenticated email that has no
    account here is refused rather than shown someone else's data. */
 function resolveAndBoot (user) {
+    if (booted || booting) return;   // already in, or already booting — ignore repeats
+    booting = true;
     var proceed = function () {
         seedUsers();
         var acc = findUser(user.email);
         if (!acc) {
+            booting = false;
             showAuth();
             showAuthError('This email is signed in but has no access to the register. Ask an administrator to add you under Settings › Users.');
             resetAuthBtn();
@@ -1709,10 +1742,10 @@ function resolveAndBoot (user) {
         currentUser = { email: acc.e, username: userName(acc), role: acc.role, uid: user.uid };
         applyRoleUI();
         if (pendingSignInLog) { pendingSignInLog = false; recordSignIn(acc); }
-        document.body.classList.remove('auth-checking');   // reveal the register
         $('#authScreen').style.display = 'none';
-        if (!booted) { booted = true; bootApp(); }
-        else { renderAll(); }
+        booted = true;   // set before bootApp so re-entry is blocked
+        bootApp();
+        hideSplash();     // reveal the register only once it is built
     };
     FB.fs.getDoc(FB.fs.doc(FB.db, COLLECTION, '_metadata')).then(function (snap) {
         if (snap.exists()) {
@@ -1756,6 +1789,39 @@ function createFirebaseUser (email, password) {
         .then(function (uid) { cleanup(); return uid; }, function (err) { cleanup(); throw err; });
 }
 
+/* A user changes their OWN password from Settings › Users. The client SDK can only set
+   the password of the signed-in account, so this is self-service (no email, no cost,
+   no server). Firebase asks for a recent login before a password change, so if the
+   session is old we reauthenticate with the current password first. */
+function changeOwnPassword () {
+    var u = FB && FB.auth && FB.auth.currentUser;
+    if (!u) { toast('You are not signed in.'); return; }
+    askPrompt('Change your password', 'Enter a new password (at least 6 characters).', 'New password…', function (np) {
+        np = (np || '').trim();
+        if (np.length < 6) { toast('Use at least six characters.'); return; }
+        FB.authMod.updatePassword(u, np).then(function () {
+            stFlash('Your password was changed.');
+        }).catch(function (ex) {
+            if (ex && ex.code === 'auth/requires-recent-login') {
+                askPrompt('Confirm it’s you', 'For security, enter your CURRENT password to finish.', 'Current password…', function (cp) {
+                    cp = (cp || '').trim(); if (!cp) return;
+                    var cred = FB.authMod.EmailAuthProvider.credential(u.email, cp);
+                    FB.authMod.reauthenticateWithCredential(u, cred)
+                        .then(function () { return FB.authMod.updatePassword(u, np); })
+                        .then(function () { stFlash('Your password was changed.'); })
+                        .catch(function (e2) {
+                            var c = (e2 && e2.code) || '';
+                            toast((c === 'auth/wrong-password' || c === 'auth/invalid-credential')
+                                ? 'Current password is incorrect.' : 'Could not change password: ' + (c || 'error') + '.');
+                        });
+                }, '', 'password');
+            } else {
+                toast('Could not change password: ' + ((ex && ex.code) || 'error') + '.');
+            }
+        });
+    }, '', 'password');
+}
+
 function applyRoleUI() {
     if (!currentUser) return;
     var disp = document.getElementById('displayUser');
@@ -1772,11 +1838,12 @@ function applyRoleUI() {
 
 /* ===================== CUSTOM PROMPT LOGIC ===================== */
 var promptCallback = null;
-function askPrompt(title, msg, placeholder, cb, initial) {
+function askPrompt(title, msg, placeholder, cb, initial, type) {
     promptCallback = cb;
     $('#cpTitle').textContent = title;
     $('#cpMessage').textContent = msg;
     $('#cpInput').placeholder = placeholder;
+    $('#cpInput').type = type || 'text';   // 'password' masks the input for credentials
     $('#cpInput').value = initial || '';
     $('#customPrompt').style.display = 'flex';
     setTimeout(function() { $('#cpInput').focus(); $('#cpInput').select(); }, 100);
@@ -1860,6 +1927,9 @@ var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
 /* Sign-in history: who opened the register, when, from where. Capped so the
    document never grows without bound. */
 var LOGINS = [], LOGIN_KEEP = 300, LOGIN_DAYS = 90, CLIENT_IP = '';
+/* Change log (audit trail): who added / edited / deleted what, and when. Same shape
+   and lifecycle as the sign-in log — capped and time-limited so the doc stays small. */
+var AUDIT = [], AUDIT_KEEP = 600, AUDIT_DAYS = 180;
 
 var F = {}; SCHEMA.forEach(function (f) { F[f.key] = f; });
 var COLFIELDS = SCHEMA.filter(function (f) { return f.column !== false; });
@@ -1974,7 +2044,7 @@ function tagClass  (k, v) { return TAG_OF[toneOf(k, v)] || 'na'; }
 
 var Local = {
   read:  function () { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } },
-  write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH, logins: LOGINS })); } catch (e) {} }
+  write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH, logins: LOGINS, audit: AUDIT })); } catch (e) {} }
 };
 function readCols () {
   var stored = null;
@@ -2003,7 +2073,12 @@ function autoWidth (k, list) {
     var tw = c.measureText(t).width + 20 + (k === APP.pillField ? 16 : 0);
     if (tw > w) w = tw;
   });
-  var cap = (F[k].type === 'area') ? 520 : MAX_W; 
+  /* Reserve room for the inline editor's placeholder too, so an owner/select column
+     whose cells are empty is still wide enough to show "Unassigned" / "Select…" in
+     full when the cell is clicked, instead of clipping it. */
+  var ph = F[k].type === 'owner' ? 'Unassigned' : (F[k].type === 'select' ? 'Select…' : '');
+  if (ph) { var pw = c.measureText(ph).width + 26; if (pw > w) w = pw; }
+  var cap = (F[k].type === 'area') ? 520 : MAX_W;
   return Math.min(cap, Math.max(MIN_W, Math.ceil(w)));
 }
 function colWidths (list) {
@@ -2031,6 +2106,7 @@ function initLocal () {
       DYNAMIC_OPTS = s.options || {};
       TRASH = Array.isArray(s.trash) ? s.trash : [];
       if (Array.isArray(s.logins) && s.logins.length >= LOGINS.length) LOGINS = s.logins;
+      if (Array.isArray(s.audit) && s.audit.length >= AUDIT.length) AUDIT = s.audit;
       /* the purge has to be written back, or an expired record reappears next load */
       if (purgeTrash()) Local.write();
       if (s.config) { CFG = normCfg(s.config); seedUsers(); rebuildSchema(); refreshGroupTabs(); }
@@ -2079,6 +2155,18 @@ function initStore () {
       TRASH = (d && Array.isArray(d.items)) ? d.items : [];
       if (purgeTrash()) saveTrash();
       if ($('#st').classList.contains('open')) renderStTrash();
+    });
+
+    fs.onSnapshot(fs.doc(db, COLLECTION, '_audit'), function (docSnap) {
+      var d = docSnap.exists() ? docSnap.data() : null;
+      var remoteAudit = (d && Array.isArray(d.items)) ? d.items : [];
+      /* Merge, don't replace — this browser may hold entries not yet in the document. */
+      var seen = {}, merged = remoteAudit.concat(AUDIT).filter(function (x) {
+        if (!x || !x.id || seen[x.id]) return false; seen[x.id] = 1; return true;
+      });
+      merged.sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+      AUDIT = merged; purgeAudit();
+      if ($('#st').classList.contains('open')) renderStAudit();
     });
 
     fs.onSnapshot(fs.collection(db, COLLECTION), function (snap) {
@@ -2144,6 +2232,57 @@ function purgeLogins () {
   if (LOGINS.length > LOGIN_KEEP) LOGINS = LOGINS.slice(0, LOGIN_KEEP);
   return before - LOGINS.length;
 }
+
+/* ===================== CHANGE LOG (AUDIT) ===================== */
+function saveAudit () {
+  if (remote) remote.fs.setDoc(remote.fs.doc(remote.db, COLLECTION, '_audit'), { items: AUDIT });
+  try { localStorage.setItem(LSU + '_audit', JSON.stringify(AUDIT)); } catch (e) {}
+}
+function purgeAudit () {
+  var cut = Date.now() - AUDIT_DAYS * DAY_MS, before = AUDIT.length;
+  AUDIT = AUDIT.filter(function (x) { var t = Date.parse(x.at); return !isFinite(t) || t > cut; });
+  if (AUDIT.length > AUDIT_KEEP) AUDIT = AUDIT.slice(0, AUDIT_KEEP);
+  return before - AUDIT.length;
+}
+/* Record one change. `action` is created|updated|deleted|restored|purged; `det` is a
+   short human description of what changed. Attributed to the signed-in user + time. */
+function logChange (action, rec, det) {
+  var entry = {
+    id: 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    at: new Date().toISOString(),
+    by: (currentUser && currentUser.username) || USER || 'Unknown',
+    e:  (currentUser && currentUser.email) || '',
+    role: (currentUser && currentUser.role) || '',
+    act: action,
+    rid: rec ? pid(rec) : '',
+    name: (rec && rec[APP.titleField] != null) ? String(rec[APP.titleField]).slice(0, 120) : '',
+    det: String(det || '').slice(0, 300)
+  };
+  AUDIT.unshift(entry); purgeAudit(); saveAudit();
+  if ($('#st') && $('#st').classList.contains('open')) renderStAudit();
+}
+/* "Field: old → new" for a single changed field. */
+function fieldChange (key, oldV, newV) {
+  var f = F[key], lab = f ? f.label : key;
+  var o = Array.isArray(oldV) ? oldV.join(', ') : (oldV == null ? '' : String(oldV));
+  var n = Array.isArray(newV) ? newV.join(', ') : (newV == null ? '' : String(newV));
+  return lab + ': ' + (o || '—') + ' → ' + (n || '—');
+}
+/* A compact summary of every field that differs between two record states. */
+function diffSummary (before, after) {
+  var parts = [];
+  SCHEMA.forEach(function (f) {
+    if (f.type === 'calc' || f.type === 'auto' || f.type === 'audit' || f.type === 'stamp') return;
+    var a = before ? before[f.key] : undefined, b = after[f.key];
+    var av = Array.isArray(a) ? a.join(', ') : (a == null ? '' : String(a));
+    var bv = Array.isArray(b) ? b.join(', ') : (b == null ? '' : String(b));
+    if (av !== bv) parts.push(f.label + ': ' + (av || '—') + ' → ' + (bv || '—'));
+  });
+  if (!parts.length) return '';
+  var shown = parts.slice(0, 6).join('  ·  ');
+  if (parts.length > 6) shown += '  ·  +' + (parts.length - 6) + ' more';
+  return shown;
+}
 function deviceLabel () {
   var u = navigator.userAgent || '';
   var os = /Windows/.test(u) ? 'Windows' : /Mac OS X|Macintosh/.test(u) ? 'macOS'
@@ -2195,6 +2334,7 @@ function softDelete (r) {
   TRASH.unshift(t);
   DATA.splice(i, 1);
   drop(r);
+  logChange('deleted', r, 'Moved to recycle bin');
   purgeTrash(); saveTrash(); renderAll();
   return i;
 }
@@ -2209,13 +2349,17 @@ function restoreRecord (id, at) {
   if (pos == null || pos < 0 || pos > DATA.length) pos = DATA.length;
   DATA.splice(pos, 0, r);
   DATA.forEach(function (x, j) { x.order = j; });
-  saveAll(); saveTrash(); renderAll();
+  saveAll(); saveTrash();
+  logChange('restored', r, 'Restored from recycle bin');
+  renderAll();
   return r;
 }
 function purgeOne (id) {
   var i = -1; TRASH.forEach(function (t, n) { if (t._id === id) i = n; });
   if (i < 0) return null;
-  return TRASH.splice(i, 1)[0];
+  var t = TRASH.splice(i, 1)[0];
+  logChange('purged', t, 'Permanently deleted from recycle bin');
+  return t;
 }
 
 var TONE = { priority: { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' }, nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }, doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }};
@@ -2793,7 +2937,8 @@ function applyCell (v) {
   cellEdit = null;
   if (!r) { renderList(); return; }
   if (String(r[c.k] == null ? '' : r[c.k]) !== String(v)) {
-    r[c.k] = v; save(r); renderAll(); flash(c.id);
+    var oldV = r[c.k];
+    r[c.k] = v; save(r); logChange('updated', r, fieldChange(c.k, oldV, v)); renderAll(); flash(c.id);
   } else { renderList(); }
 }
 function commitEdit (moveOn, back) {
@@ -2806,7 +2951,8 @@ function commitEdit (moveOn, back) {
   var v = el.value;
   if (F[c.k].type === 'money' || F[c.k].type === 'number') v = v === '' ? '' : +v;
   if (String(r[c.k] == null ? '' : r[c.k]) !== String(v)) {
-    r[c.k] = v; save(r); renderAll(); flash(c.id);
+    var oldV = r[c.k];
+    r[c.k] = v; save(r); logChange('updated', r, fieldChange(c.k, oldV, v)); renderAll(); flash(c.id);
   } else { renderList(); }
   if (moveOn) {
     var cells = $$('#tbl tbody td.ed-cell');
@@ -2926,7 +3072,7 @@ function duplicate (r) {
   delete c._draft;
   c._id = uid(); c.record_id = nextId(); c.entry_date = TODAY; c.order = DATA.length;
   c[APP.titleField] = (r[APP.titleField] || '') + ' (copy)';
-  DATA.push(c); save(c); renderAll(); revealRecord(c._id); toast('Record duplicated as #' + pid(c));
+  DATA.push(c); save(c); logChange('created', c, 'Duplicated from #' + pid(r)); renderAll(); revealRecord(c._id); toast('Record duplicated as #' + pid(c));
 }
 function remove (r) {
   if (!canDelete()) { toast('Your account cannot delete records.'); return; }
@@ -3100,6 +3246,8 @@ function commit () {
      from the form rather than dropping the user's work on the floor. */
   if (!r && editId) { r = { _id: editId, order: DATA.length, entry_date: TODAY }; DATA.push(r); }
   if (!r) return;
+  var isNew = !!r._draft;
+  var before = isNew ? null : JSON.parse(JSON.stringify(r));
   Object.assign(r, collect());
   var tf = F[APP.titleField];
   if (tf && !r[APP.titleField]) {
@@ -3110,7 +3258,10 @@ function commit () {
   }
   r.record_id = +r.record_id || nextId();
   delete r._draft;
-  save(r); renderAll(); closeDr();
+  save(r);
+  if (isNew) logChange('created', r, '');
+  else { var diff = diffSummary(before, r); if (diff) logChange('updated', r, diff); }
+  renderAll(); closeDr();
   var seen = revealRecord(r._id);
   toast(seen
     ? 'Record #' + pid(r) + ' saved' + (pageCount(filtered().length) > 1 ? ' — showing page ' + (page + 1) + '.' : '.')
@@ -3662,7 +3813,6 @@ function renderColPanel () {
       '<span class="cm__n">' + (i + 1) + '</span>' +
       '<span class="cm__d ' + (g.owner === 'kec' ? 'sw-kec' : 'sw-inv') + '"></span>' +
       '<span class="cm__t" title="' + esc(F[k].label) + '">' + esc(F[k].label) + '</span>' +
-      '<span class="cm__w">' + Math.round(m.w[k] || 0) + 'px</span>' +
       '<button class="cm__b up" type="button" title="Move up">▲</button>' +
       '<button class="cm__b down" type="button" title="Move down">▼</button>' +
       '<button class="cm__b rm" type="button" title="Hide column">✕</button></li>';
@@ -3772,12 +3922,12 @@ function openSettings () {
 function closeSettings () { closeSelects(null); $('#st').classList.remove('open'); }
 function stSwitch (t) {
   stTab = t;
-  ['1','2','3','4','5','6','7','8'].forEach(function (x) {
+  ['1','2','3','4','5','6','7','8','9'].forEach(function (x) {
     $('#stTab' + x).classList.toggle('on', x === t);
     $('#stPane' + x).classList.toggle('on', x === t);
   });
 }
-function renderSettings () { renderStLists(); renderStFields(); renderStOwners(); renderStGroups(); renderStData(); renderStTrash(); renderStUsers(); renderStLogins(); }
+function renderSettings () { renderStLists(); renderStFields(); renderStOwners(); renderStGroups(); renderStData(); renderStTrash(); renderStUsers(); renderStLogins(); renderStAudit(); }
 function syncBinCount () { var c = $('#binCnt'); if (c) c.textContent = TRASH.length; }
 function stFlash (m) { var e = $('#stStatus'); if (!e) return; e.textContent = m; clearTimeout(e._t); e._t = setTimeout(function () { e.textContent = 'Every change is saved immediately.'; }, 3500); }
 
@@ -4426,14 +4576,14 @@ function renderStUsers () {
       '<select class="st__in st__in--role rl"' + (lastAdmin ? ' disabled title="At least one administrator must remain"' : '') + '>' +
         ROLES.map(function (r) { return '<option value="' + r.id + '"' + (r.id === x.role ? ' selected' : '') + '>' + r.label + '</option>'; }).join('') +
       '</select>' +
-      '<button class="st__ib pw" type="button">Reset password</button>' +
+      (self ? '<button class="st__ib cpw" type="button">Change password</button>' : '') +
       (self || lastAdmin ? '' : '<button class="st__ib dg rm" type="button">Remove</button>') +
       '</li>';
   }).join('');
 
   $('#stUsers').innerHTML =
     '<div class="st__ttl">Users</div>' +
-    '<div class="st__sub">Everyone signs in with their own work email \u2014 including viewers, so every sign-in is attributable to a person. A role change takes effect the next time they load the register.</div>' +
+    '<div class="st__sub">Everyone signs in with their own work email \u2014 including viewers, so every sign-in is attributable to a person. You set the role when you add someone, and a role change takes effect the next time they load the register. To reset a password, remove the person and add them again with a new one. You can change your own password below.</div>' +
     '<div class="st__note">This decides who can change what inside the register. It is not a security boundary on its own \u2014 anyone holding the file can read its contents \u2014 so pair it with the Firestore rules. Do not reuse a password from another system.</div>' +
     '<div class="st__row"><button class="btn' + (stUserAdd ? '' : ' btn--go') + '" id="nuToggle" type="button">' +
       (stUserAdd ? 'Cancel' : '+ Add a user') + '</button></div>' +
@@ -4477,16 +4627,7 @@ function wireStUsers () {
     if (b.id === 'nuAdd') { addUser(); return; }
     var li = b.closest('.st__o'); if (!li || !li.dataset.e) return;
     var acc = findUser(li.dataset.e); if (!acc) return;
-    if (b.classList.contains('pw')) {
-      askDelete('Send a password-reset link to ' + acc.e + '? They set a new password from the email \u2014 passwords live in Firebase, not in the register.', function (ok) {
-        if (!ok) return;
-        if (!FB) { toast('Not connected to Firebase yet \u2014 try again in a moment.'); return; }
-        FB.authMod.sendPasswordResetEmail(FB.auth, acc.e).then(function () {
-          stFlash('Reset link sent to ' + acc.e + '.');
-        }).catch(function (ex) { toast('Could not send the link: ' + ((ex && ex.code) || 'unknown') + '.'); });
-      }, { neutral: true, title: 'Reset password', confirm: 'Send link' });
-      return;
-    }
+    if (b.classList.contains('cpw')) { changeOwnPassword(); return; }
     if (b.classList.contains('rm')) {
       askDelete('Remove ' + acc.e + ' from the register? They lose access immediately. Their Firebase sign-in stays until you delete it in the Firebase console.', function (ok) {
         if (!ok) return;
@@ -4587,8 +4728,77 @@ function wireStLogins () {
   });
 }
 
+/* ---- 9 · change log ------------------------------------------------------ */
+var stAuditQ = '';
+function auditTag (act) {
+  if (act === 'deleted' || act === 'purged') return 'del';
+  if (act === 'updated') return 'cust';
+  return '';   // created / restored — green
+}
+function renderStAudit () {
+  purgeAudit();
+  var q = stAuditQ.trim().toLowerCase();
+  var rows = AUDIT.filter(function (x) {
+    return !q || ((x.by || '') + ' ' + (x.e || '') + ' ' + (x.act || '') + ' ' + (x.name || '') + ' #' + (x.rid || '') + ' ' + (x.det || '')).toLowerCase().indexOf(q) >= 0;
+  });
+  var people = {}; AUDIT.forEach(function (x) { if (x.by) people[x.by] = 1; });
+  var today = AUDIT.filter(function (x) { return String(x.at).slice(0, 10) === TODAY; }).length;
+
+  $('#stAudit').innerHTML =
+    '<div class="st__ttl">Change Log</div>' +
+    '<div class="st__sub">Every record added, edited or deleted — newest first, showing who did it and when. Entries are kept for ' + AUDIT_DAYS +
+      ' days and the most recent ' + AUDIT_KEEP + ' are retained.</div>' +
+    '<div class="st__row" style="gap:14px;font-size:11.5px;color:var(--kec-muted)">' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + AUDIT.length + '</b> changes</span>' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + Object.keys(people).length + '</b> ' + plural(Object.keys(people).length, 'person', 'people') + '</span>' +
+      '<span><b style="color:var(--kec-green-deep);font-size:14px">' + today + '</b> today</span>' +
+      '<span class="applog__sp"></span>' +
+      '<input class="st__in" id="auditQ" placeholder="Filter by user, action, record…" value="' + esc(stAuditQ) + '" style="width:250px;height:30px">' +
+      (AUDIT.length ? '<button class="btn btn--sm" id="auditExport" type="button">Export CSV</button>' +
+                      '<button class="btn btn--sm btn--danger" id="auditClear" type="button">Clear</button>' : '') +
+    '</div>' +
+    (rows.length ? '<ul class="st__ol">' + rows.map(function (x) {
+      return '<li class="st__o">' +
+        '<span class="st__tag ' + auditTag(x.act) + '">' + esc(x.act || '?') + '</span>' +
+        '<span class="t"><b>' + esc(x.name || ('Record #' + x.rid)) + '</b>' + (x.rid ? ' <span class="st__dim">#' + esc(x.rid) + '</span>' : '') +
+          (x.det ? '<br><span class="st__dim">' + esc(x.det) + '</span>' : '') + '</span>' +
+        '<span class="u" title="Who made the change">' + esc(x.by || '—') + '</span>' +
+        '<span class="u">' + esc(fmtStamp(x.at)) + '</span>' +
+        '</li>';
+    }).join('') + '</ul>'
+    : '<div class="st__empty">' + (AUDIT.length ? 'No change matches that filter.' : 'No changes recorded yet.') + '</div>');
+}
+function wireStAudit () {
+  var host = $('#stAudit');
+  host.addEventListener('input', function (e) {
+    if (e.target.id !== 'auditQ') return;
+    stAuditQ = e.target.value;
+    var pos = e.target.selectionStart;
+    renderStAudit();
+    var q = $('#auditQ'); if (q) { q.focus(); try { q.setSelectionRange(pos, pos); } catch (x) {} }
+  });
+  host.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'auditExport') {
+      var head = ['When', 'User', 'Email', 'Role', 'Action', 'Record #', 'Record', 'Details'].join(',');
+      var body = AUDIT.map(function (x) {
+        return [fmtStamp(x.at), x.by || '', x.e || '', x.role || '', x.act || '', x.rid || '', x.name || '', x.det || ''].map(csvCell).join(',');
+      });
+      dl('KEC-' + APP.key + '-changes-' + TODAY + '.csv', 'text/csv;charset=utf-8', '﻿' + [head].concat(body).join('\n'));
+      stFlash('Change log exported.');
+      return;
+    }
+    if (b.id === 'auditClear') {
+      askDelete('Clear the entire change log? This cannot be undone.', function (ok) {
+        if (!ok) return;
+        AUDIT = []; saveAudit(); renderStAudit(); stFlash('Change log cleared.');
+      });
+    }
+  });
+}
+
 function wireAdmin () {
-  wireColPanel(); wireStLists(); wireStFields(); wireStOwners(); wireStGroups(); wireStData(); wireStTrash(); wireStUsers(); wireStLogins();
+  wireColPanel(); wireStLists(); wireStFields(); wireStOwners(); wireStGroups(); wireStData(); wireStTrash(); wireStUsers(); wireStLogins(); wireStAudit();
   $('#cols').addEventListener('click', function (e) {
     e.stopPropagation();
     var p = $('#colPanel');
@@ -4598,7 +4808,7 @@ function wireAdmin () {
   $('#settings').addEventListener('click', function (e) { e.stopPropagation(); openSettings(); });
   $('#stClose').addEventListener('click', closeSettings);
   $('#st').addEventListener('click', function (e) { if (e.target.id === 'st') closeSettings(); });
-  ['1','2','3','4','5','6','7','8'].forEach(function (t) { $('#stTab' + t).addEventListener('click', function () { stSwitch(t); }); });
+  ['1','2','3','4','5','6','7','8','9'].forEach(function (t) { $('#stTab' + t).addEventListener('click', function () { stSwitch(t); }); });
   /* Footer inputs size themselves to their content so the reference number always
      sits flush against the gold rule. */
   ['#refNo', '#srcName'].forEach(function (sel) {
