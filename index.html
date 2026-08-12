@@ -1420,18 +1420,26 @@ var SCHEMA = [
   }
 ];
 
-/* Columns shown the first time the register is opened. Keep to about ten. */
+/* Columns shown by default. Anyone can add, remove or reorder them afterwards from the
+   Columns button — the choice is remembered per browser. Order is honoured exactly. */
 var DEFAULT_COLS = [
   "record_id",
+  "department",
+  "entry_date",
+  "assigned_to",
+  "lead_source",
+  "updated_by",
   "company",
   "country",
   "investor_category",
   "stage",
   "deal_value",
-  "next_action",
   "priority",
   "progress",
-  "follow_up"
+  "follow_up",
+  "rationale",
+  "nda_signed",
+  "next_action"
 ];
 
 /* Values pre-filled on a new record. Each must be a real option of its field. */
@@ -1920,7 +1928,7 @@ var TODAY = isoToday();
 var LS  = 'kec_' + APP.key + '_v1',
     LSC = 'kec_' + APP.key + '_cols_v1',
     LSU = 'kec_' + APP.key + '_user_v1';
-var BUILD = 7, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
+var BUILD = 8, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
 var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
@@ -2054,12 +2062,12 @@ function readCols () {
     MANUAL = stored.w || {};
   } else { COLS = []; MANUAL = {}; }
   if (!COLS.length) {
-    /* First run: the starting columns are re-sorted into section order so the banded
-       header reads as three or four continuous bands rather than a stripe per
-       column. A stored preference is left exactly as the person arranged it. */
+    /* First run: use the shipped default columns in their exact order (they are already
+       grouped by section, so the banded header still reads as continuous bands). This
+       matches the Columns panel's "Reset to default", which also uses DEFAULT_COLS as-is.
+       A stored preference is left exactly as the person arranged it. */
     COLS = DEFAULT_COLS.slice().filter(function (k) { return F[k] && F[k].column !== false; });
     MANUAL = {};
-    normalizeCols();
   }
 }
 function writeCols () { try { localStorage.setItem(LSC, JSON.stringify({ v: BUILD, cols: COLS, w: MANUAL })); } catch (e) {} }
