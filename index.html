@@ -3321,8 +3321,8 @@ function applyCopy () {
   $('#appTitle').textContent = APP.title;
   $('#appSub').textContent   = APP.subtitle;
   $('#authTitle').textContent = APP.title;
-  $('#refNo').value  = APP.reference;
-  $('#srcName').value = APP.source;
+  $('#refNo').value  = CFG.reference || APP.reference;
+  $('#srcName').value = CFG.source || APP.source;
   $('#footYear').textContent = APP.year;
   $('#add').textContent = '+ New ' + APP.recordNoun;
   $('#drSave').textContent = 'Save ' + APP.recordNoun;
@@ -3376,14 +3376,22 @@ function bootApp () {
   });
   var asOf = $('#asOf'); if (asOf) asOf.textContent = longToday();
 
-  // Dynamic width for Office of CEO Footer
+  // Source footer: size to the exact rendered text width (accurate for the proportional
+  // font, so no dead space opens up before the year), and persist edits so the new name
+  // survives a reload and syncs to everyone.
   var src = document.querySelector('.kec-src');
   if (src) {
       var sizeSrc = function () {
           var w = Math.max(20, Math.ceil(mctx('500 12px "Readex Pro", system-ui, sans-serif').measureText(src.value || src.placeholder).width) + 2);
           src.style.width = w + 'px';
       };
+      src._resize = sizeSrc;
       src.addEventListener('input', sizeSrc);
+      src.addEventListener('change', function () {
+          CFG.source = (src.value || '').trim();
+          persistDocList();
+          toast('Source saved.');
+      });
       document.fonts.ready.then(sizeSrc);
       sizeSrc();
   }
@@ -3446,7 +3454,8 @@ function normCfg (c) {
   return { opts: c.opts || {}, labels: c.labels || {}, fields: c.fields || [],
            groups: c.groups || {}, stages: c.stages || {},
            order: c.order || [], groupOf: c.groupOf || {}, users: c.users || [],
-           docStatus: c.docStatus || 'Updated', docClass: c.docClass || 'Internal' };
+           docStatus: c.docStatus || 'Updated', docClass: c.docClass || 'Internal',
+           source: c.source || '', reference: c.reference || '' };
 }
 function loadConfig () {
   try { var c = JSON.parse(localStorage.getItem(LSCFG) || 'null'); if (c) CFG = normCfg(c); } catch (e) {}
@@ -3530,6 +3539,15 @@ function syncDocSelects () {
     if (h._sel.value !== v) h._sel.set(v);
     CFG[d.cfg] = v;
   });
+  /* Footer Source / Reference are document-level too — mirror them from the config,
+     but never yank the field out from under someone who is typing in it. */
+  var sn = $('#srcName');
+  if (sn && document.activeElement !== sn) {
+    sn.value = CFG.source || APP.source;
+    if (sn._resize) sn._resize();
+  }
+  var rn = $('#refNo');
+  if (rn && document.activeElement !== rn) rn.value = CFG.reference || APP.reference;
 }
 /* Columns are stable-sorted by section so the banded header above the table never
    breaks into fragments after a field is moved. */
@@ -4817,13 +4835,16 @@ function wireAdmin () {
   $('#stClose').addEventListener('click', closeSettings);
   $('#st').addEventListener('click', function (e) { if (e.target.id === 'st') closeSettings(); });
   ['1','2','3','4','5','6','7','8','9'].forEach(function (t) { $('#stTab' + t).addEventListener('click', function () { stSwitch(t); }); });
-  /* Footer inputs size themselves to their content so the reference number always
-     sits flush against the gold rule. */
-  ['#refNo', '#srcName'].forEach(function (sel) {
-    var el = $(sel); if (!el) return;
-    var fit = function () { el.style.width = Math.max(4, el.value.length + 1) + 'ch'; };
-    el.addEventListener('input', fit); fit();
-  });
+  /* Reference number sizes itself to its content so it sits flush against the gold rule.
+     (The Source field has its own text-width sizer in bootApp — keeping it out of this
+     ch-based loop is what removes the dead space that used to open up before the year.) */
+  var rn = $('#refNo');
+  if (rn) {
+    var fitRef = function () { rn.style.width = Math.max(4, rn.value.length + 1) + 'ch'; };
+    rn.addEventListener('input', fitRef);
+    rn.addEventListener('change', function () { CFG.reference = (rn.value || '').trim(); persistDocList(); });
+    fitRef();
+  }
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAuth);
