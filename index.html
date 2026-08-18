@@ -1493,7 +1493,7 @@ var KPIS = [
   { icon: 'i-target', label: 'Total Deal Value', calc: function (R) {
       var t = sum(R, function (r) { return +r.deal_value || 0; });
       var n = R.filter(function (r) { return +r.deal_value > 0; }).length;
-      return { v: money(t) || '\u2014', sub: n ? 'across ' + n + ' ' + plural(n, 'record') : 'nothing valued yet',
+      return { v: moneyShort(t) || '\u2014', sub: n ? 'across ' + n + ' ' + plural(n, 'record') : 'nothing valued yet',
                dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-trend', label: 'Active Pipeline', calc: function (R) {
@@ -1501,7 +1501,7 @@ var KPIS = [
          "Closed \u2014 Not Completed" carries 0% progress, so it is excluded here. */
       var t = sum(R, function (r) { var p = progressOf(r); return (p > 0 && p < 100) ? (+r.deal_value || 0) : 0; });
       var signed = sum(R, function (r) { return progressOf(r) === 100 ? (+r.deal_value || 0) : 0; });
-      return { v: money(t) || '\u2014', sub: signed ? money(signed) + ' signed' : 'open opportunities',
+      return { v: moneyShort(t) || '\u2014', sub: signed ? moneyShort(signed) + ' signed' : 'open opportunities',
                dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-star', label: 'High Priority', calc: function (R) {
@@ -2023,6 +2023,18 @@ function money (v) {
   v = +v; if (!v || isNaN(v)) return '';
   var c = APP.currency ? APP.currency + ' ' : '';
   return c + Math.round(v).toLocaleString('en-US');
+}
+/* Compact amount for the small KPI cards so large figures never spill out of the box:
+   1,545,000,000 -> "SAR 1.54B", 60,000,000 -> "SAR 60M", 750,000 -> "SAR 750K".
+   Below a thousand it falls back to the full grouped number. */
+function moneyShort (v) {
+  v = +v; if (!v || isNaN(v)) return '';
+  var c = APP.currency ? APP.currency + ' ' : '', a = Math.abs(v), n = v, unit = '';
+  if (a >= 1e9) { n = v / 1e9; unit = 'B'; }
+  else if (a >= 1e6) { n = v / 1e6; unit = 'M'; }
+  else if (a >= 1e3) { n = v / 1e3; unit = 'K'; }
+  if (!unit) return c + commas(v);
+  return c + n.toFixed(2).replace(/\.?0+$/, '') + unit;   // trim trailing zeros: 60.00 -> 60
 }
 /* Live-format a text input with thousands separators while typing, keeping the caret in
    the right place. Used for money fields in the form and inline cell editor. */
