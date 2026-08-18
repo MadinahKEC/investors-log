@@ -585,6 +585,93 @@ body.viewer-mode .acts{display:none}
 .boot-spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--kec-hairline);
   border-top-color:var(--kec-green);animation:bootspin .8s linear infinite}
 @keyframes bootspin{to{transform:rotate(360deg)}}
+
+/* ===================== MOBILE / RESPONSIVE =====================
+   On phones & small tablets the fixed A4-style sheet is replaced by a fluid, full-width
+   layout, and the dense table becomes a list of tap-to-open cards (like a mobile app).
+   The card list is hidden on desktop. */
+#cards{display:none}
+.rcard{display:none}
+@media (max-width:768px){
+  html,body{background:var(--kec-paper);height:auto;overflow-y:auto}
+  /* Drop the scaled sheet — content flows full-width down the page. */
+  body.fitted{display:block;height:auto;overflow:visible}
+  body.fitted .page,.page{transform:none!important}
+  .page,.page--wide{width:100%!important;height:auto!important;min-height:100vh;
+    margin:0!important;padding:12px 12px 22px!important;box-shadow:none;border-radius:0;overflow:visible}
+  .page--wide .kec-content{gap:12px;overflow:visible}
+
+  /* Header */
+  .kec-head{flex-wrap:wrap;gap:8px;padding-bottom:8px;margin-bottom:6px}
+  .kec-head::after{width:70px}
+  .kec-title{font-size:19px}
+  .kec-sub{font-size:11.5px}
+  .kec-head__left{gap:5px;flex:1 1 100%;align-items:flex-end}
+  .kec-logo{width:24mm;height:auto}
+  .kec-badges{flex-wrap:wrap}
+
+  /* KPIs: a swipeable horizontal strip */
+  .page--wide .kstrip,.kstrip{display:flex;grid-template-columns:none;overflow-x:auto;
+    gap:8px;padding-bottom:4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .kstrip::-webkit-scrollbar{display:none}
+  .page--wide .kc,.kc{flex:0 0 44%;min-width:148px;scroll-snap-align:start;padding:11px 12px}
+  .page--wide .kc__v,.kc__v{font-size:20px}
+
+  /* Toolbar */
+  .applog{padding:10px;border-radius:12px}
+  .applog__bar{flex-wrap:wrap;gap:6px}
+  .fld--search{flex:1 1 100%;min-width:0;max-width:none;height:33px;font-size:12.5px}
+  .applog__bar .sel{flex:1 1 40%}
+  .applog__sp,#cols{display:none}
+  #reset,#settings,#add{height:31px;flex:1 1 auto}
+
+  /* Table → cards */
+  #scroll{display:none}
+  #cards{display:block}
+  .hwrap{display:none!important}
+
+  .rcard{display:block;background:#fff;border:1px solid var(--kec-hairline);border-radius:12px;
+    padding:11px 13px;margin-bottom:9px;box-shadow:0 1px 3px rgba(20,61,30,.05)}
+  .rcard:active{background:var(--kec-paper)}
+  .rcard__top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+  .rcard__no{font-family:var(--kec-mono);font-size:11px;font-weight:600;color:var(--kec-green);
+    background:var(--kec-surface);padding:2px 7px;border-radius:6px;flex:none}
+  .rcard__title{flex:1;min-width:0;font-size:14.5px;font-weight:600;color:var(--kec-green-deep);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rcard__grid{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px}
+  .rcard__f{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .rcard__f--wide{grid-column:span 2}
+  .rcard__l{font-size:8.5px;font-weight:600;color:var(--kec-muted);text-transform:uppercase;letter-spacing:.4px}
+  .rcard__v{font-size:12.5px;color:var(--kec-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rcard__f--wide .rcard__v{white-space:normal}
+  .rcard__v.due{color:var(--kec-neg);font-weight:600}
+  .rcard__prog{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .rcard__prog .bar__t{flex:1;height:6px}
+  .rcard__empty{text-align:center;color:var(--kec-muted);font-size:13px;padding:40px 12px}
+
+  .foot{margin-top:2px}
+  .kec-foot{display:none}
+
+  /* Full-screen record modal + settings */
+  .dr{padding:0;align-items:stretch}
+  .dr__p,#st .dr__p{width:100%!important;max-width:none!important;max-height:100vh;height:100vh;border-radius:0}
+  .dr__h{padding:12px 15px}
+  .dr__t{font-size:15px}
+  .dr__tabs{padding:8px 12px 0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .dr__tabs::-webkit-scrollbar{display:none}
+  .dr__b{padding:14px 15px}
+  .dr__pane.on{grid-template-columns:1fr;gap:13px}
+  .f--wide{grid-column:span 1}
+  .dr__f{padding:11px 15px;flex-wrap:wrap;gap:8px}
+  .dr__meter{min-width:0;flex:1 1 100%;order:-1}
+  .st2{grid-template-columns:1fr}
+  .st__pane,.st__pane.on{height:auto;min-height:0;flex-direction:column}
+  .st__side{border-right:none;border-bottom:1px solid var(--kec-hairline);max-height:150px}
+  .st__grid{grid-template-columns:1fr}
+  .cm{grid-template-columns:1fr;width:auto}
+
+  .auth-panel{padding:26px 18px}
+}
 </style>
 </head>
 <body>
@@ -695,7 +782,8 @@ body.viewer-mode .acts{display:none}
         <button id="add" class="btn btn--go" type="button">+ New</button>
       </div>
       <div id="scroll"><table class="kec" id="tbl"></table></div>
-      
+      <div id="cards"></div>
+
       <div class="foot">
         <span class="hwrap">
           <button class="hbtn" id="hLeft"  type="button">◀</button>
@@ -2910,6 +2998,43 @@ function revealRecord (id) {
   flash(id);
   return true;
 }
+/* Mobile view: each record is a tap-to-open card instead of a table row. It respects
+   the shown columns (COLS) — the record number and title become the card header, the
+   priority pill and progress bar get their own spots, and every other shown column is a
+   label/value line. */
+function renderCards (list) {
+  var host = $('#cards'); if (!host) return;
+  var autoKey = (SCHEMA.filter(function (f) { return f.type === 'auto'; })[0] || {}).key;
+  var start = pageStart(page), slice = list.slice(start, start + pageSize(page));
+  if (!slice.length) {
+    var qv = ($('#q').value || '').trim();
+    host.innerHTML = '<div class="rcard__empty">' + (DATA.length && qv ? 'No record matches “' + esc(qv) + '”' : 'No records yet') + '</div>';
+    return;
+  }
+  host.innerHTML = slice.map(function (r) {
+    var title = (APP.titleField && r[APP.titleField]) ? esc(String(r[APP.titleField])) : '—';
+    var pill = (APP.pillField && COLS.indexOf(APP.pillField) >= 0 && r[APP.pillField])
+      ? '<span class="pill pill--' + pillClass(APP.pillField, r[APP.pillField]) + '">' + esc(r[APP.pillField]) + '</span>' : '';
+    var fields = COLS.filter(function (k) {
+      return F[k] && k !== autoKey && k !== APP.titleField && k !== APP.pillField &&
+             !(APP.progress && k === APP.progress.into);
+    }).map(function (k) {
+      var v = text(r, k), wide = (F[k].type === 'area' || F[k].type === 'multi' || String(v).length > 22);
+      var tn = COLOURED[k] ? ' tone--' + toneOf(k, r[k]) : '';
+      var cls = k === APP.dueField && isOverdue(r) ? tn + ' due' : tn;
+      return '<div class="rcard__f' + (wide ? ' rcard__f--wide' : '') + '">' +
+        '<span class="rcard__l">' + esc(F[k].short || F[k].label) + '</span>' +
+        '<span class="rcard__v' + cls + '">' + (v ? esc(v) : '—') + '</span></div>';
+    }).join('');
+    var prog = (APP.progress && COLS.indexOf(APP.progress.into) >= 0)
+      ? '<div class="rcard__prog"><span class="bar__t"><span class="bar__f" style="width:' + progressOf(r) + '%"></span></span>' +
+        '<span class="bar__n">' + progressOf(r) + '%</span></div>' : '';
+    return '<div class="rcard" data-id="' + esc(r._id) + '">' +
+      '<div class="rcard__top"><span class="rcard__no">#' + pid(r) + '</span>' +
+        '<span class="rcard__title">' + title + '</span>' + pill + '</div>' +
+      (fields ? '<div class="rcard__grid">' + fields + '</div>' : '') + prog + '</div>';
+  }).join('');
+}
 function renderList () {
   sweepPortals();
   rebuildPos();
@@ -2917,7 +3042,8 @@ function renderList () {
   if (page > n - 1) page = n - 1; if (page < 0) page = 0;
   var strip = document.querySelector('.kstrip');
   if (strip) strip.style.display = page === 0 ? '' : 'none';
-  renderTable(list);
+  if (document.body.classList.contains('mobile')) renderCards(list);
+  else renderTable(list);
   var start = pageStart(page), size = pageSize(page), from = list.length ? start + 1 : 0;
   $('#pg').textContent = from + '–' + Math.min(start + size, list.length) + ' of ' + list.length;
   $('#pPrev').disabled = page === 0;
@@ -3124,6 +3250,11 @@ function wire () {
     if (b.classList.contains('ed'))  openDrawer(r._id);
     if (b.classList.contains('dup')) duplicate(r);
     if (b.classList.contains('dl'))  remove(r);
+  });
+  /* Mobile: tapping a record card opens it (read-only for viewers, editable otherwise). */
+  var cardsHost = $('#cards');
+  if (cardsHost) cardsHost.addEventListener('click', function (e) {
+    var c = e.target.closest('.rcard'); if (c && c.dataset.id) openDrawer(c.dataset.id);
   });
   host.addEventListener('dragstart', function (e) {
     if(currentUser && currentUser.role === 'viewer') { e.preventDefault(); return; }
@@ -3392,8 +3523,21 @@ function syncOwnerSelects (sel) {
   });
 }
 
+var MOBILE_BP = 768;
+function isMobile () { return document.documentElement.clientWidth <= MOBILE_BP; }
 function fitScreen () {
   var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  /* Phones and small tablets get a fluid, full-width, card-based layout instead of the
+     scaled A4-ish sheet. No transform scaling — everything flows down the page. */
+  if (isMobile()) {
+    var wasMobile = document.body.classList.contains('mobile');
+    document.documentElement.style.setProperty('--fit', '1');
+    document.body.classList.remove('fitted');
+    document.body.classList.add('mobile');
+    if (!wasMobile) renderList();   // switch the table out for cards
+    return;
+  }
+  if (document.body.classList.contains('mobile')) { document.body.classList.remove('mobile'); renderList(); }
   var k = Math.min((vw - 16) / 1280, (vh - 16) / 720);
   if (k >= 1.05 || k <= 0.98) {
     document.documentElement.style.setProperty('--fit', k.toFixed(4));
