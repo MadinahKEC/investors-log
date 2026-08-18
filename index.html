@@ -90,7 +90,7 @@ body.viewer-mode .sel--chip .sel__c{display:none}
 .card{background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;padding:11px 13px;display:flex;flex-direction:column;min-width:0}
 
 .kstrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--gap)}
-.page--wide .kstrip{grid-template-columns:repeat(6,minmax(0,1fr))}
+.page--wide .kstrip{grid-template-columns:repeat(7,minmax(0,1fr))}
 .page--wide .kc{padding:6px 9px 5px;gap:2px}
 .kc{background:#fff;border:1px solid var(--kec-hairline);border-radius:11px;padding:13px 12px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;min-width:0}
 .kc__top{display:flex;align-items:center;gap:6px;justify-content:center;min-width:0;max-width:100%}
@@ -1245,20 +1245,6 @@ var SCHEMA = [
     "column": true
   },
   {
-    "key": "deal_status",
-    "label": "Deal Status",
-    "short": "Status",
-    "group": "D",
-    "type": "select",
-    "options": [
-      "Open",
-      "Closed — Not Completed",
-      "Won"
-    ],
-    "help": "Only Open deals count in Active Pipeline; Closed / Won do not",
-    "column": true
-  },
-  {
     "key": "progress",
     "label": "Progress (%)",
     "short": "Progress",
@@ -1357,8 +1343,8 @@ var SCHEMA = [
     "group": "D",
     "type": "date",
     "options": [],
-    "help": "Shown next to the NDA status",
-    "column": false
+    "help": "Its own date column",
+    "column": true
   },
   {
     "key": "last_activity",
@@ -1387,8 +1373,8 @@ var SCHEMA = [
     "group": "D",
     "type": "date",
     "options": [],
-    "help": "Shown next to the activity",
-    "column": false
+    "help": "Its own date column",
+    "column": true
   },
   {
     "key": "next_action",
@@ -1447,7 +1433,6 @@ var DEFAULT_COLS = [
   "country",
   "investor_category",
   "stage",
-  "deal_status",
   "deal_value",
   "priority",
   "progress",
@@ -1462,7 +1447,6 @@ var DEFAULT_COLS = [
 var DEFAULTS = {
   department: 'Investment',
   stage: 'Identification',
-  deal_status: 'Open',
   priority: 'Medium',
   last_activity: 'No Activity Yet',
   country: 'Saudi Arabia'
@@ -1476,11 +1460,10 @@ var FILTERS = [
   { id: 'fOwner', key: 'assigned_to', placeholder: 'All owners',      w: 116 }
 ];
 
-/* Two fields shown as one cell: a status and the date it happened. */
+/* Two fields shown as one cell. Dates are NOT paired here \u2014 a date belongs in its own
+   date column, never appended onto another field's cell. */
 var COMPOSITES = {
-  last_activity: { with: 'last_activity_date' },
-  nda_signed:    { with: 'nda_date' },
-  rationale:     { with: 'rationale_note', sep: ' \u2014 ' }
+  rationale: { with: 'rationale_note', sep: ' \u2014 ' }
 };
 
 /* Derived cell values. Any field of type 'calc' needs an entry here. */
@@ -1494,10 +1477,10 @@ var CALC = {
 var TONE = {
   priority:   { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' },
   nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' },
-  deal_status:{ 'Open': 'green', 'Won': 'green', 'Closed — Not Completed': 'neg' },
+  stage:      { 'Closed — Not Completed': 'neg', 'Signed Agreement': 'green' },
   doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }
 };
-var COLOURED = { priority: 1, nda_signed: 1, stage: 1, deal_status: 1 };
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
 
 /* Six headline figures. `calc` receives the live records and returns
    { v, unit, sub, dir } \u2014 dir is 'up' | 'down' | 'flat' and only tints `sub`.
@@ -1522,6 +1505,12 @@ var KPIS = [
       var won = sum(R, function (r) { return dealStatusOf(r) === 'Won' ? (+r.deal_value || 0) : 0; });
       return { v: moneyShort(t) || '\u2014', sub: won ? moneyShort(won) + ' won' : 'open opportunities',
                dir: t ? 'up' : 'flat' };
+  }},
+  { icon: 'i-target', label: 'Signed Agreements', calc: function (R) {
+      var n = R.filter(function (r) { return dealStatusOf(r) === 'Won'; }).length;
+      var v = sum(R, function (r) { return dealStatusOf(r) === 'Won' ? (+r.deal_value || 0) : 0; });
+      return { v: n, unit: plural(n, 'contract'), sub: v ? moneyShort(v) + ' total' : 'none signed yet',
+               dir: n ? 'up' : 'flat' };
   }},
   { icon: 'i-star', label: 'High Priority', calc: function (R) {
       var n = R.filter(function (r) { return r.priority === 'Critical' || r.priority === 'High'; }).length;
@@ -1902,6 +1891,7 @@ function askDelete(msg, cb, opts) {
     btn.style.background  = neutral ? 'var(--kec-green)' : '#F7E9E5';
     btn.style.color       = neutral ? '#fff' : 'var(--kec-neg)';
     btn.style.borderColor = neutral ? 'var(--kec-green)' : '#E7CCC4';
+    $('#dpCancel').textContent = opts.cancel || 'Cancel';
     $('#deletePrompt').style.display = 'flex';
 }
 function closeDelete(confirm) {
@@ -2010,15 +2000,11 @@ function progressOf (r) {
   var v = PROGRESS[r[APP.progress.from]];
   return v != null ? v : 0;
 }
-/* Deal Status is the single, explicit control for whether a deal is live. 'Open' counts
-   in Active Pipeline; 'Closed — Not Completed' and 'Won' do not. It wins over the stage,
-   so a deal can be marked Closed at any stage. Records with no explicit status (older
-   ones) are inferred from their stage so nothing has to be re-entered. */
+/* The single "Current Stage" field decides whether a deal is live. Anything at
+   "Signed Agreement" (100%) is Won; anything at "Closed — Not Completed" is closed;
+   everything in between is Open. Only Open deals count in Active Pipeline. */
 function dealStatusOf (r) {
-  var s = r && r.deal_status;
-  if (s === 'Closed — Not Completed') return 'Closed — Not Completed';   // explicit close wins, at any stage
-  if (progressOf(r) >= 100) return 'Won';                                 // Signed Agreement counts as won
-  if (s === 'Won' || s === 'Open') return s;
+  if (progressOf(r) >= 100) return 'Won';                                 // Signed Agreement
   if (/closed/i.test(String(r && r.stage || ''))) return 'Closed — Not Completed';
   return 'Open';
 }
@@ -2145,23 +2131,30 @@ var Local = {
   read:  function () { try { return JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { return null; } },
   write: function () { try { localStorage.setItem(LS, JSON.stringify({ v: BUILD, records: DATA, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, trash: TRASH, logins: LOGINS, audit: AUDIT })); } catch (e) {} }
 };
+function okCols (list) { return (list || []).filter(function (k) { return F[k] && F[k].column !== false; }); }
 function readCols () {
   var stored = null;
   try { stored = JSON.parse(localStorage.getItem(LSC) || 'null'); } catch (e) {}
+  var sharedVer = (CFG && +CFG.colsVer) || 0;
+  var mineVer   = (stored && +stored.cver) || 0;
+  /* An administrator has published a shared layout newer than what this browser last
+     applied → adopt it, replacing any personal arrangement, and remember its version. */
+  if (CFG && CFG.cols && CFG.cols.length && sharedVer > mineVer) {
+    COLS = okCols(CFG.cols); MANUAL = CFG.colW || {};
+    if (COLS.length >= 2) { writeCols(); return; }
+  }
   if (stored && !Array.isArray(stored) && stored.v === BUILD && stored.cols) {
-    COLS = stored.cols.filter(function (k) { return F[k] && F[k].column !== false; });
-    MANUAL = stored.w || {};
+    COLS = okCols(stored.cols); MANUAL = stored.w || {};
   } else { COLS = []; MANUAL = {}; }
-  if (!COLS.length) {
-    /* First run: use the shipped default columns in their exact order (they are already
-       grouped by section, so the banded header still reads as continuous bands). This
-       matches the Columns panel's "Reset to default", which also uses DEFAULT_COLS as-is.
-       A stored preference is left exactly as the person arranged it. */
-    COLS = DEFAULT_COLS.slice().filter(function (k) { return F[k] && F[k].column !== false; });
-    MANUAL = {};
+  if (COLS.length < 2) {
+    /* No personal layout yet: start from the shared team layout if one exists, otherwise
+       the shipped default (already grouped by section, so the header bands stay whole). */
+    var base = (CFG && CFG.cols && CFG.cols.length) ? CFG.cols : DEFAULT_COLS;
+    COLS = okCols(base); MANUAL = (CFG && CFG.cols && CFG.colW) ? CFG.colW : {};
+    writeCols();
   }
 }
-function writeCols () { try { localStorage.setItem(LSC, JSON.stringify({ v: BUILD, cols: COLS, w: MANUAL })); } catch (e) {} }
+function writeCols () { try { localStorage.setItem(LSC, JSON.stringify({ v: BUILD, cols: COLS, w: MANUAL, cver: (CFG && +CFG.colsVer) || 0 })); } catch (e) {} }
 
 function autoWidth (k, list) {
   var w = mctx('500 8.5px "Readex Pro", sans-serif').measureText(F[k].short || F[k].label).width + 16 + (sortKey === k ? 11 : 0);
@@ -2226,7 +2219,7 @@ function initStore () {
         var data = docSnap.data();
         if (data.owners) OWNERS = data.owners;
         if (data.options) DYNAMIC_OPTS = data.options;
-        if (data.config) { CFG = normCfg(data.config); seedUsers(); rebuildSchema(); refreshGroupTabs(); syncDocSelects(); writeCols(); }
+        if (data.config) { CFG = normCfg(data.config); seedUsers(); rebuildSchema(); refreshGroupTabs(); syncDocSelects(); readCols(); }
         try { localStorage.setItem(LSCFG, JSON.stringify(CFG)); } catch (e) {}
         syncOwnerSelects(); syncColCount();
         if (DATA.length > 0) renderList();
@@ -2461,8 +2454,8 @@ function purgeOne (id) {
   return t;
 }
 
-var TONE = { priority: { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' }, nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }, deal_status: { 'Open': 'green', 'Won': 'green', 'Closed — Not Completed': 'neg' }, doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }};
-var COLOURED = { priority: 1, nda_signed: 1, stage: 1, deal_status: 1 };
+var TONE = { priority: { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' }, nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }, stage: { 'Closed — Not Completed': 'neg', 'Signed Agreement': 'green' }, doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }};
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
 function toneOf (key, v) {
   if (!v) return 'mute';
   if (TONE[key] && TONE[key][v]) return TONE[key][v];
@@ -2738,7 +2731,7 @@ function filtered () {
    count-up animation fires on the figures that actually changed. */
 function buildKpis () {
   var el = $('#kstrip'); if (!el) return;
-  el.innerHTML = KPIS.slice(0, 6).map(function (k, i) {
+  el.innerHTML = KPIS.slice(0, 7).map(function (k, i) {
     return '<div class="kc" id="k' + i + '"><div class="kc__top">' +
       '<svg class="ic"><use href="#' + esc(k.icon || 'i-target') + '"/></svg>' +
       '<span class="kc__l">' + esc(k.label) + '</span></div>' +
@@ -2747,7 +2740,7 @@ function buildKpis () {
 }
 function renderKpis () {
   var R = live();
-  KPIS.slice(0, 6).forEach(function (k, i) {
+  KPIS.slice(0, 7).forEach(function (k, i) {
     var c = $('#k' + i); if (!c) return;
     var o = {};
     try { o = k.calc(R) || {}; } catch (e) { o = { v: '\u2014' }; }
@@ -3552,7 +3545,8 @@ function normCfg (c) {
            groups: c.groups || {}, stages: c.stages || {},
            order: c.order || [], groupOf: c.groupOf || {}, users: c.users || [],
            docStatus: c.docStatus || 'Updated', docClass: c.docClass || 'Internal',
-           source: c.source || '', reference: c.reference || '' };
+           source: c.source || '', reference: c.reference || '',
+           cols: c.cols || null, colW: c.colW || {}, colsVer: +c.colsVer || 0 };
 }
 function loadConfig () {
   try { var c = JSON.parse(localStorage.getItem(LSCFG) || 'null'); if (c) CFG = normCfg(c); } catch (e) {}
@@ -3871,7 +3865,33 @@ function paintDate (host) {
    PORTALED POPOVER  (same containing-block constraint as the select panels)
    ========================================================================== */
 var POPS = [];
-function closePops () { POPS.forEach(function (e) { e.classList.remove('open'); }); }
+var colsDirty = false;
+function closePops () {
+  var colWasOpen = $('#colPanel') && $('#colPanel').classList.contains('open');
+  POPS.forEach(function (e) { e.classList.remove('open'); });
+  /* Finished editing columns → ask whether to publish the layout to everyone or keep it
+     personal. Only administrators get the choice; for anyone else it stays personal. */
+  if (colWasOpen && colsDirty) {
+    colsDirty = false;
+    if (currentUser && currentUser.role === 'admin') {
+      askDelete('You changed the columns. Apply this layout (order, shown/hidden and widths) to every user of the register, or keep it just for you?',
+        function (all) {
+          if (all) { applyColsToAll(); toast('Column layout applied to all users.'); }
+          else { toast('Column layout saved for you only.'); }
+        },
+        { neutral: true, title: 'Apply columns', confirm: 'For everyone', cancel: 'Just me' });
+    }
+  }
+}
+/* Publish the current column layout to everyone: store it in the shared config and bump
+   colsVer so other browsers adopt it on their next sync/load, replacing their own. */
+function applyColsToAll () {
+  CFG.cols = COLS.slice();
+  CFG.colW = Object.assign({}, MANUAL);
+  CFG.colsVer = ((CFG && +CFG.colsVer) || 0) + 1;
+  writeCols();
+  persistDocList();
+}
 function placePop (el) {
   var a = el._anchor; if (!a || !document.body.contains(a)) { el.classList.remove('open'); return; }
   var r = a.getBoundingClientRect(), k = scaleOf(a), M = 8, gap = 6 * k;
@@ -3931,11 +3951,12 @@ function insertCol (key) {
 function renderColPanel () {
   var m = colWidths(DATA), narrow = COLS.filter(function (k) { return !!MANUAL[k]; }).length;
   var vis = COLS.map(function (k, i) {
+    if (!F[k]) return '';
     var g = GMETA[F[k].group] || { owner: 'kec' };
     return '<li class="cm__i" draggable="true" data-k="' + k + '" data-i="' + i + '">' +
       '<span class="cm__n">' + (i + 1) + '</span>' +
       '<span class="cm__d ' + (g.owner === 'kec' ? 'sw-kec' : 'sw-inv') + '"></span>' +
-      '<span class="cm__t" title="' + esc(F[k].label) + '">' + esc(F[k].label) + '</span>' +
+      '<span class="cm__t" title="' + esc(F[k].label) + '">' + esc(F[k].short || F[k].label) + '</span>' +
       '<button class="cm__b up" type="button" title="Move up">▲</button>' +
       '<button class="cm__b down" type="button" title="Move down">▼</button>' +
       '<button class="cm__b rm" type="button" title="Hide column">✕</button></li>';
@@ -3943,12 +3964,12 @@ function renderColPanel () {
 
   var q = cmQuery.toLowerCase();
   var avail = COLFIELDS.filter(function (f) { return COLS.indexOf(f.key) < 0; });
-  var shown = avail.filter(function (f) { return !q || f.label.toLowerCase().indexOf(q) >= 0; });
+  var shown = avail.filter(function (f) { return !q || (f.label + ' ' + (f.short || '')).toLowerCase().indexOf(q) >= 0; });
   var add = shown.length ? shown.map(function (f) {
     var g = GMETA[f.group] || { owner: 'kec' };
     return '<li class="cm__i" data-k="' + f.key + '">' +
       '<span class="cm__d ' + (g.owner === 'kec' ? 'sw-kec' : 'sw-inv') + '"></span>' +
-      '<span class="cm__t" title="' + esc(f.label) + '">' + esc(f.label) + '</span>' +
+      '<span class="cm__t" title="' + esc(f.label) + '">' + esc(f.short || f.label) + '</span>' +
       (f.custom ? '<span class="st__tag cust">custom</span>' : '') +
       '<button class="cm__b add" type="button" title="Show column">+</button></li>';
   }).join('') : '<li class="cm__e">' + (avail.length ? 'No field matches that search.' : 'Every field is already shown.') + '</li>';
@@ -3974,6 +3995,7 @@ function renderColPanel () {
 function wireColPanel () {
   var host = $('#colPanel');
   function done (keepPos) {
+    colsDirty = true;                 // a real change was made in this session
     writeCols(); renderList(); renderColPanel();
     if (keepPos !== false) placePop(host);
   }
@@ -4534,9 +4556,12 @@ function exportCsv () {
   stFlash('CSV exported — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
 }
 function exportJson () {
+  var recs = live();
   dl('KEC-' + APP.key + '-backup-' + TODAY + '.json', 'application/json',
-     JSON.stringify({ v: BUILD, exported: TODAY, records: DATA, owners: OWNERS, config: CFG, cols: COLS, trash: TRASH }, null, 2));
-  stFlash('Backup exported.');
+     JSON.stringify({ v: BUILD, app: APP.key, exported: new Date().toISOString(),
+       records: recs, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, cols: COLS, colW: MANUAL,
+       trash: TRASH, logins: LOGINS, audit: AUDIT }, null, 2));
+  stFlash('Full backup exported — ' + recs.length + ' record' + (recs.length === 1 ? '' : 's') + '.');
 }
 function importJson (file) {
   var fr = new FileReader();
@@ -4547,11 +4572,15 @@ function importJson (file) {
       if (!ok) return;
       DATA = d.records.map(function (r) { if (!r._id) r._id = uid(); return r; });
       if (Array.isArray(d.owners)) OWNERS = d.owners;
+      if (d.options && typeof d.options === 'object') DYNAMIC_OPTS = d.options;
       if (d.config) { CFG = normCfg(d.config); seedUsers(); }
       if (Array.isArray(d.cols)) COLS = d.cols;
+      if (d.colW && typeof d.colW === 'object') MANUAL = d.colW;
       if (Array.isArray(d.trash)) { TRASH = d.trash; purgeTrash(); saveTrash(); }
+      if (Array.isArray(d.logins)) { LOGINS = d.logins; purgeLogins(); saveLogins(); }
+      if (Array.isArray(d.audit))  { AUDIT = d.audit;  purgeAudit();  saveAudit(); }
       saveConfig(); writeCols(); saveAll(); renderAll(); renderSettings();
-      stFlash('Backup restored.');
+      stFlash('Backup restored — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
     });
   };
   fr.readAsText(file);
@@ -4561,9 +4590,9 @@ function renderStData () {
     '<div class="st__ttl">Data &amp; Reset</div>' +
     '<div class="st__sub">The register currently holds <b>' + DATA.length + '</b> record' + (DATA.length === 1 ? '' : 's') + '.' +
       (TRASH.length ? ' <b>' + TRASH.length + '</b> more ' + (TRASH.length === 1 ? 'is' : 'are') + ' waiting in the recycle bin.' : '') + '</div>' +
-    '<div class="st__card"><h4>Export</h4><p>CSV opens in Excel. The JSON backup carries the records, the owner list and every setting on this screen.</p>' +
+    '<div class="st__card"><h4>Backup &amp; Export</h4><p>CSV opens in Excel. The JSON backup is complete — records, owners, options, every setting, the recycle bin, the sign-in log and the change log — and restores exactly via “Restore” below. Keep a copy outside Firebase.</p>' +
       '<div class="st__acts"><button class="btn" id="dExpCsv" type="button">Export CSV</button>' +
-      '<button class="btn" id="dExpJson" type="button">Export JSON backup</button></div></div>' +
+      '<button class="btn btn--go" id="dExpJson" type="button">Export full backup (JSON)</button></div></div>' +
     '<div class="st__card"><h4>Restore</h4><p>Replaces everything currently in the register with the contents of a backup file.</p>' +
       '<div class="st__acts"><button class="btn" id="dImp" type="button">Restore from backup…</button>' +
       '<input type="file" id="dFile" accept="application/json,.json" style="display:none"></div></div>' +
