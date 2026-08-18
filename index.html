@@ -434,7 +434,7 @@ body.viewer-mode #drBody .chip-add { display: none !important; }
 .cell-in{width:100%;font-family:var(--kec-font);font-size:var(--fs-small);line-height:1.4;color:var(--kec-ink);
   border:1px solid var(--kec-green);border-radius:5px;padding:2px 6px;height:22px;background:#fff;outline:none;
   box-shadow:0 0 0 2px var(--kec-badge-green-bg);-webkit-appearance:none;appearance:none;margin:0}
-.cell-in[type=number]{text-align:right;font-family:var(--kec-mono);font-size:9px;letter-spacing:-.1px}
+.cell-in[type=number],.cell-in--money{text-align:right;font-family:var(--kec-mono);font-size:9px;letter-spacing:-.1px}
 .cell-in::-webkit-outer-spin-button,.cell-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .cell-in[type=number]{-moz-appearance:textfield}
 .cell-in--date{display:flex;align-items:center;gap:6px;text-align:left}
@@ -1497,7 +1497,9 @@ var KPIS = [
                dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-trend', label: 'Active Pipeline', calc: function (R) {
-      var t = sum(R, function (r) { return progressOf(r) < 100 ? (+r.deal_value || 0) : 0; });
+      /* Active = still in progress: started but not signed, and NOT closed/abandoned.
+         "Closed \u2014 Not Completed" carries 0% progress, so it is excluded here. */
+      var t = sum(R, function (r) { var p = progressOf(r); return (p > 0 && p < 100) ? (+r.deal_value || 0) : 0; });
       var signed = sum(R, function (r) { return progressOf(r) === 100 ? (+r.deal_value || 0) : 0; });
       return { v: money(t) || '\u2014', sub: signed ? money(signed) + ' signed' : 'open opportunities',
                dir: t ? 'up' : 'flat' };
@@ -2003,13 +2005,42 @@ function plural (n, one, many) { return n === 1 ? one : (many || one + 's'); }
 function nextId () { return DATA.reduce(function (m, r) { return Math.max(m, +r.record_id || 0); }, 0) + 1; }
 function uid () { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 function pid (r) { return ('00' + (r.record_id || 0)).slice(-3); }
+/* Whole number with thousands separators, e.g. 60000000 -> "60,000,000". */
+function commas (v) {
+  if (v === '' || v == null) return '';
+  v = +v; if (!isFinite(v)) return '';
+  return Math.round(v).toLocaleString('en-US');
+}
+/* Read a number back from a comma-formatted (or currency-prefixed) string. Money in this
+   register is whole SAR, so only the digits are kept. */
+function parseNum (s) {
+  s = String(s == null ? '' : s).replace(/[^0-9]/g, '');
+  return s === '' ? '' : +s;
+}
+/* Full amount with the currency and grouped thousands, e.g. "SAR 60,000,000".
+   Numbers are shown in full (not abbreviated) so large figures stay easy to read. */
 function money (v) {
-  v = +v; if (!v || isNaN(v)) return ''; var a = Math.abs(v);
+  v = +v; if (!v || isNaN(v)) return '';
   var c = APP.currency ? APP.currency + ' ' : '';
-  if (a >= 1e9) return c + (v / 1e9).toFixed(a >= 1e10 ? 0 : 1) + 'B';
-  if (a >= 1e6) return c + (v / 1e6).toFixed(a >= 1e8 ? 0 : 1) + 'M';
-  if (a >= 1e3) return c + Math.round(v / 1e3) + 'K';
-  return c + v;
+  return c + Math.round(v).toLocaleString('en-US');
+}
+/* Live-format a text input with thousands separators while typing, keeping the caret in
+   the right place. Used for money fields in the form and inline cell editor. */
+function attachMoneyInput (el) {
+  if (!el) return;
+  var reformat = function () {
+    var digitsBefore = el.value.slice(0, el.selectionStart || 0).replace(/[^0-9]/g, '').length;
+    var raw = el.value.replace(/[^0-9]/g, '');
+    var formatted = raw === '' ? '' : (+raw).toLocaleString('en-US');
+    el.value = formatted;
+    var i = 0, count = 0;
+    while (i < formatted.length && count < digitsBefore) {
+      var cc = formatted.charCodeAt(i); if (cc >= 48 && cc <= 57) count++; i++;
+    }
+    try { el.setSelectionRange(i, i); } catch (e) {}
+  };
+  el.addEventListener('input', reformat);
+  reformat();
 }
 function weightedOf (r) {
   if (!APP.weighted) return 0;
@@ -2913,11 +2944,12 @@ function startEdit (td) {
     return;
   }
   var el = document.createElement('input');
-  el.type = (f.type === 'money' || f.type === 'number') ? 'number' : 'text';
-  el.value = r[k] == null ? '' : r[k];
-  if (f.type === 'money') el.step = '1000';
-  el.className = 'cell-in';
+  var isMoney = (f.type === 'money');
+  el.type = (f.type === 'number') ? 'number' : 'text';   // money is text so it can show commas
+  el.value = isMoney ? commas(r[k]) : (r[k] == null ? '' : r[k]);
+  el.className = 'cell-in' + (isMoney ? ' cell-in--money' : '');
   td.innerHTML = ''; td.appendChild(el);
+  if (isMoney) attachMoneyInput(el);
   el.focus(); if (el.select && el.type === 'text') el.select();
   el.addEventListener('keydown', function (e) {
     if (e.key === 'Enter')  { e.preventDefault(); commitEdit(); }
@@ -2957,7 +2989,8 @@ function commitEdit (moveOn, back) {
   cellEdit = null;
   if (!r || !el) { return; }
   var v = el.value;
-  if (F[c.k].type === 'money' || F[c.k].type === 'number') v = v === '' ? '' : +v;
+  if (F[c.k].type === 'money') v = parseNum(v);
+  else if (F[c.k].type === 'number') v = v === '' ? '' : +v;
   if (String(r[c.k] == null ? '' : r[c.k]) !== String(v)) {
     var oldV = r[c.k];
     r[c.k] = v; save(r); logChange('updated', r, fieldChange(c.k, oldV, v)); renderAll(); flash(c.id);
@@ -3112,7 +3145,7 @@ function fieldHtml (f, r) {
   else if (f.type === 'date')   inp = '<span class="f__i f__i--date" id="' + id + '" data-date="' + esc(v || '') + '" tabindex="0"></span>';
   else if (f.type === 'number') inp = '<input class="f__i" id="' + id + '" type="number" min="1200" max="' + TODAY.slice(0, 4) + '" value="' + esc(v || '') + '">';
   else if (f.type === 'text' || f.type === 'url') inp = '<input class="f__i" id="' + id + '"' + (f.type === 'url' ? ' type="url"' : '') + ' value="' + esc(v || '') + '">';
-  else if (f.type === 'money') inp = '<input class="f__i" id="' + id + '" type="number" step="1000" min="0" value="' + esc(v || '') + '">';
+  else if (f.type === 'money') inp = '<input class="f__i f__i--money" id="' + id + '" type="text" inputmode="numeric" value="' + esc(commas(v)) + '">';
   else if (f.type === 'audit') inp = ro(id, (r.updated_by || '—') + (r.updated_at ? ' · ' + fmtDate(r.updated_at) : ''));
   else if (f.type === 'area')  inp = '<textarea class="f__i" id="' + id + '">' + esc(v || '') + '</textarea>';
   else if (f.type === 'calc')  inp = ro(id, (CALC[f.key] ? CALC[f.key](r) : '') || '\u2014');
@@ -3197,6 +3230,7 @@ function openDrawer (id, atTab) {
       var c = e.target.closest('.chip'); if (c) { c.classList.toggle('on'); meter(); }
     });
   });
+  $$('#drBody .f__i--money').forEach(attachMoneyInput);
   $$('#drBody input, #drBody textarea').forEach(function (el) {
     el.addEventListener('change', function () { formChanged(el.id.slice(2), el.value); });
   });
@@ -3233,7 +3267,8 @@ function collect () {
     if (f.type === 'multi') o[f.key] = $$('.chip.on', el).map(function (c) { return c.dataset.v; });
     else if (f.type === 'date' || f.type === 'stamp') o[f.key] = el._date || '';
     else if (f.type === 'calc' || f.type === 'auto') { /* derived */ }
-    else if (f.type === 'money' || f.type === 'number') o[f.key] = el.value === '' ? '' : +el.value;
+    else if (f.type === 'money') o[f.key] = parseNum(el.value);
+    else if (f.type === 'number') o[f.key] = el.value === '' ? '' : +el.value;
     else o[f.key] = readVal(el);
   });
   return o;
