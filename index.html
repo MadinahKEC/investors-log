@@ -1245,6 +1245,20 @@ var SCHEMA = [
     "column": true
   },
   {
+    "key": "deal_status",
+    "label": "Deal Status",
+    "short": "Status",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "Open",
+      "Closed — Not Completed",
+      "Won"
+    ],
+    "help": "Only Open deals count in Active Pipeline; Closed / Won do not",
+    "column": true
+  },
+  {
     "key": "progress",
     "label": "Progress (%)",
     "short": "Progress",
@@ -1433,12 +1447,14 @@ var DEFAULT_COLS = [
   "country",
   "investor_category",
   "stage",
+  "deal_status",
   "deal_value",
   "priority",
   "progress",
   "follow_up",
   "rationale",
   "nda_signed",
+  "last_activity",
   "next_action"
 ];
 
@@ -1446,6 +1462,7 @@ var DEFAULT_COLS = [
 var DEFAULTS = {
   department: 'Investment',
   stage: 'Identification',
+  deal_status: 'Open',
   priority: 'Medium',
   last_activity: 'No Activity Yet',
   country: 'Saudi Arabia'
@@ -1477,18 +1494,19 @@ var CALC = {
 var TONE = {
   priority:   { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' },
   nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' },
+  deal_status:{ 'Open': 'green', 'Won': 'green', 'Closed — Not Completed': 'neg' },
   doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }
 };
-var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1, deal_status: 1 };
 
 /* Six headline figures. `calc` receives the live records and returns
    { v, unit, sub, dir } \u2014 dir is 'up' | 'down' | 'flat' and only tints `sub`.
    Icons available: i-users i-trend i-target i-star i-clock i-percent           */
 var KPIS = [
   { icon: 'i-users', label: 'Total Records', calc: function (R) {
-      var open = R.filter(function (r) { var p = progressOf(r); return p > 0 && p < 100; }).length;
-      var done = R.filter(function (r) { return progressOf(r) === 100; }).length;
-      return { v: R.length, unit: plural(R.length, 'record'), sub: open + ' open \u00b7 ' + done + ' signed' };
+      var open = R.filter(function (r) { return dealStatusOf(r) === 'Open'; }).length;
+      var done = R.filter(function (r) { return dealStatusOf(r) === 'Won'; }).length;
+      return { v: R.length, unit: plural(R.length, 'record'), sub: open + ' open \u00b7 ' + done + ' won' };
   }},
   { icon: 'i-target', label: 'Total Deal Value', calc: function (R) {
       var t = sum(R, function (r) { return +r.deal_value || 0; });
@@ -1497,11 +1515,12 @@ var KPIS = [
                dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-trend', label: 'Active Pipeline', calc: function (R) {
-      /* Active = still in progress: started but not signed, and NOT closed/abandoned.
-         "Closed \u2014 Not Completed" carries 0% progress, so it is excluded here. */
-      var t = sum(R, function (r) { var p = progressOf(r); return (p > 0 && p < 100) ? (+r.deal_value || 0) : 0; });
-      var signed = sum(R, function (r) { return progressOf(r) === 100 ? (+r.deal_value || 0) : 0; });
-      return { v: moneyShort(t) || '\u2014', sub: signed ? moneyShort(signed) + ' signed' : 'open opportunities',
+      /* Active Pipeline = the value of OPEN deals only. Deal Status drives this: a deal
+         marked "Closed \u2014 Not Completed" or "Won" is not active and is excluded here,
+         whatever its stage. */
+      var t = sum(R, function (r) { return dealStatusOf(r) === 'Open' ? (+r.deal_value || 0) : 0; });
+      var won = sum(R, function (r) { return dealStatusOf(r) === 'Won' ? (+r.deal_value || 0) : 0; });
+      return { v: moneyShort(t) || '\u2014', sub: won ? moneyShort(won) + ' won' : 'open opportunities',
                dir: t ? 'up' : 'flat' };
   }},
   { icon: 'i-star', label: 'High Priority', calc: function (R) {
@@ -1930,7 +1949,7 @@ var TODAY = isoToday();
 var LS  = 'kec_' + APP.key + '_v1',
     LSC = 'kec_' + APP.key + '_cols_v1',
     LSU = 'kec_' + APP.key + '_user_v1';
-var BUILD = 8, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
+var BUILD = 10, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
 var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
@@ -1991,6 +2010,19 @@ function progressOf (r) {
   var v = PROGRESS[r[APP.progress.from]];
   return v != null ? v : 0;
 }
+/* Deal Status is the single, explicit control for whether a deal is live. 'Open' counts
+   in Active Pipeline; 'Closed — Not Completed' and 'Won' do not. It wins over the stage,
+   so a deal can be marked Closed at any stage. Records with no explicit status (older
+   ones) are inferred from their stage so nothing has to be re-entered. */
+function dealStatusOf (r) {
+  var s = r && r.deal_status;
+  if (s === 'Closed — Not Completed') return 'Closed — Not Completed';   // explicit close wins, at any stage
+  if (progressOf(r) >= 100) return 'Won';                                 // Signed Agreement counts as won
+  if (s === 'Won' || s === 'Open') return s;
+  if (/closed/i.test(String(r && r.stage || ''))) return 'Closed — Not Completed';
+  return 'Open';
+}
+function isOpenDeal (r) { return dealStatusOf(r) === 'Open'; }
 function yearsOf (r) {
   if (!APP.age) return '';
   var y = parseInt(r[APP.age.field], 10), c = +TODAY.slice(0, 4);
@@ -1998,13 +2030,29 @@ function yearsOf (r) {
 }
 function isOverdue (r) {
   if (!APP.dueField) return false;
-  return r[APP.dueField] && r[APP.dueField] < TODAY && progressOf(r) < 100;
+  return isOpenDeal(r) && r[APP.dueField] && r[APP.dueField] < TODAY;
 }
 function sum (arr, f) { return arr.reduce(function (a, r) { return a + (+f(r) || 0); }, 0); }
 function plural (n, one, many) { return n === 1 ? one : (many || one + 's'); }
-function nextId () { return DATA.reduce(function (m, r) { return Math.max(m, +r.record_id || 0); }, 0) + 1; }
+function nextId () { return DATA.filter(function (r) { return !r._draft; }).length + 1; }
 function uid () { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-function pid (r) { return ('00' + (r.record_id || 0)).slice(-3); }
+/* Record numbers are sequential row positions (1..N) in the register's own order, so they
+   always start at 1 and close up automatically when a record is deleted — the record that
+   followed simply takes the freed number. POS is rebuilt on every render. */
+var POS = {};
+function rebuildPos () {
+  POS = {}; var i = 0;
+  DATA.forEach(function (r) { if (!r._draft) POS[r._id] = ++i; });
+}
+function rowNo (r) {
+  if (r && POS[r._id]) return POS[r._id];
+  var n = 0, found = 0;
+  for (var j = 0; j < DATA.length; j++) {
+    if (DATA[j]._draft) continue; n++; if (DATA[j] === r) { found = n; break; }
+  }
+  return found || (n + 1);   // a record still being created shows as the next number
+}
+function pid (r) { return ('00' + rowNo(r)).slice(-3); }
 /* Whole number with thousands separators, e.g. 60000000 -> "60,000,000". */
 function commas (v) {
   if (v === '' || v == null) return '';
@@ -2413,8 +2461,8 @@ function purgeOne (id) {
   return t;
 }
 
-var TONE = { priority: { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' }, nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }, doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }};
-var COLOURED = { priority: 1, nda_signed: 1, stage: 1 };
+var TONE = { priority: { 'Critical': 'neg', 'High': 'gold', 'Medium': 'green', 'Low': 'mute' }, nda_signed: { 'Signed': 'green', 'Pending': 'gold', 'Expired': 'neg', 'Not Required': 'mute' }, deal_status: { 'Open': 'green', 'Won': 'green', 'Closed — Not Completed': 'neg' }, doc_status: { 'Draft': 'mute', 'Under Review': 'gold', 'Updated': 'green', 'Approved': 'green' }};
+var COLOURED = { priority: 1, nda_signed: 1, stage: 1, deal_status: 1 };
 function toneOf (key, v) {
   if (!v) return 'mute';
   if (TONE[key] && TONE[key][v]) return TONE[key][v];
@@ -2675,9 +2723,10 @@ function filtered () {
     return toks.every(function (t) { return h.indexOf(t) >= 0; });
   });
   if (sortKey) {
+    var autoSort = F[sortKey] && F[sortKey].type === 'auto';
     out.sort(function (a, b) {
-      var x = sortKey === 'progress' ? progressOf(a) : val(a, sortKey);
-      var y = sortKey === 'progress' ? progressOf(b) : val(b, sortKey);
+      var x = sortKey === 'progress' ? progressOf(a) : (autoSort ? rowNo(a) : val(a, sortKey));
+      var y = sortKey === 'progress' ? progressOf(b) : (autoSort ? rowNo(b) : val(b, sortKey));
       if (typeof x === 'number') return (x - y) * sortDir;
       return String(x).localeCompare(String(y), 'en') * sortDir;
     });
@@ -2870,6 +2919,7 @@ function revealRecord (id) {
 }
 function renderList () {
   sweepPortals();
+  rebuildPos();
   var list = filtered(), n = pageCount(list.length);
   if (page > n - 1) page = n - 1; if (page < 0) page = 0;
   var strip = document.querySelector('.kstrip');
