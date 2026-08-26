@@ -291,6 +291,15 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .sel__o.on{background:var(--kec-badge-green-bg)}
 .sel__o.on::after{content:'✓';margin-left:auto;color:var(--kec-green);font-size:var(--fs-badge)}
 .sel__o.hint{color:var(--kec-muted)}
+.sel__o.hide{display:none}
+/* Search box inside long dropdowns (plots, countries, …). Sticky so it stays while the
+   list scrolls. */
+.sel__q{position:sticky;top:-4px;z-index:3;display:block;width:100%;box-sizing:border-box;
+  margin:-4px 0 5px;height:27px;padding:0 9px;border:1px solid var(--kec-hairline);border-radius:6px;
+  font-family:var(--kec-font);font-size:var(--fs-small);color:var(--kec-ink);background:#fff;outline:none}
+.sel__q:focus{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
+.sel__none{padding:9px 8px;text-align:center;color:var(--kec-muted);font-size:var(--fs-small)}
+.sel__p--lg .sel__q{height:32px;font-size:12.5px;padding:0 11px}
 
 .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--kec-green)}
 .dot--neg{background:var(--kec-neg)} .dot--gold{background:var(--kec-gold)} .dot--green{background:var(--kec-green)} .dot--mute{background:var(--kec-hairline);border:1px solid var(--kec-muted)}
@@ -1313,6 +1322,42 @@ var SCHEMA = [
     "column": true
   },
   {
+    "key": "plot",
+    "label": "Plot of Interest",
+    "short": "Plot",
+    "group": "D",
+    "type": "select",
+    "options": [
+      "C01-1", "C01-2", "C02-1", "C02-2", "C02-3", "C02-4", "C02-OS1", "C02-OS2",
+      "C03-1", "C03-2", "C03-OS1", "C04-1", "C04-2", "C05-1", "C05-2", "C05-3",
+      "C05-4", "C05-5", "C05-OS1", "C06-1", "C06-2", "C06-3", "C06-4", "C06-5",
+      "C06-6", "C07-1", "C07-2", "C08", "C09-1", "C09-2", "C09-3", "C09-4",
+      "C09-OS1", "C11-6", "C28-1", "C28-2", "C28-3", "C28-4", "C28-OS1", "C30",
+      "C31-1", "C31-2", "C32-1", "C32-2", "C36-1", "C36-2", "C36-3", "C36-4",
+      "C37-OS1", "C37-OS2", "C38", "C39-1", "C39-2", "C40-1", "C40-2", "C41",
+      "C42", "C43-1", "C43-2", "C43-OS1", "C44-1", "C44-2", "C45", "C46",
+      "C47", "C48-1", "C48-2", "C48-3", "C49-1", "C49-2", "C49-3", "C50",
+      "C51", "C52-1", "C52-OS1", "C53-1", "C53-2", "C53-3", "C53-4", "C53-5",
+      "C53-6", "C53-7", "C53-8", "C53-OS1", "C54-1", "C54-2", "C55-1", "C55-2",
+      "C55-3", "C55-OS1", "C56-1", "C56-2", "C56-3", "C56-4", "C56-5", "C56-OS1",
+      "C56-OS2", "E01-1", "E01-2", "E01-3", "E01-4", "E01-5", "E01-OS1", "E03-1",
+      "E03-10", "E03-11", "E03-12", "E03-13", "E03-2", "E03-3", "E03-4", "E03-5",
+      "E03-6", "E03-7", "E03-8", "E03-9", "E03-OS1", "E03-OS2", "E03-OS3", "E03-OS5",
+      "E12-1", "E12-10", "E12-11", "E12-2", "E12-3", "E12-4", "E12-5", "E12-6",
+      "E12-7", "E12-8", "E12-9", "E12-OS1", "E12-OS2", "E12-OS3", "E12-OS4", "E12-OS5",
+      "E16-1", "E16-2", "E16-3", "E16-4", "E16-5", "E17-1", "E17-2", "E17-OS1",
+      "E18-1", "E18-2", "E19-1", "E19-2", "E35", "E36", "N01-1", "N01-2",
+      "N02", "N03-1", "N03-2", "N04-1", "N04-OS1", "N05-1", "N05-10", "N05-11",
+      "N05-2", "N05-3", "N05-4", "N05-5", "N05-6", "N05-7", "N05-8", "N05-9",
+      "N05-OS1", "N05-OS2", "N06-1", "N06-2", "N07-1", "N07-2", "N07-3", "N07-4",
+      "N07-5", "N07-OS1", "N08-1", "N08-2", "N08-3", "N08-4", "N08-OS1", "N09",
+      "N10-1", "N10-2", "N11", "N12-1", "N12-2", "N12-3", "N12-4", "N12-OS1",
+      "N13-1", "N13-2", "N13-3", "N13-4", "N13-OS1", "N25-1", "N25-2", "N25-3"
+    ],
+    "help": "The land plot the investor is interested in",
+    "column": true
+  },
+  {
     "key": "stage",
     "label": "Current Stage",
     "short": "Stage",
@@ -1521,6 +1566,7 @@ var DEFAULT_COLS = [
   "country",
   "investor_category",
   "stage",
+  "plot",
   "deal_value",
   "priority",
   "progress",
@@ -2027,7 +2073,7 @@ var TODAY = isoToday();
 var LS  = 'kec_' + APP.key + '_v1',
     LSC = 'kec_' + APP.key + '_cols_v1',
     LSU = 'kec_' + APP.key + '_user_v1';
-var BUILD = 10, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
+var BUILD = 11, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
 var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
@@ -2644,12 +2690,27 @@ function mountSelect (host, cfg) {
     lab.title = st.v || st.ph;
   }
   function fill () {
-    pan.innerHTML = (st.ph ? '<span class="sel__o hint" data-v=""><span class="dot dot--mute"></span>' + esc(st.ph) + '</span>' : '') +
+    var searchable = st.opts.length > 12;   // long lists (e.g. 200 plots, countries) get a filter
+    pan.innerHTML =
+      (searchable ? '<input class="sel__q" type="text" placeholder="Search…" autocomplete="off" spellcheck="false">' : '') +
+      (st.ph ? '<span class="sel__o hint" data-v=""><span class="dot dot--mute"></span>' + esc(st.ph) + '</span>' : '') +
       st.opts.map(function (o) {
         var t = toneOf(st.key, o);
         return '<span class="sel__o' + (o === st.v ? ' on' : '') + '" data-v="' + esc(o) + '"><span class="dot dot--' + t + '"></span><span class="' + (COLOURED[st.key] ? 'tone--' + t : '') + '">' + esc(o) + '</span></span>';
       }).join('') +
+      '<span class="sel__none" style="display:none">No match</span>' +
       (cfg.extra ? '<span class="sel__o hint" data-v="' + esc(cfg.extra.v) + '" style="border-top: 1px dashed var(--kec-hairline); margin-top: 4px; padding-top: 6px; color: var(--kec-green); font-weight: 600; justify-content: center;">' + esc(cfg.extra.label) + '</span>' : '');
+  }
+  function filterOpts (raw) {
+    var q = normQ(String(raw || '').trim()), any = false;
+    $$('.sel__o', pan).forEach(function (o) {
+      if (o.classList.contains('hint')) return;                 // keep placeholder / "+ Add new" visible
+      var hide = q && normQ(o.textContent).indexOf(q) < 0;
+      o.classList.toggle('hide', hide);
+      if (!hide) any = true;
+    });
+    var none = pan.querySelector('.sel__none'); if (none) none.style.display = (q && !any) ? 'block' : 'none';
+    place();
   }
   /* Panel width is driven by the longest option, not by the trigger, so labels never clip. */
   var _panW = 0;
@@ -2708,6 +2769,8 @@ function mountSelect (host, cfg) {
     host.classList.add('open');
     place();
     pan.classList.add('open');
+    var q = pan.querySelector('.sel__q');
+    if (q) setTimeout(function () { try { q.focus(); } catch (e) {} }, 30);
   }
   function shut () { host.classList.remove('open'); pan.classList.remove('open'); }
   var prevVal = st.v;
@@ -2729,11 +2792,25 @@ function mountSelect (host, cfg) {
   });
   pan.addEventListener('click', function (e) {
     e.stopPropagation();
+    if (e.target.classList.contains('sel__q')) return;   // clicks in the search box don't pick
     var o = e.target.closest('.sel__o'); if (o) pick(o.dataset.v);
+  });
+  pan.addEventListener('input', function (e) {
+    if (e.target.classList.contains('sel__q')) filterOpts(e.target.value);
+  });
+  pan.addEventListener('keydown', function (e) {
+    if (!e.target.classList.contains('sel__q')) return;
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); shut(); trig.focus(); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var first = $$('.sel__o', pan).filter(function (x) { return !x.classList.contains('hide') && !x.classList.contains('hint'); })[0];
+      if (first) pick(first.dataset.v);
+    }
   });
   host.addEventListener('keydown', function (e) {
     if (!host.classList.contains('open')) return;
-    var os = $$('.sel__o', pan), cur = pan.querySelector('.sel__o.cur') || pan.querySelector('.sel__o.on');
+    var os = $$('.sel__o', pan).filter(function (x) { return !x.classList.contains('hide'); }),
+        cur = pan.querySelector('.sel__o.cur') || pan.querySelector('.sel__o.on');
     var i = os.indexOf(cur);
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); shut(); trig.focus(); }
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
