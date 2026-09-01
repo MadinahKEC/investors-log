@@ -384,6 +384,8 @@ body.viewer-mode #drBody input, body.viewer-mode #drBody textarea { pointer-even
 body.viewer-mode #drBody .sel { pointer-events: none; opacity: 0.8; }
 body.viewer-mode #drBody .chips { pointer-events: none; opacity: 0.8; }
 body.viewer-mode #drBody .chip-add { display: none !important; }
+/* Opportunity Registrar: only sections A–C in the record form (D = Pipeline is hidden). */
+body.role-recorder #tabD, body.role-recorder #paneD { display: none !important; }
 
 /* HEADER USER INFO */
 .user-badge{display:flex;align-items:center;justify-content:flex-end;gap:8px;
@@ -595,6 +597,33 @@ body.viewer-mode .acts{display:none}
   border-top-color:var(--kec-green);animation:bootspin .8s linear infinite}
 @keyframes bootspin{to{transform:rotate(360deg)}}
 
+/* ===================== OPPORTUNITY LIFECYCLE =====================
+   A distinctive, gently pulsing gold pill that opens a KEC-branded lifecycle guide. */
+.btn--life{border-color:var(--kec-badge-gold-bd);background:var(--kec-badge-gold-bg);color:var(--kec-badge-gold-tx);font-weight:600;position:relative;overflow:visible}
+.btn--life svg{width:13px;height:13px;stroke:none;fill:currentColor}
+.btn--life:hover{background:#F0ECD6;border-color:var(--kec-gold)}
+.btn--life::after{content:'';position:absolute;inset:-2px;border-radius:8px;border:1.5px solid var(--kec-gold);opacity:0;animation:lcpulse 2.6s ease-out infinite;pointer-events:none}
+@keyframes lcpulse{0%{opacity:.5;transform:scale(1)}70%{opacity:0;transform:scale(1.14)}100%{opacity:0}}
+.lc__p{width:min(720px,96vw);max-height:92vh;background:var(--kec-paper);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;padding:0}
+.lc__head{display:flex;align-items:center;gap:12px;padding:15px 20px;background:linear-gradient(135deg,var(--kec-green-deep),var(--kec-green) 72%);color:#fff}
+.lc__mark{background:#fff;border-radius:10px;padding:5px 8px;flex:none;display:flex}
+.lc__mark img{width:42px;display:block}
+.lc__t{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.lc__s{font-size:11.5px;color:rgba(255,255,255,.85);margin-top:2px}
+.lc__head .btn--icon{color:#fff}
+.lc__head .btn--icon:hover{background:rgba(255,255,255,.16);border-color:transparent;color:#fff}
+.lc__body{padding:20px 24px 8px;overflow:auto}
+.lc__step{display:flex;gap:15px;padding-bottom:19px;position:relative}
+.lc__step:not(:last-child)::before{content:'';position:absolute;left:17px;top:40px;bottom:-3px;width:2px;background:var(--kec-hairline)}
+.lc__num{flex:none;width:36px;height:36px;border-radius:50%;background:var(--kec-surface-2);border:1.5px solid var(--kec-badge-green-bd);color:var(--kec-green-deep);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;z-index:1;font-feature-settings:'tnum' 1}
+.lc__step.end .lc__num{background:var(--kec-green);border-color:var(--kec-green);color:#fff}
+.lc__c{flex:1;min-width:0;padding-top:5px}
+.lc__ct{font-size:13.5px;font-weight:700;color:var(--kec-green-deep);margin-bottom:3px}
+.lc__cd{font-size:12.5px;color:var(--kec-ink);line-height:1.65}
+.lc__cd b{color:var(--kec-green-deep);font-weight:600}
+.lc__foot{padding:11px 24px 16px;display:flex;flex-direction:column;gap:7px;font-size:10.5px;color:var(--kec-muted);letter-spacing:.3px}
+.lc__rule{height:2px;background:var(--kec-gold);border-radius:2px}
+
 /* ===================== MOBILE / RESPONSIVE =====================
    On phones & small tablets the fixed A4-style sheet is replaced by a fluid, full-width
    layout, and the dense table becomes a list of tap-to-open cards (like a mobile app).
@@ -786,6 +815,9 @@ body.viewer-mode .acts{display:none}
         <span id="filters" style="display:contents"></span>
         <button id="reset" class="btn" type="button">Reset</button>
         <span class="applog__sp"></span>
+        <button id="lifecycle" class="btn btn--life" type="button" title="How the opportunity lifecycle works">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 16.8 6.7 19.7l1.1-6.1L3.4 9.4l6-.8L12 3z"/></svg>
+          Lifecycle</button>
         <button id="cols" class="btn" type="button">Columns <span class="cnt" id="colCnt">0/0</span></button>
         <button id="settings" class="btn" type="button">Settings</button>
         <button id="add" class="btn btn--go" type="button">+ New</button>
@@ -830,6 +862,22 @@ body.viewer-mode .acts{display:none}
     </div>
     
     <div class="toast" id="toast"></div>
+
+    <!-- OPPORTUNITY LIFECYCLE GUIDE -->
+    <div class="dr lc" id="lifecycleModal">
+      <div class="dr__p lc__p">
+        <div class="lc__head">
+          <div class="lc__mark"><img src="KEC.png" alt="KEC" onerror="this.style.display='none'"></div>
+          <div><div class="lc__t">Opportunity Lifecycle</div>
+            <div class="lc__s">How an investment opportunity travels from first contact to outcome</div></div>
+          <span class="applog__sp"></span>
+          <button id="lcClose" class="btn btn--icon" type="button" title="Close" style="width:28px;height:28px">
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="lc__body" id="lcBody"></div>
+        <div class="lc__foot"><span class="lc__rule"></span><span>Business Development · Knowledge Economic City</span></div>
+      </div>
+    </div>
 
     <!-- COLUMN MANAGER (portaled to <body> on open) -->
     <div class="kpop" id="colPanel"></div>
@@ -890,12 +938,13 @@ var APP = {
   key:        'investor_log',
   collection: 'kec_investors',
   title:      'Investor Registration Log',
-  subtitle:   'Investment & Business Development \u2014 live register of investor engagements',
+  subtitle:   'Business Development',
   recordNoun: 'Record',
   reference:  'KEC-LOG-2026-001',
   source:     'Office of the CEO',
   year:       '2026',
   currency:   'SAR',
+  bdEmail:    'zalshowaier@madinahkec.com',   // Business Development inbox for the "Notify" email
 
   titleField: 'company',            // required on save, names the record in prompts
   stampField: 'entry_date',         // auto-dated when the record is created
@@ -997,11 +1046,17 @@ var SCHEMA = [
   {
     "key": "assigned_to",
     "label": "Assigned To",
-    "short": "Owner",
+    "short": "Assigned To",
     "group": "A",
-    "type": "owner",
-    "options": [],
-    "help": "Editable list — add owners inline",
+    "type": "select",
+    "options": [
+      "Business Development",
+      "Investment",
+      "Real Estate Development",
+      "Asset Management & Operations",
+      "Strategy & Partnerships"
+    ],
+    "help": "The administration the opportunity is assigned to",
     "column": true
   },
   {
@@ -1023,6 +1078,16 @@ var SCHEMA = [
       "Other"
     ],
     "help": "How the investor reached KEC",
+    "column": true
+  },
+  {
+    "key": "brought_by",
+    "label": "Opportunity By",
+    "short": "Brought By",
+    "group": "A",
+    "type": "owner",
+    "options": [],
+    "help": "The employee who brought this opportunity — auto-filled with the person who registers it",
     "column": true
   },
   {
@@ -1560,6 +1625,7 @@ var DEFAULT_COLS = [
   "department",
   "entry_date",
   "assigned_to",
+  "brought_by",
   "lead_source",
   "updated_by",
   "company",
@@ -1591,7 +1657,7 @@ var FILTERS = [
   { id: 'fDept',  key: 'department',  placeholder: 'All departments', w: 122 },
   { id: 'fStage', key: 'stage',       placeholder: 'All stages',      w: 122 },
   { id: 'fPrio',  key: 'priority',    placeholder: 'All priorities',  w: 108 },
-  { id: 'fOwner', key: 'assigned_to', placeholder: 'All owners',      w: 116 }
+  { id: 'fOwner', key: 'assigned_to', placeholder: 'All administrations', w: 140 }
 ];
 
 /* Two fields shown as one cell. Dates are NOT paired here \u2014 a date belongs in its own
@@ -1682,14 +1748,17 @@ var FIREBASE_CONFIG = {
 var COLLECTION = APP.collection;
 
 var ROLES = [
-  { id: 'admin',  label: 'Administrator', note: 'Full control, including deletion and these settings.' },
-  { id: 'editor', label: 'Contributor',   note: 'Adds and edits records. Cannot delete anything.' },
-  { id: 'viewer', label: 'Viewer',        note: 'Read-only. Signs in with their own account and can still choose which columns to see.' }
+  { id: 'admin',    label: 'Administrator',       note: 'Full control, including deletion and these settings.' },
+  { id: 'editor',   label: 'Contributor',         note: 'Adds and edits records. Cannot delete anything.' },
+  { id: 'recorder', label: 'Opportunity Registrar', note: 'Registers new opportunities — fills sections A, B and C only, cannot delete, and never touches the Pipeline (section D). Registration is filed in their own name.' },
+  { id: 'viewer',   label: 'Viewer',              note: 'Read-only. Signs in with their own account and can still choose which columns to see.' }
 ];
 function roleLabel (id) { var r = ROLES.filter(function (x) { return x.id === id; })[0]; return r ? r.label : id; }
 function isRole (id) { return !!(currentUser && currentUser.role === id); }
 function canDelete () { return isRole('admin'); }
-function canEdit ()   { return isRole('admin') || isRole('editor'); }
+function canEdit ()   { return isRole('admin') || isRole('editor') || isRole('recorder'); }
+/* The registrar only sees the record sections up to C; the Pipeline (D) is business dev's. */
+function visibleGroups () { return isRole('recorder') ? GROUPS.filter(function (g) { return g.id !== 'D'; }) : GROUPS; }
 
 function normEmail (v) { return String(v || '').trim().toLowerCase(); }
 function isEmail (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normEmail(v)); }
@@ -1985,6 +2054,7 @@ function applyRoleUI() {
     }
     document.body.classList.toggle('viewer-mode', currentUser.role === 'viewer');
     document.body.classList.toggle('no-delete',   currentUser.role !== 'admin');
+    document.body.classList.toggle('role-recorder', currentUser.role === 'recorder');
     USER = currentUser.username;
 }
 
@@ -2073,7 +2143,7 @@ var TODAY = isoToday();
 var LS  = 'kec_' + APP.key + '_v1',
     LSC = 'kec_' + APP.key + '_cols_v1',
     LSU = 'kec_' + APP.key + '_user_v1';
-var BUILD = 11, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
+var BUILD = 12, PER1 = 10, PER2 = 12, ACT_PX = 92, MIN_W = 40, MAX_W = 380, FREEZE = 2;
 /* Deleting a record moves it here instead of destroying it. Entries older than
    TRASH_DAYS are purged on load and whenever the bin is opened. */
 var TRASH = [], TRASH_DAYS = 10, DAY_MS = 86400000;
@@ -3157,6 +3227,10 @@ function startEdit (td) {
   if (!k || !f || !tr) return;
   var r = DATA.find(function (x) { return x._id === tr.dataset.id; });
   if (!r) return;
+  /* The registrar can edit sections A–C only; the Pipeline (D) is read-only for them. */
+  if (isRole('recorder') && f.group === 'D') { toast('The Pipeline section is managed by Business Development.'); return; }
+  /* Who registered the opportunity is locked to that person — only an admin may change it. */
+  if (k === 'brought_by' && !canDelete()) { toast('Only an administrator can change who registered the opportunity.'); return; }
   if (f.type === 'multi' || f.type === 'area') { openDrawer(r._id, f.group); return; }
 
   cellEdit = { td: td, k: k, id: r._id, html: td.innerHTML };
@@ -3369,6 +3443,8 @@ function blank () {
   /* Defaults must be real option values, or anything derived from them reads zero
      on every new record. */
   Object.keys(DEFAULTS).forEach(function (k) { if (F[k]) r[k] = DEFAULTS[k]; });
+  /* The opportunity is registered in the name of the employee creating it. */
+  if (F.brought_by && USER) r.brought_by = USER;
   return r;
 }
 function duplicate (r) {
@@ -3412,7 +3488,9 @@ function fieldHtml (f, r) {
   else if (f.type === 'audit') inp = ro(id, (r.updated_by || '—') + (r.updated_at ? ' · ' + fmtDate(r.updated_at) : ''));
   else if (f.type === 'area')  inp = '<textarea class="f__i" id="' + id + '">' + esc(v || '') + '</textarea>';
   else if (f.type === 'calc')  inp = ro(id, (CALC[f.key] ? CALC[f.key](r) : '') || '\u2014');
-  else if (f.type === 'owner') inp = '<span class="sel sel--field" id="' + id + '"></span>';
+  else if (f.type === 'owner') inp = (f.key === 'brought_by' && !canDelete())
+      ? ro(id, v || '—')                                   /* who registered it is locked (admin-only) */
+      : '<span class="sel sel--field" id="' + id + '"></span>';
   else if (f.type === 'multi') inp = '<div class="chips" id="' + id + '">' + getOptionsForField(f.key).map(function (o) {
       return '<span class="chip' + ((v || []).indexOf(o) >= 0 ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</span>'; }).join('') + '<span class="chip chip-add" data-k="'+f.key+'" style="border:1px dashed var(--kec-hairline);">+ Add new</span></div>';
   else inp = '<span class="sel sel--field" id="' + id + '"></span>';
@@ -3449,6 +3527,7 @@ function openDrawer (id, atTab) {
   });
   SCHEMA.forEach(function (f) {
     if (f.type !== 'select' && f.type !== 'owner') return;
+    if (f.key === 'brought_by' && !canDelete()) return;   /* rendered read-only, nothing to mount */
     var host = $('#x_' + f.key); if (!host) return;
     mountSelect(host, {
       key: f.key, autoWidth: false,
@@ -3472,7 +3551,7 @@ function openDrawer (id, atTab) {
       }
     });
   });
-  syncOwnerSelects(r.assigned_to);
+  syncOwnerSelects();   /* refresh owner-list options only; each select keeps its own value */
   $$('#drBody .chips').forEach(function (box) {
     box.addEventListener('click', function (e) {
       if(currentUser && currentUser.role === 'viewer') return;
@@ -3568,11 +3647,32 @@ function commit () {
   if (isNew) logChange('created', r, '');
   else { var diff = diffSummary(before, r); if (diff) logChange('updated', r, diff); }
   renderAll(); closeDr();
-  var seen = revealRecord(r._id);
-  toast(seen
-    ? 'Record #' + pid(r) + ' saved' + (pageCount(filtered().length) > 1 ? ' — showing page ' + (page + 1) + '.' : '.')
-    : 'Record #' + pid(r) + ' saved — the active filters hide it.',
-    seen ? null : 'Clear filters', function () { resetFilters(); revealRecord(r._id); });
+  var seen = revealRecord(r._id), num = pid(r);
+  if (isNew) {
+    /* New opportunity — filed in the registrant's name; notify Business Development. For a
+       registrar the email is opened automatically; anyone else gets a one-tap button. */
+    toast('Opportunity #' + num + ' registered in your name.' + (APP.bdEmail ? ' Opening an email to Business Development…' : ''),
+      'Email Business Development', function () { notifyBD(r); });
+    if (isRole('recorder') && APP.bdEmail) setTimeout(function () { notifyBD(r); }, 500);
+  } else {
+    toast(seen
+      ? 'Record #' + num + ' saved' + (pageCount(filtered().length) > 1 ? ' — showing page ' + (page + 1) + '.' : '.')
+      : 'Record #' + num + ' saved — the active filters hide it.',
+      seen ? null : 'Clear filters', function () { resetFilters(); revealRecord(r._id); });
+  }
+}
+/* Open the user's email client, pre-addressed to Business Development, announcing the new
+   opportunity by its number. mailto only composes — the user reviews and sends. */
+function notifyBD (r) {
+  var num = pid(r), name = r[APP.titleField] || '', by = r.brought_by || USER || '';
+  var subj = 'New Investment Opportunity #' + num + (name ? ' — ' + name : '');
+  var body = 'A new investment opportunity has been registered in the ' + APP.title + '.\n\n' +
+    'Record #: ' + num + '\n' + (name ? 'Company: ' + name + '\n' : '') +
+    (by ? 'Registered by: ' + by + '\n' : '') +
+    '\nKindly review the opportunity and proceed with the assessment.\n';
+  var url = 'mailto:' + encodeURIComponent(APP.bdEmail || '') +
+            '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+  var a = document.createElement('a'); a.href = url; document.body.appendChild(a); a.click(); a.remove();
 }
 function closeDr (discard) {
   if (discard) {
@@ -3639,12 +3739,30 @@ function applyCopy () {
   $('#drSave').textContent = 'Save ' + APP.recordNoun;
 }
 
+/* ===================== OPPORTUNITY LIFECYCLE GUIDE ===================== */
+var LIFECYCLE = [
+  { t: 'Request access', d: 'Any employee with an investor interested in a KEC project requests access to the opportunity-registration link. An administrator issues them a personal <b>username and password</b>.' },
+  { t: 'Register the opportunity', d: 'They sign in, click <b>+ New Record</b>, and fill in the opportunity details across sections <b>A, B and C</b>. On save it receives a <b>sequential number</b> and is filed in the employee’s own name.' },
+  { t: 'Notify Business Development', d: 'The employee emails the <b>Business Development</b> department, quoting the record number, so the sector knows a new opportunity has been logged.' },
+  { t: 'Assess & engage the investor', d: 'Business Development evaluates the opportunity, contacts the investor, understands the request, and carries out the required studies and procedures — tracked in the <b>Pipeline (section D)</b>.' },
+  { t: 'Reach the outcome', d: 'The opportunity advances through the stages until it is either <b>signed (Signed Agreement)</b> or <b>closed (Closed — Not Completed)</b>.', end: true }
+];
+function renderLifecycle () {
+  $('#lcBody').innerHTML = LIFECYCLE.map(function (s, i) {
+    return '<div class="lc__step' + (s.end ? ' end' : '') + '">' +
+      '<div class="lc__num">' + (s.end ? '✓' : (i + 1)) + '</div>' +
+      '<div class="lc__c"><div class="lc__ct">' + esc(s.t) + '</div><div class="lc__cd">' + s.d + '</div></div></div>';
+  }).join('');
+}
+function openLifecycle () { renderLifecycle(); $('#lifecycleModal').classList.add('open'); }
+function closeLifecycle () { $('#lifecycleModal').classList.remove('open'); }
+
 function bootApp () {
   /* `.page` gets transform:scale() when body.fitted, which turns it into the containing
      block for position:fixed children and clips them (overflow:hidden). The record modal
      must therefore be a direct child of <body>. (The toast stays inside the page on
      purpose: it is anchored by CSS only and reads better tied to the card.) */
-  ['dr', 'st'].forEach(function (id) {
+  ['dr', 'st', 'lifecycleModal'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.parentNode !== document.body) document.body.appendChild(el);
   });
@@ -3710,6 +3828,9 @@ function bootApp () {
   $('#add').onclick   = function () { openDrawer(null); };
   $('#pPrev').onclick = function () { if (page > 0) { page--; renderList(); } };
   $('#pNext').onclick = function () { page++; renderList(); };
+  $('#lifecycle').onclick = openLifecycle;
+  $('#lcClose').onclick   = closeLifecycle;
+  $('#lifecycleModal').addEventListener('click', function (e) { if (e.target.id === 'lifecycleModal') closeLifecycle(); });
 
   document.addEventListener('click', function (e) {
     if (e.target.closest && (e.target.closest('.sel__p') || e.target.closest('.sel'))) return;
@@ -3731,6 +3852,7 @@ function bootApp () {
     if (e.key === 'Escape' && cellEdit) { cancelEdit(); return; }
     if (e.key === 'Escape' && DPK && DPK.classList.contains('open')) { closeDpk(); return; }
     if (e.key === 'Escape' && $('#colPanel').classList.contains('open')) { closePops(); return; }
+    if (e.key === 'Escape' && $('#lifecycleModal').classList.contains('open')) { closeLifecycle(); return; }
     if (e.key === 'Escape' && $('#st').classList.contains('open')) { closeSettings(); return; }
     if ($('#st').classList.contains('open')) return;
     if (e.key === 'Escape' && open) closeDr(true);
@@ -3748,6 +3870,9 @@ function bootApp () {
   wire(); wireResize(); wireBar(); wireAdmin();
   initStore();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { renderList(); fitScreen(); });
+  /* A registrar sees the lifecycle guide on sign-in so they know what to do; the
+     "Lifecycle" button stays available for reviewing it again later. */
+  if (isRole('recorder')) setTimeout(openLifecycle, 600);
 }
 
 
