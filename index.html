@@ -583,6 +583,16 @@ body.opt-dragging .st__it--drop.drop .cnt{background:var(--kec-green);color:#fff
    stored in their own browser. Only the admin console is withheld. */
 body.viewer-mode #settings{display:none !important}
 body.viewer-mode .acts{display:none}
+/* ---------------- Drive restore (day picker) ---------------- */
+.drv__hint,.drv__load,.drv__err{font-size:12.5px;color:var(--kec-muted);padding:2px 2px 12px;line-height:1.5}
+.drv__err{color:var(--kec-neg)}
+.drv__ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.drv__o{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--kec-hairline);
+  border-radius:11px;background:#fff;transition:border-color .12s,background .12s}
+.drv__o:hover{border-color:var(--kec-gold);background:var(--kec-cream,#FBF7F0)}
+.drv__d{font-weight:600;color:var(--kec-ink);font-size:13px;min-width:118px}
+.drv__m{flex:1;font-size:11.5px;color:var(--kec-muted)}
+@media (max-width:768px){.drv__o{flex-wrap:wrap}.drv__m{flex:1 1 100%;order:3}}
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
 /* Boot splash: a neutral, branded loading screen that covers everything from the very
@@ -875,6 +885,22 @@ body.viewer-mode .acts{display:none}
             <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         </div>
         <div class="lc__body" id="lcBody"></div>
+        <div class="lc__foot"><span class="lc__rule"></span><span>Business Development · Knowledge Economic City</span></div>
+      </div>
+    </div>
+
+    <!-- RESTORE FROM DRIVE (daily backups) -->
+    <div class="dr lc" id="driveModal">
+      <div class="dr__p lc__p">
+        <div class="lc__head">
+          <div class="lc__mark"><img src="KEC.png" alt="KEC" onerror="this.style.display='none'"></div>
+          <div><div class="lc__t">Restore from a daily backup</div>
+            <div class="lc__s">Pick a day from your automatic Google Drive backups</div></div>
+          <span class="applog__sp"></span>
+          <button id="drvClose" class="btn btn--icon" type="button" title="Close" style="width:28px;height:28px">
+            <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div class="lc__body" id="drvBody"></div>
         <div class="lc__foot"><span class="lc__rule"></span><span>Business Development · Knowledge Economic City</span></div>
       </div>
     </div>
@@ -1746,6 +1772,15 @@ var FIREBASE_CONFIG = {
   "appId": "1:870716823065:web:bde028421733f7d6febc88"
 };          
 var COLLECTION = APP.collection;
+
+/* ===================== DRIVE RESTORE (daily backups) =====================
+   Paste the Apps Script Web-App /exec URL and the SAME secret token you set as
+   JB_WEB_SECRET in the backup script. Leave both blank to hide the in-app
+   browser (the file-based "Restore from backup…" still works either way). */
+var RESTORE = {
+  url:   'https://script.google.com/macros/s/AKfycbxIpMCLrx2SwDP2m5ScBXTDx-FEgtQV0flnFqD7xRZwXEsuTpVnr0VJN6rrkUnzprdL/exec',
+  token: 'kec-rstr-7Qm2vX9pL4bT8w'
+};
 
 var ROLES = [
   { id: 'admin',    label: 'Administrator',       note: 'Full control, including deletion and these settings.' },
@@ -3762,7 +3797,7 @@ function bootApp () {
      block for position:fixed children and clips them (overflow:hidden). The record modal
      must therefore be a direct child of <body>. (The toast stays inside the page on
      purpose: it is anchored by CSS only and reads better tied to the card.) */
-  ['dr', 'st', 'lifecycleModal'].forEach(function (id) {
+  ['dr', 'st', 'lifecycleModal', 'driveModal'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.parentNode !== document.body) document.body.appendChild(el);
   });
@@ -3832,6 +3867,26 @@ function bootApp () {
   $('#lcClose').onclick   = closeLifecycle;
   $('#lifecycleModal').addEventListener('click', function (e) { if (e.target.id === 'lifecycleModal') closeLifecycle(); });
 
+  $('#drvClose').onclick = closeDriveRestore;
+  $('#driveModal').addEventListener('click', function (e) { if (e.target.id === 'driveModal') closeDriveRestore(); });
+  $('#drvBody').addEventListener('click', function (e) {
+    var b = e.target.closest('.drv__b'); if (!b) return;
+    var li = b.closest('.drv__o'); if (!li) return;
+    var id = li.getAttribute('data-id'), date = li.getAttribute('data-date');
+    askDelete('Restore the backup from ' + fmtBackupDate(date) + '? Everything currently in the register will be replaced with that day’s snapshot.', function (ok) {
+      if (!ok) return;
+      b.disabled = true; b.textContent = 'Restoring…';
+      driveApi('action=get&id=' + encodeURIComponent(id)).then(function (res) {
+        var d = null;
+        if (res && res.content) { try { d = JSON.parse(res.content); } catch (e) { d = null; } }
+        else if (res && Array.isArray(res.records)) { d = res; }
+        if (!d || !Array.isArray(d.records)) { toast('That backup could not be read.'); b.disabled = false; b.textContent = 'Restore'; return; }
+        closeDriveRestore();
+        applyBackup(d);
+      }).catch(function () { toast('Could not download that backup.'); b.disabled = false; b.textContent = 'Restore'; });
+    });
+  });
+
   document.addEventListener('click', function (e) {
     if (e.target.closest && (e.target.closest('.sel__p') || e.target.closest('.sel'))) return;
     closeSelects(null);
@@ -3853,6 +3908,7 @@ function bootApp () {
     if (e.key === 'Escape' && DPK && DPK.classList.contains('open')) { closeDpk(); return; }
     if (e.key === 'Escape' && $('#colPanel').classList.contains('open')) { closePops(); return; }
     if (e.key === 'Escape' && $('#lifecycleModal').classList.contains('open')) { closeLifecycle(); return; }
+    if (e.key === 'Escape' && $('#driveModal').classList.contains('open')) { closeDriveRestore(); return; }
     if (e.key === 'Escape' && $('#st').classList.contains('open')) { closeSettings(); return; }
     if ($('#st').classList.contains('open')) return;
     if (e.key === 'Escape' && open) closeDr(true);
@@ -4909,6 +4965,25 @@ function exportJson () {
        trash: TRASH, logins: LOGINS, audit: AUDIT }, null, 2));
   stFlash('Full backup exported — ' + recs.length + ' record' + (recs.length === 1 ? '' : 's') + '.');
 }
+/* Shared restore core used by both the file import and the Drive day-picker. */
+function applyBackup (d) {
+  var seen = {};
+  var recs = d.records.map(function (r) { if (!r._id) r._id = uid(); seen[r._id] = 1; return r; });
+  /* Faithful restore: remove remote records that are NOT in this backup — otherwise
+     they linger in Firestore and reappear through the live listener. */
+  if (remote) DATA.forEach(function (r) { if (!seen[r._id]) drop(r); });
+  DATA = recs;
+  if (Array.isArray(d.owners)) OWNERS = d.owners;
+  if (d.options && typeof d.options === 'object') DYNAMIC_OPTS = d.options;
+  if (d.config) { CFG = normCfg(d.config); seedUsers(); rebuildSchema(); refreshGroupTabs(); }
+  if (Array.isArray(d.cols)) COLS = d.cols;
+  if (d.colW && typeof d.colW === 'object') MANUAL = d.colW;
+  if (Array.isArray(d.trash)) { TRASH = d.trash; purgeTrash(); saveTrash(); }
+  if (Array.isArray(d.logins)) { LOGINS = d.logins; purgeLogins(); saveLogins(); }
+  if (Array.isArray(d.audit))  { AUDIT = d.audit;  purgeAudit();  saveAudit(); }
+  saveConfig(); writeCols(); saveAll(); renderAll(); renderSettings();
+  stFlash('Backup restored — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
+}
 function importJson (file) {
   var fr = new FileReader();
   fr.onload = function () {
@@ -4916,21 +4991,51 @@ function importJson (file) {
     if (!d || !Array.isArray(d.records)) { toast('That file is not a valid backup.'); return; }
     askDelete('Restore ' + d.records.length + ' record' + (d.records.length === 1 ? '' : 's') + ' from this backup? The current register will be replaced.', function (ok) {
       if (!ok) return;
-      DATA = d.records.map(function (r) { if (!r._id) r._id = uid(); return r; });
-      if (Array.isArray(d.owners)) OWNERS = d.owners;
-      if (d.options && typeof d.options === 'object') DYNAMIC_OPTS = d.options;
-      if (d.config) { CFG = normCfg(d.config); seedUsers(); }
-      if (Array.isArray(d.cols)) COLS = d.cols;
-      if (d.colW && typeof d.colW === 'object') MANUAL = d.colW;
-      if (Array.isArray(d.trash)) { TRASH = d.trash; purgeTrash(); saveTrash(); }
-      if (Array.isArray(d.logins)) { LOGINS = d.logins; purgeLogins(); saveLogins(); }
-      if (Array.isArray(d.audit))  { AUDIT = d.audit;  purgeAudit();  saveAudit(); }
-      saveConfig(); writeCols(); saveAll(); renderAll(); renderSettings();
-      stFlash('Backup restored — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
+      applyBackup(d);
     });
   };
   fr.readAsText(file);
 }
+
+/* ---- Restore from the automatic Google Drive backups (Apps Script web app) ---- */
+function driveApi (params) {
+  var url = RESTORE.url + (RESTORE.url.indexOf('?') < 0 ? '?' : '&') +
+            'token=' + encodeURIComponent(RESTORE.token) + '&' + params;
+  return fetch(url, { method: 'GET' }).then(function (r) { return r.json(); });
+}
+function fmtBackupDate (s) {
+  var p = String(s || '').split('-'); if (p.length !== 3) return s;
+  var mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][(+p[1]) - 1] || p[1];
+  return (+p[2]) + ' ' + mon + ' ' + p[0];
+}
+function driveSize (n) {
+  n = +n || 0;
+  return n < 1024 ? n + ' B' : n < 1048576 ? Math.round(n / 1024) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
+}
+function openDriveRestore () {
+  if (!RESTORE.url || !RESTORE.token) { toast('Drive restore is not configured.'); return; }
+  $('#driveModal').classList.add('open');
+  $('#drvBody').innerHTML = '<div class="drv__load">Loading your daily backups…</div>';
+  driveApi('action=list').then(function (res) {
+    if (!res || res.error) {
+      $('#drvBody').innerHTML = '<div class="drv__err">Could not read the backups (' + esc((res && res.error) || 'error') + '). Check the web-app URL and token.</div>';
+      return;
+    }
+    var files = res.files || [];
+    if (!files.length) { $('#drvBody').innerHTML = '<div class="drv__err">No backups were found in the Drive folder yet.</div>'; return; }
+    $('#drvBody').innerHTML =
+      '<div class="drv__hint">Choose a day to restore. This replaces everything currently in the register with that day’s snapshot.</div>' +
+      '<ul class="drv__ol">' + files.map(function (f) {
+        return '<li class="drv__o" data-id="' + esc(f.id) + '" data-date="' + esc(f.date) + '">' +
+          '<span class="drv__d">' + esc(fmtBackupDate(f.date)) + '</span>' +
+          '<span class="drv__m">' + esc(driveSize(f.size)) + (f.created ? ' · saved ' + esc(fmtStamp(f.created)) : '') + '</span>' +
+          '<button class="btn btn--sm btn--go drv__b" type="button">Restore</button></li>';
+      }).join('') + '</ul>';
+  }).catch(function () {
+    $('#drvBody').innerHTML = '<div class="drv__err">Could not reach the backup service. Make sure the web app is deployed with access set to “Anyone”.</div>';
+  });
+}
+function closeDriveRestore () { $('#driveModal').classList.remove('open'); }
 function renderStData () {
   $('#stData').innerHTML =
     '<div class="st__ttl">Data &amp; Reset</div>' +
@@ -4942,6 +5047,10 @@ function renderStData () {
     '<div class="st__card"><h4>Restore</h4><p>Replaces everything currently in the register with the contents of a backup file.</p>' +
       '<div class="st__acts"><button class="btn" id="dImp" type="button">Restore from backup…</button>' +
       '<input type="file" id="dFile" accept="application/json,.json" style="display:none"></div></div>' +
+    (RESTORE.url && RESTORE.token && canDelete()
+      ? '<div class="st__card"><h4>Restore from a daily backup</h4><p>Browse your automatic Google Drive backups and restore any day directly — no download needed.</p>' +
+        '<div class="st__acts"><button class="btn btn--go" id="dDrive" type="button">Browse daily backups…</button></div></div>'
+      : '') +
     '<div class="st__card" style="border-color:#E7CCC4"><h4 style="color:var(--kec-neg)">Danger zone</h4>' +
       '<p>Both actions are permanent. Export a backup first.</p>' +
       '<div class="st__acts"><button class="btn btn--danger" id="dResetCfg" type="button">Reset all settings to factory</button>' +
@@ -4953,6 +5062,7 @@ function wireStData () {
     if (b.id === 'dExpCsv')  return exportCsv();
     if (b.id === 'dExpJson') return exportJson();
     if (b.id === 'dImp')     return $('#dFile').click();
+    if (b.id === 'dDrive')   return openDriveRestore();
     if (b.id === 'dResetCfg') {
       askDelete('Reset every field name, option list and section name back to the original build?', function (ok) {
         if (!ok) return;
