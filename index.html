@@ -593,6 +593,68 @@ body.viewer-mode .acts{display:none}
 .drv__d{font-weight:600;color:var(--kec-ink);font-size:13px;min-width:118px}
 .drv__m{flex:1;font-size:11.5px;color:var(--kec-muted)}
 @media (max-width:768px){.drv__o{flex-wrap:wrap}.drv__m{flex:1 1 100%;order:3}}
+
+/* ===================== EXECUTIVE DASHBOARD ===================== */
+.exec-overlay{position:fixed;inset:0;z-index:9600;background:rgba(20,40,25,.55);
+  display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:18px}
+.exec-overlay.open{display:flex}
+.exec-acts{position:fixed;top:14px;right:16px;z-index:9700;display:flex;gap:8px;align-items:center}
+.exec-print{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;
+  background:var(--kec-green);color:#fff;font-family:var(--kec-font);font-weight:600;
+  font-size:12.5px;padding:9px 15px;border-radius:9px}
+.exec-fit{flex:none}
+.exec-page{width:297mm;height:210mm;background:#fff;transform-origin:top center;
+  transform:scale(var(--exec-scale,1));display:flex;flex-direction:column;
+  padding:9mm 11mm 6mm;box-shadow:0 10px 44px rgba(0,0,0,.34);color:var(--kec-ink);font-family:var(--kec-font)}
+.exec-head{display:flex;justify-content:space-between;align-items:flex-end;flex:none;
+  border-bottom:2px solid var(--kec-hairline);padding-bottom:8px;position:relative}
+.exec-head::after{content:'';position:absolute;bottom:-2px;left:0;width:130px;height:3px;background:var(--kec-gold)}
+.exec-h1{font-size:23px;font-weight:700;color:var(--kec-title);line-height:1.1;letter-spacing:-.2px}
+.exec-sub{font-size:12px;color:var(--kec-muted);margin-top:4px}
+.exec-sub .mono{font-family:var(--kec-mono)}
+.exec-logo{width:28mm;height:20mm;object-fit:contain;object-position:right center}
+.exec-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:11px;flex:none}
+.exec-kpi{border:1px solid var(--kec-hairline);border-radius:11px;padding:9px 11px;background:var(--kec-paper)}
+.exec-kpi.accent{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd)}
+.ek-l{display:block;font-size:9px;color:var(--kec-muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;line-height:1.3}
+.ek-v{font-size:21px;font-weight:700;color:var(--kec-green-deep);line-height:1.12;margin-top:3px}
+.ek-s{font-size:9px;color:var(--kec-muted);margin-top:2px}
+.exec-sats{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:9px;flex:none}
+.exec-sat{display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-left:3px solid var(--kec-gold);background:var(--kec-surface);border-radius:0 7px 7px 0}
+.es-v{font-size:15px;font-weight:700;color:var(--kec-ink);font-variant-numeric:tabular-nums}
+.es-l{font-size:8.5px;color:var(--kec-muted);font-weight:600}
+.exec-charts{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:10px;margin-top:11px;min-height:0}
+.exec-chart{border:1px solid var(--kec-hairline);border-radius:11px;padding:8px 11px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.ex-ct{font-size:11px;font-weight:700;color:var(--kec-title);margin-bottom:5px;flex:none}
+.ex-cb{flex:1;display:flex;align-items:center;gap:9px;min-height:0}
+.ex-svg{display:block;max-width:100%;max-height:100%}
+.ex-donut{width:44%;flex:none}
+.ex-donut .ex-svg{width:100%}
+.ex-lg{list-style:none;flex:1;display:flex;flex-direction:column;gap:3px;font-size:9px;min-width:0}
+.ex-lg li{display:flex;align-items:center;gap:5px;min-width:0}
+.ex-lg i{width:8px;height:8px;border-radius:2px;flex:none}
+.ex-lg-n{flex:1;color:var(--kec-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ex-lg b{color:var(--kec-green-deep);font-variant-numeric:tabular-nums;flex:none}
+.ex-gauge{flex-direction:column;justify-content:center}
+.ex-gcap{display:flex;gap:11px;flex-wrap:wrap;justify-content:center;font-size:9px;color:var(--kec-muted);margin-top:2px}
+.ex-gcap span{display:inline-flex;align-items:center;gap:4px}
+.ex-gcap i{width:8px;height:8px;border-radius:2px}
+.ex-bars{list-style:none;width:100%;display:flex;flex-direction:column;gap:5px}
+.ex-bars li{display:grid;grid-template-columns:82px 1fr auto;align-items:center;gap:8px;font-size:9.5px}
+.ex-bl{color:var(--kec-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-bt{background:var(--kec-surface);border-radius:5px;height:11px;overflow:hidden}
+.ex-bt i{display:block;height:100%;border-radius:5px}
+.ex-bv{font-weight:700;color:var(--kec-green-deep);font-variant-numeric:tabular-nums}
+.exec-foot{flex:none;margin-top:7px;padding-top:6px;border-top:1px solid var(--kec-hairline);
+  display:flex;justify-content:space-between;font-size:9px;color:var(--kec-muted)}
+@media (max-width:768px){.exec-overlay{padding:0}.exec-acts{top:8px;right:8px}}
+@media print{
+  body.exec-open .page,body.exec-open .toast,body.exec-open .hwrap{display:none !important}
+  body.exec-open .exec-overlay{position:static;background:#fff;padding:0;overflow:visible;display:block}
+  body.exec-open .exec-acts{display:none !important}
+  body.exec-open .exec-fit{width:auto !important;height:auto !important}
+  body.exec-open .exec-page{transform:none !important;box-shadow:none;margin:0 auto}
+}
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
 /* Boot splash: a neutral, branded loading screen that covers everything from the very
@@ -825,6 +887,9 @@ body.viewer-mode .acts{display:none}
         <span id="filters" style="display:contents"></span>
         <button id="reset" class="btn" type="button">Reset</button>
         <span class="applog__sp"></span>
+        <button id="execBtn" class="btn" type="button" title="Executive dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px;vertical-align:-2px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          Dashboard</button>
         <button id="lifecycle" class="btn btn--life" type="button" title="How the opportunity lifecycle works">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6.1L12 16.8 6.7 19.7l1.1-6.1L3.4 9.4l6-.8L12 3z"/></svg>
           Lifecycle</button>
@@ -903,6 +968,18 @@ body.viewer-mode .acts{display:none}
         <div class="lc__body" id="drvBody"></div>
         <div class="lc__foot"><span class="lc__rule"></span><span>Business Development · Knowledge Economic City</span></div>
       </div>
+    </div>
+
+    <!-- EXECUTIVE DASHBOARD (A4-landscape, print-ready) -->
+    <div class="exec-overlay" id="execModal">
+      <div class="exec-acts no-print">
+        <button id="exPrint" class="exec-print" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></svg>
+          Print / PDF</button>
+        <button id="exClose" class="btn btn--icon" type="button" title="Close" style="width:30px;height:30px">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="exec-fit" id="execFit"><div class="exec-page" id="execPage"></div></div>
     </div>
 
     <!-- COLUMN MANAGER (portaled to <body> on open) -->
@@ -3797,7 +3874,7 @@ function bootApp () {
      block for position:fixed children and clips them (overflow:hidden). The record modal
      must therefore be a direct child of <body>. (The toast stays inside the page on
      purpose: it is anchored by CSS only and reads better tied to the card.) */
-  ['dr', 'st', 'lifecycleModal', 'driveModal'].forEach(function (id) {
+  ['dr', 'st', 'lifecycleModal', 'driveModal', 'execModal'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.parentNode !== document.body) document.body.appendChild(el);
   });
@@ -3867,6 +3944,12 @@ function bootApp () {
   $('#lcClose').onclick   = closeLifecycle;
   $('#lifecycleModal').addEventListener('click', function (e) { if (e.target.id === 'lifecycleModal') closeLifecycle(); });
 
+  $('#execBtn').onclick = openExec;
+  $('#exPrint').onclick = printExec;
+  $('#exClose').onclick = closeExec;
+  $('#execModal').addEventListener('click', function (e) { if (e.target.id === 'execModal') closeExec(); });
+  window.addEventListener('resize', function () { if ($('#execModal').classList.contains('open')) scaleExec(); });
+
   $('#drvClose').onclick = closeDriveRestore;
   $('#driveModal').addEventListener('click', function (e) { if (e.target.id === 'driveModal') closeDriveRestore(); });
   $('#drvBody').addEventListener('click', function (e) {
@@ -3909,6 +3992,7 @@ function bootApp () {
     if (e.key === 'Escape' && $('#colPanel').classList.contains('open')) { closePops(); return; }
     if (e.key === 'Escape' && $('#lifecycleModal').classList.contains('open')) { closeLifecycle(); return; }
     if (e.key === 'Escape' && $('#driveModal').classList.contains('open')) { closeDriveRestore(); return; }
+    if (e.key === 'Escape' && $('#execModal').classList.contains('open')) { closeExec(); return; }
     if (e.key === 'Escape' && $('#st').classList.contains('open')) { closeSettings(); return; }
     if ($('#st').classList.contains('open')) return;
     if (e.key === 'Escape' && open) closeDr(true);
@@ -5036,6 +5120,184 @@ function openDriveRestore () {
   });
 }
 function closeDriveRestore () { $('#driveModal').classList.remove('open'); }
+
+/* ===================== EXECUTIVE DASHBOARD =====================
+   A leadership-facing, print-ready A4-landscape cockpit for the whole register.
+   Charts are inline SVG / CSS so the file stays self-contained and prints exact. */
+var EX_PAL = ['#2F6B3E','#9A8A1E','#5E8C3A','#2E7D6B','#7E6F1B','#1C6034','#8FA98A','#C7B84B','#B5462F','#4A7C59','#A9B96B','#356859'];
+function exColor (i) { return EX_PAL[((i % EX_PAL.length) + EX_PAL.length) % EX_PAL.length]; }
+function exMix (a, b, t) {
+  function h (s, i) { return parseInt(s.slice(i, i + 2), 16); }
+  var r = Math.round(h(a,1) + (h(b,1) - h(a,1)) * t),
+      g = Math.round(h(a,3) + (h(b,3) - h(a,3)) * t),
+      bl = Math.round(h(a,5) + (h(b,5) - h(a,5)) * t);
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + bl).toString(16).slice(1);
+}
+function exStageColor (k) {
+  if (/closed/i.test(k)) return '#B5462F';
+  var p = PROGRESS[k]; if (p == null) return '#8FA98A';
+  return exMix('#A7C58C', '#143D1E', Math.max(0, Math.min(1, p / 100)));
+}
+function exNdaSigned (v) { return String(v || '').trim().toLowerCase() === 'signed'; }
+function exGroup (R, key) {
+  var m = {};
+  R.forEach(function (r) {
+    var v = (r[key] == null ? '' : String(r[key])).trim() || '—';
+    if (!m[v]) m[v] = { k: v, n: 0, val: 0 };
+    m[v].n++; m[v].val += (+r.deal_value || 0);
+  });
+  return Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.n - a.n; });
+}
+function execStats (R) {
+  var open = 0, won = 0, lost = 0, activeVal = 0, wonVal = 0, weighted = 0, totalVal = 0, valued = 0, nda = 0, thisMonth = 0;
+  var now = new Date();
+  R.forEach(function (r) {
+    var ds = dealStatusOf(r), dv = +r.deal_value || 0;
+    if (ds === 'Won') { won++; wonVal += dv; }
+    else if (ds === 'Open') { open++; activeVal += dv; weighted += dv * progressOf(r) / 100; }
+    else { lost++; }
+    totalVal += dv; if (dv > 0) valued++;
+    if (exNdaSigned(r.nda_signed)) nda++;
+    var ed = new Date(r.entry_date);
+    if (!isNaN(ed) && ed.getFullYear() === now.getFullYear() && ed.getMonth() === now.getMonth()) thisMonth++;
+  });
+  var cs = {}; R.forEach(function (r) { var c = String(r.country || '').trim(); if (c) cs[c] = 1; });
+  return { n: R.length, open: open, won: won, lost: lost, activeVal: activeVal, wonVal: wonVal,
+    weighted: Math.round(weighted), totalVal: totalVal, valued: valued, nda: nda, thisMonth: thisMonth,
+    countries: Object.keys(cs).length, avgSize: valued ? totalVal / valued : 0, winRate: R.length ? won / R.length * 100 : 0 };
+}
+function exPolar (cx, cy, r, deg) { var a = (deg - 90) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function exDonutSvg (items) {
+  var cx = 50, cy = 50, R = 46, ri = 27;
+  var total = items.reduce(function (a, d) { return a + d.value; }, 0);
+  if (!total) return '<svg viewBox="0 0 100 100" class="ex-svg"><circle cx="50" cy="50" r="46" fill="#EEF3EA"/><circle cx="50" cy="50" r="27" fill="#fff"/></svg>';
+  var ang = 0, out = '';
+  items.forEach(function (d) {
+    if (d.value <= 0) return;
+    var frac = d.value / total, end = ang + frac * 360, large = (end - ang) > 180 ? 1 : 0;
+    if (frac >= 0.9999) { out += '<circle cx="50" cy="50" r="46" fill="' + d.color + '"/>'; }
+    else {
+      var p1 = exPolar(cx, cy, R, ang), p2 = exPolar(cx, cy, R, end);
+      out += '<path d="M50 50 L' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) + ' A46 46 0 ' + large + ' 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) + ' Z" fill="' + d.color + '"/>';
+    }
+    if (frac >= 0.09) { var m = exPolar(cx, cy, (R + ri) / 2, (ang + end) / 2);
+      out += '<text x="' + m[0].toFixed(1) + '" y="' + m[1].toFixed(1) + '" fill="#fff" font-size="7" font-weight="700" text-anchor="middle" dominant-baseline="central">' + Math.round(frac * 100) + '%</text>'; }
+    ang = end;
+  });
+  out += '<circle cx="50" cy="50" r="27" fill="#fff"/>';
+  return '<svg viewBox="0 0 100 100" class="ex-svg">' + out + '</svg>';
+}
+function exGaugeSvg (pct) {
+  var cx = 100, cy = 104, R = 84;
+  function gp (deg) { var a = deg * Math.PI / 180; return [cx + R * Math.cos(a), cy - R * Math.sin(a)]; }
+  var L = gp(180), Rr = gp(0), P = gp(180 - Math.max(0, Math.min(100, pct)) * 1.8);
+  var out = '<path d="M' + L[0].toFixed(1) + ' ' + L[1].toFixed(1) + ' A' + R + ' ' + R + ' 0 0 1 ' + Rr[0].toFixed(1) + ' ' + Rr[1].toFixed(1) + '" fill="none" stroke="#EAF3E4" stroke-width="15" stroke-linecap="round"/>';
+  if (pct > 0) out += '<path d="M' + L[0].toFixed(1) + ' ' + L[1].toFixed(1) + ' A' + R + ' ' + R + ' 0 0 1 ' + P[0].toFixed(1) + ' ' + P[1].toFixed(1) + '" fill="none" stroke="#2F6B3E" stroke-width="15" stroke-linecap="round"/>';
+  out += '<text x="100" y="92" text-anchor="middle" font-size="30" font-weight="700" fill="#143D1E">' + Math.round(pct) + '%</text>';
+  return '<svg viewBox="0 0 200 116" class="ex-svg" style="max-height:118px">' + out + '</svg>';
+}
+function exBars (rows) {
+  if (!rows.length) return '<div style="font-size:10px;color:var(--kec-muted)">No data yet.</div>';
+  var max = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
+  return '<ul class="ex-bars">' + rows.map(function (r) {
+    var pct = Math.max(2, r.value / max * 100);
+    return '<li><span class="ex-bl" title="' + esc(r.label) + '">' + esc(r.label) + '</span>' +
+      '<span class="ex-bt"><i style="width:' + pct.toFixed(1) + '%;background:' + r.color + '"></i></span>' +
+      '<b class="ex-bv">' + esc(r.disp) + '</b></li>';
+  }).join('') + '</ul>';
+}
+function exDonutCard (title, items) {
+  return '<div class="exec-chart"><div class="ex-ct">' + esc(title) + '</div>' +
+    '<div class="ex-cb"><div class="ex-donut">' + exDonutSvg(items) + '</div>' +
+    '<ul class="ex-lg">' + items.map(function (d) {
+      return '<li><i style="background:' + d.color + '"></i><span class="ex-lg-n" title="' + esc(d.label) + '">' + esc(d.label) + '</span><b>' + esc(d.disp) + '</b></li>';
+    }).join('') + '</ul></div></div>';
+}
+function exBarCard (title, rows) {
+  return '<div class="exec-chart"><div class="ex-ct">' + esc(title) + '</div><div class="ex-cb">' + exBars(rows) + '</div></div>';
+}
+function renderExec () {
+  var R = live(), s = execStats(R);
+  var stageG = exGroup(R, 'stage').sort(function (a, b) {
+    var pa = PROGRESS[a.k] == null ? 999 : PROGRESS[a.k], pb = PROGRESS[b.k] == null ? 999 : PROGRESS[b.k]; return pa - pb;
+  });
+  var catG = exGroup(R, 'investor_category');
+  var srcG = exGroup(R, 'lead_source').slice(0, 6);
+  var cntG = exGroup(R, 'country').slice(0, 6);
+  var admG = exGroup(R, 'assigned_to').sort(function (a, b) { return b.val - a.val; }).slice(0, 6);
+
+  var stageItems = stageG.filter(function (g) { return g.n > 0; }).map(function (g) { return { label: g.k, value: g.n, color: exStageColor(g.k), disp: String(g.n) }; });
+  var catItems = catG.map(function (g, i) { return { label: g.k, value: g.n, color: exColor(i), disp: String(g.n) }; });
+  var srcRows = srcG.map(function (g, i) { return { label: g.k, value: g.n, color: exColor(i), disp: String(g.n) }; });
+  var cntRows = cntG.map(function (g, i) { return { label: g.k, value: g.n, color: exColor(i + 2), disp: String(g.n) }; });
+  var admRows = admG.map(function (g, i) { return { label: g.k, value: g.val, color: exColor(i), disp: moneyShort(g.val) || '—' }; });
+
+  var ref = 'KEC-EXE-' + new Date().getFullYear() + '-' + ('0' + (new Date().getMonth() + 1)).slice(-2);
+  var today = new Date().toLocaleDateString('en-GB');
+
+  var kpis = [
+    { l: 'Total Opportunities', v: s.n, s: s.open + ' open · ' + s.won + ' won' },
+    { l: 'Active Pipeline', v: moneyShort(s.activeVal) || '—', s: 'value of open deals' },
+    { l: 'Weighted Pipeline', v: moneyShort(s.weighted) || '—', s: 'probability-adjusted' },
+    { l: 'Total Deal Value', v: moneyShort(s.totalVal) || '—', s: 'across ' + s.valued + ' valued' },
+    { l: 'Won Value', v: moneyShort(s.wonVal) || '—', s: 'signed & realised' },
+    { l: 'Win Rate', v: Math.round(s.winRate) + '%', s: s.won + ' of ' + s.n + ' signed', accent: true }
+  ];
+  var sats = [
+    { v: s.won, l: 'Signed Agreements' },
+    { v: s.open, l: 'Active Opportunities' },
+    { v: s.lost, l: 'Closed — Not Completed' },
+    { v: s.nda, l: 'NDAs Signed' },
+    { v: moneyShort(s.avgSize) || '—', l: 'Avg Deal Size' },
+    { v: s.thisMonth, l: 'New This Month' }
+  ];
+
+  $('#execPage').innerHTML =
+    '<header class="exec-head"><div><div class="exec-h1">Executive Dashboard</div>' +
+      '<div class="exec-sub">' + esc(APP.title) + ' · <span class="mono">' + ref + '</span> · ' + today + '</div></div>' +
+      '<img class="exec-logo" src="KEC.png" alt="KEC" onerror="this.style.display=\'none\'"></header>' +
+    '<div class="exec-strip">' + kpis.map(function (k) {
+      return '<div class="exec-kpi' + (k.accent ? ' accent' : '') + '"><span class="ek-l">' + esc(k.l) + '</span>' +
+        '<div class="ek-v">' + esc(String(k.v)) + '</div><div class="ek-s">' + esc(k.s) + '</div></div>';
+    }).join('') + '</div>' +
+    '<div class="exec-sats">' + sats.map(function (a) {
+      return '<div class="exec-sat"><span class="es-v">' + esc(String(a.v)) + '</span><span class="es-l">' + esc(a.l) + '</span></div>';
+    }).join('') + '</div>' +
+    '<div class="exec-charts">' +
+      '<div class="exec-chart"><div class="ex-ct">Win Rate</div><div class="ex-cb ex-gauge">' + exGaugeSvg(s.winRate) +
+        '<div class="ex-gcap"><span><i style="background:#2F6B3E"></i>Signed · ' + s.won + '</span>' +
+        '<span><i style="background:#B5462F"></i>Not completed · ' + s.lost + '</span>' +
+        '<span><i style="background:#D8E4D0"></i>Open · ' + s.open + '</span></div></div></div>' +
+      exDonutCard('Opportunities by Stage', stageItems) +
+      exDonutCard('By Investor Category', catItems) +
+      exBarCard('By Lead Source', srcRows) +
+      exBarCard('Pipeline Value by Administration', admRows) +
+      exBarCard('Top Countries', cntRows) +
+    '</div>' +
+    '<footer class="exec-foot"><span>Business Development · Knowledge Economic City</span><span>Generated ' + today + '</span></footer>';
+}
+function scaleExec () {
+  var page = $('#execPage'); if (!page) return;
+  var PW = 297 * 96 / 25.4, PH = 210 * 96 / 25.4;
+  var sc = Math.min((window.innerWidth - 36) / PW, (window.innerHeight - 92) / PH, 1);
+  if (!(sc > 0)) sc = 1;
+  page.style.setProperty('--exec-scale', sc);
+  var fit = $('#execFit'); if (fit) { fit.style.width = (PW * sc) + 'px'; fit.style.height = (PH * sc) + 'px'; }
+}
+function execPageRule () { return document.getElementById('execPageRule'); }
+function openExec () {
+  renderExec();
+  $('#execModal').classList.add('open');
+  document.body.classList.add('exec-open');
+  if (!execPageRule()) { var st = document.createElement('style'); st.id = 'execPageRule'; st.textContent = '@page{size:A4 landscape;margin:0}'; document.head.appendChild(st); }
+  scaleExec();
+}
+function closeExec () {
+  $('#execModal').classList.remove('open');
+  document.body.classList.remove('exec-open');
+  var s = execPageRule(); if (s) s.remove();
+}
+function printExec () { window.print(); }
 function renderStData () {
   $('#stData').innerHTML =
     '<div class="st__ttl">Data &amp; Reset</div>' +
