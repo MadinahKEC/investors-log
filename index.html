@@ -384,8 +384,59 @@ body.viewer-mode #drBody input, body.viewer-mode #drBody textarea { pointer-even
 body.viewer-mode #drBody .sel { pointer-events: none; opacity: 0.8; }
 body.viewer-mode #drBody .chips { pointer-events: none; opacity: 0.8; }
 body.viewer-mode #drBody .chip-add { display: none !important; }
-/* Opportunity Registrar: only sections A–C in the record form (D = Pipeline is hidden). */
-body.role-recorder #tabD, body.role-recorder #paneD { display: none !important; }
+/* Opportunity Registrar: only sections A–C in the record form (D = Pipeline, E = Meetings are hidden). */
+body.role-recorder #tabD, body.role-recorder #paneD,
+body.role-recorder #tabE, body.role-recorder #paneE { display: none !important; }
+/* The Meetings pane is a custom stacked layout, not the 3-column field grid. */
+#paneE.on { display: block; }
+
+/* ===================== MEETINGS / MoM ===================== */
+.mm-wrap{display:flex;flex-direction:column;gap:11px}
+.mm-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mm-ttl{font-size:13px;font-weight:700;color:var(--kec-green-deep);display:flex;align-items:center;gap:8px}
+.mm-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:20px;background:var(--kec-surface-2);color:var(--kec-green-deep);font-size:11px;font-weight:700}
+.mm-empty{padding:22px;text-align:center;color:var(--kec-muted);font-size:12px;border:1px dashed var(--kec-hairline);border-radius:11px;background:var(--kec-paper)}
+.mm-add{border:1px solid var(--kec-green);background:var(--kec-surface);color:var(--kec-green-deep);font-family:var(--kec-font);font-weight:600;font-size:12px;padding:7px 13px;border-radius:8px;cursor:pointer}
+.mm-add:hover{background:var(--kec-surface-2)}
+.mm-add--sub{font-size:11px;padding:5px 10px}
+.mm-card{border:1px solid var(--kec-hairline);border-radius:11px;overflow:hidden;background:#fff}
+.mm-card.on{border-color:var(--kec-green);box-shadow:0 2px 10px rgba(20,61,30,.06)}
+.mm-head{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;background:var(--kec-paper)}
+.mm-card.on .mm-head{background:var(--kec-surface);border-bottom:1px solid var(--kec-hairline)}
+.mm-no{font-family:var(--kec-mono);font-size:11px;font-weight:600;color:var(--kec-green);flex:none}
+.mm-h-ttl{flex:1;font-size:12.5px;font-weight:600;color:var(--kec-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm-h-date{font-size:11px;color:var(--kec-muted);flex:none}
+.mm-chev{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;
+  color:var(--kec-green-deep);background:var(--kec-surface-2);flex:none;transition:transform .18s ease,background .14s;transform:rotate(-90deg)}
+.mm-head:hover .mm-chev{background:var(--kec-badge-green-bd)}
+.mm-card.on .mm-chev{transform:rotate(0)}
+.mm-x{border:none;background:transparent;color:var(--kec-neg);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:6px;flex:none}
+.mm-x:hover{background:#F6E4DF}
+.mm-body{padding:13px 13px 15px;display:flex;flex-direction:column;gap:13px}
+.mm-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px 12px}
+.mm-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.mm-field.wide{grid-column:1 / -1}
+.mm-l{font-size:10.5px;font-weight:600;color:var(--kec-green-deep)}
+.mm-in,.mm-sel,.mm-ta{font-family:var(--kec-font);font-size:12px;color:var(--kec-ink);border:1px solid var(--kec-hairline);border-radius:7px;padding:7px 9px;background:#fff;width:100%;min-width:0}
+.mm-in:focus,.mm-sel:focus,.mm-ta:focus{outline:none;border-color:var(--kec-green);box-shadow:0 0 0 2px rgba(47,107,62,.12)}
+.mm-in:disabled,.mm-sel:disabled,.mm-ta:disabled{background:var(--kec-paper);color:var(--kec-muted)}
+.mm-ta{resize:vertical;min-height:58px;line-height:1.5}
+.mm-sub{border-top:1px dashed var(--kec-hairline);padding-top:11px;display:flex;flex-direction:column;gap:8px}
+.mm-sub-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mm-sub-ttl{font-size:11.5px;font-weight:700;color:var(--kec-title)}
+.mm-prow{display:grid;grid-template-columns:1.3fr 1.3fr 0.9fr auto;gap:8px;align-items:center}
+.mm-arow{display:grid;grid-template-columns:2fr 1.1fr 1fr 0.9fr auto;gap:8px;align-items:center}
+.mm-x2{border:1px solid var(--kec-hairline);background:#fff;color:var(--kec-neg);font-size:12px;cursor:pointer;width:26px;height:26px;border-radius:7px;flex:none}
+.mm-x2:hover{background:#F6E4DF;border-color:#E7CCC4}
+.mm-none{font-size:11px;color:var(--kec-muted);padding:2px}
+.mm-ro{font-size:12px;color:var(--kec-ink);padding:7px 9px;border:1px solid var(--kec-hairline);border-radius:7px;background:var(--kec-paper)}
+#paneE .mm-datep.f__i{font-size:12px;padding:7px 9px}
+@media (max-width:768px){
+  .mm-grid{grid-template-columns:1fr}
+  .mm-prow{grid-template-columns:1fr 1fr;gap:6px}
+  .mm-prow .mm-x2,.mm-arow .mm-x2{grid-column:2;justify-self:end}
+  .mm-arow{grid-template-columns:1fr 1fr}
+}
 
 /* HEADER USER INFO */
 .user-badge{display:flex;align-items:center;justify-content:flex-end;gap:8px;
@@ -1102,6 +1153,12 @@ var GROUPS = [
     "id": "D",
     "label": "Opportunity & Pipeline",
     "short": "Pipeline",
+    "owner": "kec"
+  },
+  {
+    "id": "E",
+    "label": "Meetings / MoM",
+    "short": "Meetings",
     "owner": "kec"
   }
 ];
@@ -3020,6 +3077,14 @@ function mountSelect (host, cfg) {
 function readVal (el) { return el ? (el._sel ? el._sel.value : el.value) : ''; }
 /* Records actually in the register — a draft is only a form in progress. */
 function live () { return DATA.filter(function (r) { return !r._draft; }); }
+/* An Opportunity Registrar only ever sees the opportunities filed in their own name.
+   Everyone else sees the whole register. Used by the table, the cards, the KPIs and
+   the Executive Dashboard so every figure they see is limited to their own records. */
+function visibleRecords () {
+  var L = live();
+  if (isRole('recorder') && USER) return L.filter(function (r) { return r.brought_by === USER; });
+  return L;
+}
 
 /* Search normalisation: case-folded, and Arabic letter variants folded together so
    إستثمار and استثمار match each other, with tashkeel stripped. */
@@ -3053,6 +3118,8 @@ function filtered () {
                      .filter(function (x) { return !!x.v; });
   var out = DATA.filter(function (r) {
     if (r._draft) return false;
+    /* Registrar scope: only their own opportunities ever reach the list. */
+    if (isRole('recorder') && USER && r.brought_by !== USER) return false;
     for (var i = 0; i < picks.length; i++) {
       var pk = picks[i], rv = r[pk.key];
       if (Array.isArray(rv) ? rv.indexOf(pk.v) < 0 : rv !== pk.v) return false;
@@ -3086,7 +3153,7 @@ function buildKpis () {
   }).join('');
 }
 function renderKpis () {
-  var R = live();
+  var R = visibleRecords();
   KPIS.slice(0, 7).forEach(function (k, i) {
     var c = $('#k' + i); if (!c) return;
     var o = {};
@@ -3688,6 +3755,7 @@ function openDrawer (id, atTab) {
   $$('#drBody input, #drBody textarea').forEach(function (el) {
     el.addEventListener('change', function () { formChanged(el.id.slice(2), el.value); });
   });
+  Meet.open(r);           /* custom repeatable Meetings/MoM pane (group E) */
   tab(atTab || GROUPS[0].id); meter();
   $('#dr').classList.add('open');
 }
@@ -3746,6 +3814,7 @@ function commit () {
   var isNew = !!r._draft;
   var before = isNew ? null : JSON.parse(JSON.stringify(r));
   Object.assign(r, collect());
+  r.meetings = Meet.collect();   /* the Meetings/MoM pane is collected separately from SCHEMA */
   var tf = F[APP.titleField];
   if (tf && !r[APP.titleField]) {
     toast(tf.label + ' is required.');
@@ -3757,7 +3826,12 @@ function commit () {
   delete r._draft;
   save(r);
   if (isNew) logChange('created', r, '');
-  else { var diff = diffSummary(before, r); if (diff) logChange('updated', r, diff); }
+  else {
+    var diff = diffSummary(before, r);
+    var mB = JSON.stringify((before && before.meetings) || []), mA = JSON.stringify(r.meetings || []);
+    if (mB !== mA) diff = (diff ? diff + ' · ' : '') + 'Meetings updated (' + (r.meetings || []).length + ')';
+    if (diff) logChange('updated', r, diff);
+  }
   renderAll(); closeDr();
   var seen = revealRecord(r._id), num = pid(r);
   if (isNew) {
@@ -5031,7 +5105,7 @@ function dl (name, mime, body) {
 }
 function csvCell (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function exportCsv () {
-  var DATA = live();
+  var DATA = visibleRecords();
   var fields = SCHEMA.filter(function (f) { return f.type !== 'calc'; });
   var head = fields.map(function (f) { return csvCell(f.label); }).concat(['Progress %', 'Weighted Value']).join(',');
   var rows = DATA.map(function (r) {
@@ -5042,7 +5116,7 @@ function exportCsv () {
   stFlash('CSV exported — ' + DATA.length + ' record' + (DATA.length === 1 ? '' : 's') + '.');
 }
 function exportJson () {
-  var recs = live();
+  var recs = visibleRecords();
   dl('KEC-' + APP.key + '-backup-' + TODAY + '.json', 'application/json',
      JSON.stringify({ v: BUILD, app: APP.key, exported: new Date().toISOString(),
        records: recs, owners: OWNERS, options: DYNAMIC_OPTS, config: CFG, cols: COLS, colW: MANUAL,
@@ -5217,7 +5291,7 @@ function exBarCard (title, rows) {
   return '<div class="exec-chart"><div class="ex-ct">' + esc(title) + '</div><div class="ex-cb">' + exBars(rows) + '</div></div>';
 }
 function renderExec () {
-  var R = live(), s = execStats(R);
+  var R = visibleRecords(), s = execStats(R);
   var stageG = exGroup(R, 'stage').sort(function (a, b) {
     var pa = PROGRESS[a.k] == null ? 999 : PROGRESS[a.k], pb = PROGRESS[b.k] == null ? 999 : PROGRESS[b.k]; return pa - pb;
   });
@@ -5298,6 +5372,194 @@ function closeExec () {
   var s = execPageRule(); if (s) s.remove();
 }
 function printExec () { window.print(); }
+
+/* ===================== MEETINGS / MoM =====================
+   A repeatable sub-entity: each record carries r.meetings — an array of meeting
+   objects (title, date, time, type, location, attendees[], agenda, discussion,
+   decisions, actions[], next_date). Rendered as an accordion into the E pane.
+   Writes ride along with the record via bare()/setDoc (array-of-maps, Firestore-safe). */
+var MM_TYPES = ['Introductory', 'Follow-up', 'Negotiation', 'Site Visit', 'Virtual / Online', 'Workshop', 'Other'];
+var MM_SIDES = ['KEC', 'Investor', 'Other'];
+var MM_STATUS = ['Open', 'In Progress', 'Done'];
+/* Half-hour time choices, 12-hour labels — picked from a themed dropdown, not typed. */
+var MM_TIMES = (function () {
+  var a = [];
+  for (var h = 0; h < 24; h++) for (var m = 0; m < 60; m += 30) {
+    var ap = h < 12 ? 'AM' : 'PM', hh = h % 12; if (hh === 0) hh = 12;
+    a.push(hh + ':' + ('0' + m).slice(-2) + ' ' + ap);
+  }
+  return a;
+})();
+var Meet = (function () {
+  var host = null, data = [], rw = false, openIdx = -1;
+  function mid () { return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+  function blankMeeting () { return { id: mid(), title: '', date: '', time: '', type: '', location: '', attendees: [], agenda: '', discussion: '', decisions: '', actions: [], next_date: '' }; }
+  function mmDate (iso) { return iso ? fmtBackupDate(iso) : '—'; }
+  var dis = ''; // recomputed per render
+
+  function inp (i, f, ph, val, type) {
+    return '<input class="mm-in" type="' + (type || 'text') + '" data-f="' + f + '" data-i="' + i + '" placeholder="' + esc(ph) + '" value="' + esc(val || '') + '"' + dis + '>';
+  }
+  function ta (i, f, ph, val) {
+    return '<textarea class="mm-ta" data-f="' + f + '" data-i="' + i + '" placeholder="' + esc(ph) + '"' + dis + '>' + esc(val || '') + '</textarea>';
+  }
+  function sel (i, f, val, opts, extra) {
+    return '<select class="mm-sel" data-f="' + f + '" data-i="' + i + '"' + (extra || '') + dis + '>' +
+      '<option value="">—</option>' +
+      opts.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>';
+  }
+  function field (label, inner, wide) { return '<div class="mm-field' + (wide ? ' wide' : '') + '"><span class="mm-l">' + esc(label) + '</span>' + inner + '</div>'; }
+  /* Date fields reuse the project's own portaled picker (mounted after render) so they
+     carry the exact KEC look of every other date control. Read-only shows plain text. */
+  function dateHost (i, f, val, arr, j) {
+    if (!rw) return '<div class="mm-ro">' + (val ? esc(fmtDate(val)) : '—') + '</div>';
+    return '<span class="f__i f__i--date mm-datep" data-i="' + i + '" data-f="' + f + '"' +
+      (arr ? ' data-arr="' + arr + '"' : '') + (j != null ? ' data-j="' + j + '"' : '') +
+      ' data-date="' + esc(val || '') + '" tabindex="0"></span>';
+  }
+  function timeField (i, val) {
+    if (!rw) return field('Time', '<div class="mm-ro">' + (val ? esc(val) : '—') + '</div>');
+    return field('Time', '<span class="sel sel--field mm-timep" data-i="' + i + '"></span>');
+  }
+  function mountTimes () {
+    $$('#paneE .mm-timep').forEach(function (h) {
+      var i = +h.getAttribute('data-i');
+      mountSelect(h, {
+        autoWidth: false, options: MM_TIMES, value: (data[i] && data[i].time) || '', placeholder: 'Select time…',
+        onChange: function (v) { if (data[i]) data[i].time = v; }
+      });
+    });
+  }
+  function mountDates () {
+    $$('#paneE .mm-datep').forEach(function (h) {
+      var i = +h.getAttribute('data-i'), f = h.getAttribute('data-f'), arr = h.getAttribute('data-arr'), j = h.getAttribute('data-j');
+      mountDate(h, h.getAttribute('data-date') || '', function (iso) {
+        if (!data[i]) return;
+        if (arr === 'act') { if (data[i].actions[+j]) data[i].actions[+j].due = iso; }
+        else {
+          data[i][f] = iso;
+          if (f === 'date') { var c = $$('#paneE .mm-card')[i]; if (c) { var d = c.querySelector('.mm-h-date'); if (d) d.textContent = mmDate(iso); } }
+        }
+      });
+    });
+  }
+
+  function attendeeRows (m, i) {
+    var rows = (m.attendees || []).map(function (a, j) {
+      return '<div class="mm-prow">' +
+        '<input class="mm-in" data-arr="att" data-f="name" data-i="' + i + '" data-j="' + j + '" placeholder="Name" value="' + esc(a.name || '') + '"' + dis + '>' +
+        '<input class="mm-in" data-arr="att" data-f="position" data-i="' + i + '" data-j="' + j + '" placeholder="Position / Title" value="' + esc(a.position || '') + '"' + dis + '>' +
+        '<select class="mm-sel" data-arr="att" data-f="side" data-i="' + i + '" data-j="' + j + '"' + dis + '>' +
+          MM_SIDES.map(function (o) { return '<option' + (o === (a.side || 'KEC') ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>' +
+        (rw ? '<button type="button" class="mm-x2" data-a="delatt" data-i="' + i + '" data-j="' + j + '" title="Remove">✕</button>' : '<span></span>') +
+      '</div>';
+    }).join('');
+    return '<div class="mm-sub"><div class="mm-sub-top"><span class="mm-sub-ttl">Attendees</span>' +
+      (rw ? '<button type="button" class="mm-add mm-add--sub" data-a="addatt" data-i="' + i + '">+ Add attendee</button>' : '') + '</div>' +
+      (rows || '<div class="mm-none">No attendees added.</div>') + '</div>';
+  }
+  function actionRows (m, i) {
+    var rows = (m.actions || []).map(function (a, j) {
+      return '<div class="mm-arow">' +
+        '<input class="mm-in" data-arr="act" data-f="task" data-i="' + i + '" data-j="' + j + '" placeholder="Action / task" value="' + esc(a.task || '') + '"' + dis + '>' +
+        '<input class="mm-in" data-arr="act" data-f="owner" data-i="' + i + '" data-j="' + j + '" placeholder="Owner" value="' + esc(a.owner || '') + '"' + dis + '>' +
+        dateHost(i, 'due', a.due, 'act', j) +
+        '<select class="mm-sel" data-arr="act" data-f="status" data-i="' + i + '" data-j="' + j + '"' + dis + '>' +
+          MM_STATUS.map(function (o) { return '<option' + (o === (a.status || 'Open') ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>' +
+        (rw ? '<button type="button" class="mm-x2" data-a="delact" data-i="' + i + '" data-j="' + j + '" title="Remove">✕</button>' : '<span></span>') +
+      '</div>';
+    }).join('');
+    return '<div class="mm-sub"><div class="mm-sub-top"><span class="mm-sub-ttl">Action Items</span>' +
+      (rw ? '<button type="button" class="mm-add mm-add--sub" data-a="addact" data-i="' + i + '">+ Add action</button>' : '') + '</div>' +
+      (rows || '<div class="mm-none">No action items.</div>') + '</div>';
+  }
+  function cardBody (m, i) {
+    return '<div class="mm-grid">' +
+        field('Meeting Title', inp(i, 'title', 'e.g. Introductory meeting with …', m.title), true) +
+        field('Date', dateHost(i, 'date', m.date)) +
+        timeField(i, m.time) +
+        field('Type', sel(i, 'type', m.type, MM_TYPES)) +
+        field('Location / Platform', inp(i, 'location', 'KEC HQ, Teams, …', m.location), true) +
+      '</div>' +
+      attendeeRows(m, i) +
+      '<div class="mm-grid"><div class="mm-field wide">' + field('Agenda', ta(i, 'agenda', 'Points to be discussed…', m.agenda), true) + '</div></div>' +
+      field('Discussion / Minutes', ta(i, 'discussion', 'What was discussed…', m.discussion), true) +
+      field('Decisions', ta(i, 'decisions', 'Agreements and decisions reached…', m.decisions), true) +
+      actionRows(m, i) +
+      '<div class="mm-grid">' + field('Next Meeting Date', dateHost(i, 'next_date', m.next_date)) + '</div>';
+  }
+  function card (m, i) {
+    var opened = i === openIdx;
+    var head = '<div class="mm-head" data-a="toggle" data-i="' + i + '">' +
+        '<span class="mm-chev" title="' + (opened ? 'Collapse' : 'Expand') + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>' +
+        '<span class="mm-no">#' + (i + 1) + '</span>' +
+        '<span class="mm-h-ttl">' + esc(m.title || 'Untitled meeting') + '</span>' +
+        '<span class="mm-h-date">' + mmDate(m.date) + '</span>' +
+        (rw ? '<button type="button" class="mm-x" data-a="delm" data-i="' + i + '" title="Remove meeting">✕</button>' : '') +
+      '</div>';
+    return '<div class="mm-card' + (opened ? ' on' : '') + '">' + head + (opened ? '<div class="mm-body">' + cardBody(m, i) + '</div>' : '') + '</div>';
+  }
+  function render () {
+    if (!host) return;
+    if (typeof closeDpk === 'function') closeDpk();          /* avoid an orphaned date picker across a re-render */
+    if (typeof closeSelects === 'function') closeSelects(null); /* …and an orphaned select panel */
+    dis = rw ? '' : ' disabled';
+    var addBtn = rw ? '<button type="button" class="mm-add" data-a="addm">+ Add meeting</button>' : '';
+    var body = data.length ? data.map(card).join('')
+      : '<div class="mm-empty">No meetings logged yet.' + (rw ? ' Click “Add meeting” to record the first minutes.' : '') + '</div>';
+    host.innerHTML = '<div class="mm-wrap"><div class="mm-top"><div class="mm-ttl">Meeting Minutes <span class="mm-badge">' + data.length + '</span></div>' + addBtn + '</div>' + body + '</div>';
+    bind();
+    mountDates();
+    mountTimes();
+  }
+  function bind () {
+    host.onclick = function (e) {
+      var b = e.target.closest('[data-a]'); if (!b || !host.contains(b)) return;
+      var a = b.getAttribute('data-a'), i = +b.getAttribute('data-i'), j = +b.getAttribute('data-j');
+      if (a === 'toggle') { openIdx = (openIdx === i ? -1 : i); render(); return; }
+      if (!rw) return;
+      if (a === 'addm') { data.push(blankMeeting()); openIdx = data.length - 1; render(); }
+      else if (a === 'delm') { data.splice(i, 1); if (openIdx >= data.length) openIdx = data.length - 1; render(); }
+      else if (a === 'addatt') { data[i].attendees.push({ name: '', position: '', side: 'KEC' }); render(); }
+      else if (a === 'delatt') { data[i].attendees.splice(j, 1); render(); }
+      else if (a === 'addact') { data[i].actions.push({ task: '', owner: '', due: '', status: 'Open' }); render(); }
+      else if (a === 'delact') { data[i].actions.splice(j, 1); render(); }
+    };
+    host.oninput = host.onchange = function (e) {
+      var el = e.target, f = el.getAttribute && el.getAttribute('data-f'); if (!f) return;
+      var i = +el.getAttribute('data-i'), arr = el.getAttribute('data-arr'), j = el.getAttribute('data-j');
+      if (!data[i]) return;
+      if (arr === 'att') { (data[i].attendees[+j] || {})[f] = el.value; }
+      else if (arr === 'act') { (data[i].actions[+j] || {})[f] = el.value; }
+      else {
+        data[i][f] = el.value;
+        if (f === 'title') { var c1 = host.querySelectorAll('.mm-card')[i]; if (c1) { var t = c1.querySelector('.mm-h-ttl'); if (t) t.textContent = el.value || 'Untitled meeting'; } }
+        if (f === 'date') { var c2 = host.querySelectorAll('.mm-card')[i]; if (c2) { var d = c2.querySelector('.mm-h-date'); if (d) d.textContent = mmDate(el.value); } }
+      }
+    };
+  }
+  return {
+    open: function (r) {
+      rw = canEdit();
+      data = (Array.isArray(r.meetings) ? JSON.parse(JSON.stringify(r.meetings)) : []).map(function (m) {
+        m.id = m.id || mid(); m.attendees = m.attendees || []; m.actions = m.actions || []; return m;
+      });
+      openIdx = -1;   /* all meetings start collapsed — title + date only, expand on click */
+      host = $('#paneE');
+      render();
+    },
+    collect: function () {
+      return data.map(function (m) {
+        var att = (m.attendees || []).filter(function (a) { return String(a.name || a.position || '').trim(); });
+        var act = (m.actions || []).filter(function (a) { return String(a.task || '').trim(); });
+        return { title: m.title || '', date: m.date || '', time: m.time || '', type: m.type || '', location: m.location || '',
+          attendees: att, agenda: m.agenda || '', discussion: m.discussion || '', decisions: m.decisions || '', actions: act, next_date: m.next_date || '' };
+      }).filter(function (m) {
+        return String(m.title || m.date || m.time || m.type || m.location || m.agenda || m.discussion || m.decisions || m.next_date || '').trim() || m.attendees.length || m.actions.length;
+      });
+    }
+  };
+})();
 function renderStData () {
   $('#stData').innerHTML =
     '<div class="st__ttl">Data &amp; Reset</div>' +
