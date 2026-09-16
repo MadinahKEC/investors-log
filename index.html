@@ -424,7 +424,8 @@ body.role-recorder #tabE, body.role-recorder #paneE { display: none !important; 
 .mm-sub{border-top:1px dashed var(--kec-hairline);padding-top:11px;display:flex;flex-direction:column;gap:8px}
 .mm-sub-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .mm-sub-ttl{font-size:11.5px;font-weight:700;color:var(--kec-title)}
-.mm-prow{display:grid;grid-template-columns:1.3fr 1.3fr 0.9fr auto;gap:8px;align-items:center}
+.mm-prow{display:grid;grid-template-columns:1.2fr 1.1fr 1.2fr auto;gap:8px;align-items:center}
+#paneE .mm-orgp,#paneE .mm-timep,#paneE .mm-namep,#paneE .mm-posp{width:100%;min-width:0}
 .mm-arow{display:grid;grid-template-columns:2fr 1.1fr 1fr 0.9fr auto;gap:8px;align-items:center}
 .mm-x2{border:1px solid var(--kec-hairline);background:#fff;color:var(--kec-neg);font-size:12px;cursor:pointer;width:26px;height:26px;border-radius:7px;flex:none}
 .mm-x2:hover{background:#F6E4DF;border-color:#E7CCC4}
@@ -2929,7 +2930,7 @@ function mountSelect (host, cfg) {
     lab.title = st.v || st.ph;
   }
   function fill () {
-    var searchable = st.opts.length > 12;   // long lists (e.g. 200 plots, countries) get a filter
+    var searchable = cfg.search || st.opts.length > 12;   // long lists (e.g. 200 plots, countries) get a filter; cfg.search forces it
     pan.innerHTML =
       (searchable ? '<input class="sel__q" type="text" placeholder="Search…" autocomplete="off" spellcheck="false">' : '') +
       (st.ph ? '<span class="sel__o hint" data-v=""><span class="dot dot--mute"></span>' + esc(st.ph) + '</span>' : '') +
@@ -3815,6 +3816,7 @@ function commit () {
   var before = isNew ? null : JSON.parse(JSON.stringify(r));
   Object.assign(r, collect());
   r.meetings = Meet.collect();   /* the Meetings/MoM pane is collected separately from SCHEMA */
+  Meet.learn(r.meetings);        /* remember attendees (name→position+org) + new titles/companies */
   var tf = F[APP.titleField];
   if (tf && !r[APP.titleField]) {
     toast(tf.label + ' is required.');
@@ -5390,6 +5392,28 @@ var MM_TIMES = (function () {
   }
   return a;
 })();
+/* Company / organization list for meeting attendees — persisted in the shared config
+   (CFG.opts.meeting_org → _metadata via saveConfig) so a company added once is reused
+   everywhere and by every user. */
+function mmOrgList () { if (!CFG.opts) CFG.opts = {}; if (!Array.isArray(CFG.opts.meeting_org)) CFG.opts.meeting_org = []; return CFG.opts.meeting_org; }
+function mmOrgOptions () { return ['KEC'].concat(mmOrgList().filter(function (x) { return x && x !== 'KEC'; })); }
+function mmAddOrg (v) { v = String(v || '').trim(); if (!v) return; var L = mmOrgList(); if (L.indexOf(v) < 0) { L.push(v); saveConfig(true); } }
+/* Suggested job titles (always offered) + any the admin/users add, persisted for reuse. */
+var MM_POS_SEED = ['Chairman', 'Board Member', 'CEO', 'Managing Director', 'General Manager', 'Director',
+  'Business Development Director', 'Investment Director', 'Manager', 'Consultant', 'Legal Advisor', 'CFO', 'COO'];
+function mmPosList () { if (!CFG.opts) CFG.opts = {}; if (!Array.isArray(CFG.opts.meeting_position)) CFG.opts.meeting_position = []; return CFG.opts.meeting_position; }
+function mmPosOptions () { var o = MM_POS_SEED.concat(mmPosList()); return o.filter(function (x, i) { return x && o.indexOf(x) === i; }); }
+function mmAddPos (v) { v = String(v || '').trim(); if (!v) return; var L = mmPosList(); if (L.indexOf(v) < 0) { L.push(v); saveConfig(true); } }
+/* People directory: name → last-known position + organization, so choosing a saved name
+   auto-fills the rest. Lives in CFG.people (shared via _metadata). */
+function mmPeople () { if (!CFG.opts) CFG.opts = {}; if (!Array.isArray(CFG.opts.meeting_people)) CFG.opts.meeting_people = []; return CFG.opts.meeting_people; }
+function mmPeopleNames () { return mmPeople().map(function (p) { return p.name; }).filter(Boolean); }
+function mmFindPerson (name) {
+  name = String(name || '').trim().toLowerCase(); if (!name) return null;
+  var L = mmPeople();
+  for (var k = 0; k < L.length; k++) if (String(L[k].name || '').trim().toLowerCase() === name) return L[k];
+  return null;
+}
 var Meet = (function () {
   var host = null, data = [], rw = false, openIdx = -1;
   function mid () { return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
@@ -5430,6 +5454,88 @@ var Meet = (function () {
       });
     });
   }
+  /* Attendee name: a searchable/predictive dropdown of saved people, with "+ Add person…".
+     Choosing a saved name auto-fills their position and organization. */
+  function nameCell (i, j, a) {
+    if (!rw) return '<div class="mm-ro">' + (a.name ? esc(a.name) : '—') + '</div>';
+    return '<span class="sel sel--field mm-namep" data-i="' + i + '" data-j="' + j + '"></span>';
+  }
+  function mountNames () {
+    $$('#paneE .mm-namep').forEach(function (h) {
+      var i = +h.getAttribute('data-i'), j = +h.getAttribute('data-j');
+      var a = data[i] && data[i].attendees[j]; if (!a) return;
+      mountSelect(h, {
+        autoWidth: false, search: true, options: mmPeopleNames(), value: a.name || '', placeholder: 'Name…',
+        extra: { v: '__new__', label: '+ Add person…' },
+        onChange: function (v, revert) {
+          if (v === '__new__') {
+            askPrompt('Add Person', 'Type the person’s name:', 'Full name…', function (nv) {
+              nv = String(nv || '').trim();
+              if (nv) { a.name = nv; render(); } else if (revert) revert();
+            });
+            return;
+          }
+          a.name = v;
+          var p = mmFindPerson(v);       /* auto-fill from the directory */
+          if (p) { if (p.position) a.position = p.position; if (p.org) a.org = p.org; }
+          setTimeout(render, 0);         /* let the dropdown finish its click before re-render */
+        }
+      });
+    });
+  }
+  /* Attendee position/title: suggested titles + "+ Add title…", persisted for reuse. */
+  function posCell (i, j, a) {
+    if (!rw) return '<div class="mm-ro">' + (a.position ? esc(a.position) : '—') + '</div>';
+    return '<span class="sel sel--field mm-posp" data-i="' + i + '" data-j="' + j + '"></span>';
+  }
+  function mountPositions () {
+    $$('#paneE .mm-posp').forEach(function (h) {
+      var i = +h.getAttribute('data-i'), j = +h.getAttribute('data-j');
+      var a = data[i] && data[i].attendees[j]; if (!a) return;
+      mountSelect(h, {
+        autoWidth: false, search: true, options: mmPosOptions(), value: a.position || '', placeholder: 'Position / title…',
+        extra: { v: '__new__', label: '+ Add title…' },
+        onChange: function (v, revert) {
+          if (v === '__new__') {
+            askPrompt('Add Job Title', 'Type the job title:', 'e.g. Investment Director', function (nv) {
+              nv = String(nv || '').trim();
+              if (nv) { mmAddPos(nv); h._sel.setOptions(mmPosOptions()); h._sel.set(nv); a.position = nv; }
+              else if (revert) revert();
+            });
+            return;
+          }
+          a.position = v;
+        }
+      });
+    });
+  }
+  /* Attendee organization: a searchable dropdown of companies, with "+ Add company…"
+     that persists the new name to the shared list for reuse. */
+  function orgCell (i, j, a) {
+    if (!rw) return '<div class="mm-ro">' + (a.org ? esc(a.org) : '—') + '</div>';
+    return '<span class="sel sel--field mm-orgp" data-i="' + i + '" data-j="' + j + '"></span>';
+  }
+  function mountOrgs () {
+    $$('#paneE .mm-orgp').forEach(function (h) {
+      var i = +h.getAttribute('data-i'), j = +h.getAttribute('data-j');
+      var a = data[i] && data[i].attendees[j]; if (!a) return;
+      mountSelect(h, {
+        autoWidth: false, search: true, options: mmOrgOptions(), value: a.org || '', placeholder: 'Organization / company…',
+        extra: { v: '__new__', label: '+ Add company…' },
+        onChange: function (v, revert) {
+          if (v === '__new__') {
+            askPrompt('Add Company', 'Type the company / organization name:', 'Company name…', function (nv) {
+              nv = String(nv || '').trim();
+              if (nv) { mmAddOrg(nv); h._sel.setOptions(mmOrgOptions()); h._sel.set(nv); a.org = nv; }
+              else if (revert) revert();
+            });
+            return;
+          }
+          a.org = v;
+        }
+      });
+    });
+  }
   function mountDates () {
     $$('#paneE .mm-datep').forEach(function (h) {
       var i = +h.getAttribute('data-i'), f = h.getAttribute('data-f'), arr = h.getAttribute('data-arr'), j = h.getAttribute('data-j');
@@ -5447,10 +5553,9 @@ var Meet = (function () {
   function attendeeRows (m, i) {
     var rows = (m.attendees || []).map(function (a, j) {
       return '<div class="mm-prow">' +
-        '<input class="mm-in" data-arr="att" data-f="name" data-i="' + i + '" data-j="' + j + '" placeholder="Name" value="' + esc(a.name || '') + '"' + dis + '>' +
-        '<input class="mm-in" data-arr="att" data-f="position" data-i="' + i + '" data-j="' + j + '" placeholder="Position / Title" value="' + esc(a.position || '') + '"' + dis + '>' +
-        '<select class="mm-sel" data-arr="att" data-f="side" data-i="' + i + '" data-j="' + j + '"' + dis + '>' +
-          MM_SIDES.map(function (o) { return '<option' + (o === (a.side || 'KEC') ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>' +
+        nameCell(i, j, a) +
+        posCell(i, j, a) +
+        orgCell(i, j, a) +
         (rw ? '<button type="button" class="mm-x2" data-a="delatt" data-i="' + i + '" data-j="' + j + '" title="Remove">✕</button>' : '<span></span>') +
       '</div>';
     }).join('');
@@ -5511,6 +5616,9 @@ var Meet = (function () {
     bind();
     mountDates();
     mountTimes();
+    mountNames();
+    mountPositions();
+    mountOrgs();
   }
   function bind () {
     host.onclick = function (e) {
@@ -5520,7 +5628,7 @@ var Meet = (function () {
       if (!rw) return;
       if (a === 'addm') { data.push(blankMeeting()); openIdx = data.length - 1; render(); }
       else if (a === 'delm') { data.splice(i, 1); if (openIdx >= data.length) openIdx = data.length - 1; render(); }
-      else if (a === 'addatt') { data[i].attendees.push({ name: '', position: '', side: 'KEC' }); render(); }
+      else if (a === 'addatt') { data[i].attendees.push({ name: '', position: '', org: '' }); render(); }
       else if (a === 'delatt') { data[i].attendees.splice(j, 1); render(); }
       else if (a === 'addact') { data[i].actions.push({ task: '', owner: '', due: '', status: 'Open' }); render(); }
       else if (a === 'delact') { data[i].actions.splice(j, 1); render(); }
@@ -5542,7 +5650,10 @@ var Meet = (function () {
     open: function (r) {
       rw = canEdit();
       data = (Array.isArray(r.meetings) ? JSON.parse(JSON.stringify(r.meetings)) : []).map(function (m) {
-        m.id = m.id || mid(); m.attendees = m.attendees || []; m.actions = m.actions || []; return m;
+        m.id = m.id || mid(); m.attendees = m.attendees || []; m.actions = m.actions || [];
+        /* Back-compat: older attendees carried a fixed `side`; adopt it as the org value. */
+        m.attendees.forEach(function (a) { if (a.org == null || a.org === '') a.org = (a.side && a.side !== 'Investor') ? a.side : ''; });
+        return m;
       });
       openIdx = -1;   /* all meetings start collapsed — title + date only, expand on click */
       host = $('#paneE');
@@ -5550,13 +5661,33 @@ var Meet = (function () {
     },
     collect: function () {
       return data.map(function (m) {
-        var att = (m.attendees || []).filter(function (a) { return String(a.name || a.position || '').trim(); });
+        var att = (m.attendees || []).filter(function (a) { return String(a.name || a.position || a.org || '').trim(); })
+          .map(function (a) { return { name: a.name || '', position: a.position || '', org: a.org || '' }; });
         var act = (m.actions || []).filter(function (a) { return String(a.task || '').trim(); });
         return { title: m.title || '', date: m.date || '', time: m.time || '', type: m.type || '', location: m.location || '',
           attendees: att, agenda: m.agenda || '', discussion: m.discussion || '', decisions: m.decisions || '', actions: act, next_date: m.next_date || '' };
       }).filter(function (m) {
         return String(m.title || m.date || m.time || m.type || m.location || m.agenda || m.discussion || m.decisions || m.next_date || '').trim() || m.attendees.length || m.actions.length;
       });
+    },
+    /* Learn from a saved record: remember each attendee (name → position + org) and add
+       any new position/company to the shared lists, so they are reused and auto-filled. */
+    learn: function (meetings) {
+      var changed = false;
+      (meetings || []).forEach(function (m) {
+        (m.attendees || []).forEach(function (a) {
+          var nm = String(a.name || '').trim(); if (!nm) return;
+          var p = mmFindPerson(nm);
+          if (!p) { mmPeople().push({ name: nm, position: a.position || '', org: a.org || '' }); changed = true; }
+          else {
+            if (a.position && p.position !== a.position) { p.position = a.position; changed = true; }
+            if (a.org && p.org !== a.org) { p.org = a.org; changed = true; }
+          }
+          if (a.position) { var PL = mmPosList(); if (PL.indexOf(a.position) < 0 && MM_POS_SEED.indexOf(a.position) < 0) { PL.push(a.position); changed = true; } }
+          if (a.org && a.org !== 'KEC') { var OL = mmOrgList(); if (OL.indexOf(a.org) < 0) { OL.push(a.org); changed = true; } }
+        });
+      });
+      if (changed) saveConfig(true);
     }
   };
 })();
