@@ -654,10 +654,12 @@ body.viewer-mode .acts{display:none}
 .exec-print{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;
   background:var(--kec-green);color:#fff;font-family:var(--kec-font);font-weight:600;
   font-size:12.5px;padding:9px 15px;border-radius:9px}
-.exec-fit{flex:none}
-.exec-page{width:297mm;height:210mm;background:#fff;transform-origin:top center;
+.exec-fit{flex:none;display:flex;flex-direction:column;align-items:center;gap:16px}
+.exec-sheet{flex:none;overflow:hidden;box-shadow:0 10px 44px rgba(0,0,0,.34);background:#fff}
+.exec-page{width:297mm;height:210mm;background:#fff;transform-origin:top left;
   transform:scale(var(--exec-scale,1));display:flex;flex-direction:column;
-  padding:9mm 11mm 6mm;box-shadow:0 10px 44px rgba(0,0,0,.34);color:var(--kec-ink);font-family:var(--kec-font)}
+  padding:9mm 11mm 6mm;color:var(--kec-ink);font-family:var(--kec-font);
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
 .exec-head{display:flex;justify-content:space-between;align-items:flex-end;flex:none;
   border-bottom:2px solid var(--kec-hairline);padding-bottom:8px;position:relative}
 .exec-head::after{content:'';position:absolute;bottom:-2px;left:0;width:130px;height:3px;background:var(--kec-gold)}
@@ -699,13 +701,46 @@ body.viewer-mode .acts{display:none}
 .ex-bv{font-weight:700;color:var(--kec-green-deep);font-variant-numeric:tabular-nums}
 .exec-foot{flex:none;margin-top:7px;padding-top:6px;border-top:1px solid var(--kec-hairline);
   display:flex;justify-content:space-between;font-size:9px;color:var(--kec-muted)}
+/* second page(s): registered-opportunities table — fixed A4 pages, rows never split */
+.exec-page--roster{height:auto;display:block;padding:9mm 11mm 9mm}          /* off-screen measuring only */
+.exec-page--rfixed{height:210mm;display:flex;flex-direction:column;padding:9mm 11mm 9mm}
+.exrf-body{flex:1;min-height:0;margin-top:12px}
+.exec-roster{width:100%;border-collapse:collapse;table-layout:fixed}
+.exec-roster th{background:var(--kec-surface-2);color:var(--kec-green-deep);font-weight:700;font-size:9.5px;
+  text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 9px;border-bottom:2px solid var(--kec-green)}
+.exec-roster td{padding:7px 9px;border-bottom:1px solid var(--kec-hairline);color:var(--kec-ink);
+  vertical-align:top;font-size:10.5px;line-height:1.45;word-wrap:break-word;overflow-wrap:break-word}
+.exec-roster tr:nth-child(even) td{background:var(--kec-paper)}
+.exec-roster .c-co{width:15%;font-weight:600}
+.exec-roster .c-lv{width:12%;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--kec-green-deep);font-weight:600}
+.exec-roster .c-st{width:13%;white-space:nowrap}
+.exec-roster .c-op{width:20%}
+.exec-roster .c-ra{width:21%}
+.exec-roster .c-na{width:19%}
+.exec-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;white-space:nowrap}
+.exec-badge i{width:8px;height:8px;border-radius:50%;flex:none}
+/* KEC report-identity footer (applied to every dashboard/roster page) */
+.exrf{flex:none;margin-top:10px}
+.exrf__rule{height:2px;background:var(--kec-gold);border-radius:2px}
+.exrf__row{display:flex;align-items:center;padding-top:8px;gap:10px}
+.exrf__src{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.exrf__bar{width:3px;height:24px;background:var(--kec-green);border-radius:2px;flex:none}
+.exrf__lbl{font-size:8px;color:var(--kec-muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+.exrf__val{font-size:11px;font-weight:600;color:var(--kec-green-deep);white-space:nowrap}
+.exrf__mid{flex:none;display:flex;align-items:center;padding:0 12px;border-inline:1px solid #EEF2EA;align-self:stretch}
+.exrf__pill{background:var(--kec-surface);color:var(--kec-green);font-weight:600;font-size:9.5px;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.exrf__cls{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.exrf__ar{font-size:9px;color:var(--kec-muted);white-space:nowrap}
 @media (max-width:768px){.exec-overlay{padding:0}.exec-acts{top:8px;right:8px}}
 @media print{
   body.exec-open .page,body.exec-open .toast,body.exec-open .hwrap{display:none !important}
   body.exec-open .exec-overlay{position:static;background:#fff;padding:0;overflow:visible;display:block}
   body.exec-open .exec-acts{display:none !important}
-  body.exec-open .exec-fit{width:auto !important;height:auto !important}
-  body.exec-open .exec-page{transform:none !important;box-shadow:none;margin:0 auto}
+  body.exec-open .exec-fit{width:auto !important;height:auto !important;display:block !important;gap:0 !important}
+  body.exec-open .exec-sheet{width:auto !important;height:auto !important;overflow:visible !important;box-shadow:none !important;display:block !important}
+  body.exec-open .exec-page{transform:none !important;box-shadow:none;margin:0 auto;break-after:page;page-break-after:always}
+  body.exec-open .exec-sheet:last-child .exec-page{break-after:auto;page-break-after:auto}
+  body.exec-open .exec-roster tr{break-inside:avoid;page-break-inside:avoid}
 }
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
@@ -1031,7 +1066,7 @@ body.viewer-mode .acts{display:none}
         <button id="exClose" class="btn btn--icon" type="button" title="Close" style="width:30px;height:30px">
           <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <div class="exec-fit" id="execFit"><div class="exec-page" id="execPage"></div></div>
+      <div class="exec-fit" id="execFit"></div>
     </div>
 
     <!-- COLUMN MANAGER (portaled to <body> on open) -->
@@ -5328,7 +5363,7 @@ function renderExec () {
     { v: s.thisMonth, l: 'New This Month' }
   ];
 
-  $('#execPage').innerHTML =
+  var page1 =
     '<header class="exec-head"><div><div class="exec-h1">Executive Dashboard</div>' +
       '<div class="exec-sub">' + esc(APP.title) + ' · <span class="mono">' + ref + '</span> · ' + today + '</div></div>' +
       '<img class="exec-logo" src="KEC.png" alt="KEC" onerror="this.style.display=\'none\'"></header>' +
@@ -5350,15 +5385,102 @@ function renderExec () {
       exBarCard('Pipeline Value by Administration', admRows) +
       exBarCard('Top Countries', cntRows) +
     '</div>' +
-    '<footer class="exec-foot"><span>Business Development · Knowledge Economic City</span><span>Generated ' + today + '</span></footer>';
+    '';   /* the dashboard footer is added below, once the total page count is known */
+
+  /* Paginate the opportunities roster FIRST so every page footer knows the total count. */
+  var rows = execOpportunityRows(R), total = rows.length;
+  var chunks = execMeasureRoster(rows, today, total);
+  var N = 1 + chunks.length;
+  var html = execSheet(page1 + execFooter(1, N));
+  chunks.forEach(function (chunk, i) { html += execSheet(rosterPageHtml(chunk, today, total, i + 2, N), 'exec-page--rfixed'); });
+  $('#execFit').innerHTML = html;
+}
+function execSheet (inner, cls) { return '<div class="exec-sheet"><div class="exec-page ' + (cls || '') + '">' + inner + '</div></div>'; }
+/* KEC report-identity footer: gold rule, register (left), Page i of n (centre), KEC (right). */
+function execFooter (i, n) {
+  return '<footer class="exrf"><div class="exrf__rule"></div><div class="exrf__row">' +
+    '<div class="exrf__src"><span class="exrf__bar"></span><div><div class="exrf__lbl">Register</div>' +
+      '<div class="exrf__val">' + esc(APP.title) + '</div></div></div>' +
+    '<div class="exrf__mid"><span class="exrf__pill">Page ' + i + ' of ' + n + '</span></div>' +
+    '<div class="exrf__cls"><div class="exrf__val">Knowledge Economic City</div>' +
+      '<div class="exrf__ar">مدينة المعرفة الاقتصادية</div></div>' +
+    '</div></footer>';
+}
+var ROSTER_THEAD = '<tr><th class="c-co">Company</th><th class="c-lv">Lead Value</th><th class="c-st">Stage</th>' +
+  '<th class="c-op">Opportunity</th><th class="c-ra">Rationale</th><th class="c-na">Next Action</th></tr>';
+function rosterRowHtml (r) {
+  return '<tr>' +
+    '<td class="c-co">' + esc(r.company) + '</td>' +
+    '<td class="c-lv">' + esc(r.value) + '</td>' +
+    '<td class="c-st">' + execStagePill(r.stage) + '</td>' +
+    '<td class="c-op">' + esc(r.opportunity) + '</td>' +
+    '<td class="c-ra">' + esc(r.rationale) + '</td>' +
+    '<td class="c-na">' + esc(r.next_action) + '</td>' +
+  '</tr>';
+}
+function rosterHeaderHtml (total, today) {
+  return '<header class="exec-head"><div><div class="exec-h1">Registered Opportunities</div>' +
+    '<div class="exec-sub">' + esc(APP.title) + ' · ' + total + ' opportunit' + (total === 1 ? 'y' : 'ies') + ' · ' + today + '</div></div>' +
+    '<img class="exec-logo" src="KEC.png" alt="KEC" onerror="this.style.display=\'none\'"></header>';
+}
+function rosterTableHtml (chunk) {
+  var body = chunk.map(rosterRowHtml).join('') || '<tr><td colspan="6" style="padding:16px;color:var(--kec-muted)">No opportunities registered yet.</td></tr>';
+  return '<div class="exrf-body"><table class="exec-roster"><thead>' + ROSTER_THEAD + '</thead><tbody>' + body + '</tbody></table></div>';
+}
+function rosterPageHtml (chunk, today, total, i, n) {
+  return rosterHeaderHtml(total, today) + rosterTableHtml(chunk) + execFooter(i, n);
+}
+/* Measure real row heights (off-screen, natural size) and pack rows into A4 pages so no
+   row is ever split across a page break. Returns an array of row-arrays (one per page). */
+function execMeasureRoster (rows, today, total) {
+  if (!rows.length) return [[]];
+  var meas = document.createElement('div');
+  meas.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden';
+  meas.innerHTML = '<div class="exec-page exec-page--roster" style="transform:none">' +
+    rosterHeaderHtml(total, today) +
+    '<div class="exrf-body"><table class="exec-roster"><thead>' + ROSTER_THEAD + '</thead><tbody>' + rows.map(rosterRowHtml).join('') + '</tbody></table></div>' +
+    execFooter(1, 1) + '</div>';
+  document.body.appendChild(meas);
+  var page = meas.firstChild;
+  var head = page.querySelector('.exec-head'), thead = page.querySelector('.exec-roster thead'), foot = page.querySelector('.exrf');
+  var trs = page.querySelectorAll('.exec-roster tbody tr');
+  var Hh = head ? head.offsetHeight : 64, Hth = thead ? thead.offsetHeight : 28, Hf = foot ? foot.offsetHeight : 42;
+  var heights = Array.prototype.map.call(trs, function (t) { return t.offsetHeight; });
+  document.body.removeChild(meas);
+  var pageH = 210 * 96 / 25.4, pad = 9 * 96 / 25.4;
+  var budget = (pageH - 2 * pad - Hh - 12 - Hf - 10) - Hth - 6;   /* px available for tbody rows */
+  if (budget < 120) budget = 120;
+  var out = [], cur = [], curH = 0;
+  for (var k = 0; k < rows.length; k++) {
+    var h = heights[k] || 24;
+    if (cur.length && (curH + h) > budget) { out.push(cur); cur = []; curH = 0; }
+    cur.push(rows[k]); curH += h;
+  }
+  if (cur.length || !out.length) out.push(cur);
+  return out;
+}
+/* One row per registered opportunity (record), with only the requested columns. */
+function execOpportunityRows (R) {
+  var rows = R.map(function (r) {
+    return { company: r.company || '—', value: money(r.deal_value) || '—', stage: r.stage || '',
+      opportunity: r.opportunity || '', rationale: r.rationale || '', next_action: r.next_action || '',
+      _p: progressOf(r), _v: +r.deal_value || 0 };
+  });
+  /* Most suitable order: furthest-along stage first, then largest value, then company. */
+  rows.sort(function (a, b) { return (b._p - a._p) || (b._v - a._v) || String(a.company).localeCompare(String(b.company), 'en'); });
+  return rows;
+}
+function execStagePill (stage) {
+  if (!stage) return '<span class="exec-badge"><i style="background:#C7CFC5"></i>—</span>';
+  return '<span class="exec-badge"><i style="background:' + exStageColor(stage) + '"></i>' + esc(stage) + '</span>';
 }
 function scaleExec () {
-  var page = $('#execPage'); if (!page) return;
-  var PW = 297 * 96 / 25.4, PH = 210 * 96 / 25.4;
+  var fit = $('#execFit'); if (!fit) return;
+  var PW = 297 * 96 / 25.4, PH = 210 * 96 / 25.4;   /* every page is a fixed A4 landscape */
   var sc = Math.min((window.innerWidth - 36) / PW, (window.innerHeight - 92) / PH, 1);
   if (!(sc > 0)) sc = 1;
-  page.style.setProperty('--exec-scale', sc);
-  var fit = $('#execFit'); if (fit) { fit.style.width = (PW * sc) + 'px'; fit.style.height = (PH * sc) + 'px'; }
+  $$('.exec-page', fit).forEach(function (p) { p.style.setProperty('--exec-scale', sc); });
+  $$('.exec-sheet', fit).forEach(function (s2) { s2.style.width = (PW * sc) + 'px'; s2.style.height = (PH * sc) + 'px'; });
 }
 function execPageRule () { return document.getElementById('execPageRule'); }
 function openExec () {
@@ -5367,6 +5489,12 @@ function openExec () {
   document.body.classList.add('exec-open');
   if (!execPageRule()) { var st = document.createElement('style'); st.id = 'execPageRule'; st.textContent = '@page{size:A4 landscape;margin:0}'; document.head.appendChild(st); }
   scaleExec();
+  /* Row heights (and thus pagination) depend on the web-fonts; once they finish loading,
+     re-paginate so no page is over- or under-filled. */
+  requestAnimationFrame(scaleExec);
+  if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+    document.fonts.ready.then(function () { if ($('#execModal').classList.contains('open')) { renderExec(); scaleExec(); } });
+  }
 }
 function closeExec () {
   $('#execModal').classList.remove('open');
