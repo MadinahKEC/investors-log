@@ -116,8 +116,15 @@ table.kec td{padding:5px 8px;border-bottom:1px solid #EEF2EA;font-feature-settin
 .kec-foot__bar{width:3px;height:22px;background:var(--kec-green);border-radius:2px;flex:none}
 .kec-foot__lbl{font-size:var(--fs-small);color:var(--kec-muted);white-space:nowrap}
 .kec-foot__val{font-size:var(--fs-body);font-weight:500;color:var(--kec-green-deep);white-space:nowrap;display:flex;align-items:center;gap:4px;}
-.kec-foot__mid{flex:none;display:flex;align-items:center;padding:0 12px;border-inline:1px solid #EEF2EA;align-self:stretch}
+.kec-foot__mid{flex:none;display:flex;align-items:center;gap:7px;padding:0 12px;border-inline:1px solid #EEF2EA;align-self:stretch}
 .kec-pagepill{background:var(--kec-surface);color:var(--kec-green);font-weight:500;font-size:var(--fs-small);padding:4px 11px;border-radius:20px;white-space:nowrap}
+/* page-navigation arrows around the footer "Page X of Y" pill */
+.pp-nav{width:21px;height:21px;border-radius:50%;border:none;background:var(--kec-surface);color:var(--kec-green-deep);
+  font-size:12px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;padding:0;
+  transition:background .14s ease,color .14s ease}
+.pp-nav:hover:not(:disabled){background:var(--kec-green);color:#fff}
+.pp-nav:disabled{opacity:.28;cursor:default;background:transparent}
+@media print{.pp-nav{display:none !important}}
 .kec-foot__cls{flex:1;min-width:0;display:flex;align-items:center;gap:11px;justify-content:flex-end}
 
 /* Reference block mirrors the Source block: label and value share one right edge,
@@ -260,6 +267,18 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .chip{font-size:11.5px;padding:5px 12px;border-radius:20px;cursor:pointer;border:1px solid var(--kec-hairline);background:var(--kec-paper);color:var(--kec-muted);transition:background .12s ease,color .12s ease,border-color .12s ease}
 .chip:hover{border-color:var(--kec-badge-green-bd);color:var(--kec-green-deep)}
 .chip.on{background:var(--kec-surface-2);border-color:var(--kec-badge-green-bd);color:var(--kec-green-deep);font-weight:600}
+.chip.hide{display:none}
+.chips-wrap{display:flex;flex-direction:column;gap:6px}
+.chips-tools{display:flex;align-items:center;gap:8px}
+.chip-q{flex:1;min-width:0;height:29px;padding:0 10px;border:1px solid var(--kec-hairline);border-radius:6px;font-family:var(--kec-font);font-size:var(--fs-small);color:var(--kec-ink);background:#fff;outline:none}
+.chip-q:focus{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
+.chip-count{flex:none;font-size:10px;font-weight:600;color:var(--kec-green);background:var(--kec-surface);padding:3px 9px;border-radius:20px;white-space:nowrap}
+.chip-count:empty{display:none}
+.pw-l{display:block;font-size:11px;font-weight:600;color:var(--kec-green-deep);margin:0 0 5px}
+.pw-i{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--kec-hairline);border-radius:6px;font-family:var(--kec-font);font-size:var(--fs-body);color:var(--kec-ink);outline:none;margin-bottom:13px}
+.pw-i:focus{border-color:var(--kec-green);box-shadow:0 0 0 2px var(--kec-badge-green-bg)}
+.pw-i.bad{border-color:var(--kec-neg);box-shadow:0 0 0 2px #F7E9E5}
+.pw-err{min-height:15px;font-size:11px;color:var(--kec-neg);font-weight:500;margin:-4px 0 11px}
 .dr__f{display:flex;align-items:center;gap:9px;padding:13px 22px;background:#fff;border-top:1px solid var(--kec-hairline)}
 .dr__f .btn{height:32px;padding:0 16px;font-size:12.5px;border-radius:8px}
 .dr__meter{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--kec-muted);min-width:210px}
@@ -327,6 +346,10 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 /* Sign-in is a full-screen split: the identity on the left, the form on the right.
    It sits outside the scaled sheet, so everything here is at true size. */
 .auth-overlay{position:fixed;inset:0;z-index:9999;display:none;background:#fff}
+/* Dialog overlays (not the full-screen sign-in): centre the box on a soft dimmed
+   backdrop so it reads as an elegant modal over the page, not a blank white screen. */
+#customPrompt,#deletePrompt,#pwModal{align-items:center;justify-content:center;padding:20px;
+  background:rgba(20,61,30,.30);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .auth-brand{flex:1 1 50%;min-width:0;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--kec-green-deep) 0%,var(--kec-green) 55%,#4E7F3A 100%);
   position:relative;overflow:hidden}
@@ -336,9 +359,39 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .auth-mark{background:#fff;border-radius:22px;padding:26px 30px;box-shadow:0 18px 50px rgba(0,0,0,.18);margin-bottom:34px}
 .auth-mark img{width:172px;display:block}
 .auth-mark--none{display:none}
-.auth-brand__t{font-size:30px;font-weight:700;color:#fff;letter-spacing:-.4px;line-height:1.2;max-width:14ch}
-.auth-brand__s{font-size:14px;color:rgba(255,255,255,.82);margin-top:10px;font-weight:500}
-.auth-brand__rule{display:block;width:112px;height:2px;background:var(--kec-gold);border-radius:2px;margin-top:26px}
+.auth-brand__t{font-size:30px;font-weight:700;color:#fff;letter-spacing:-.4px;line-height:1.2;white-space:nowrap}
+.auth-brand__dept{font-size:15px;color:var(--kec-gold);font-weight:700;margin-top:16px;letter-spacing:.2px}
+.auth-brand__s{font-size:14px;color:rgba(255,255,255,.82);margin-top:6px;font-weight:500}
+.auth-brand__rule{display:block;width:112px;height:2px;background:var(--kec-gold);border-radius:2px;margin-top:24px}
+/* Floating "System Issue Contact" helper (bottom-right of the sign-in screen). */
+.sic{position:absolute;right:28px;bottom:28px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:14px}
+.sic__btn{position:relative;width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--kec-green) 0%,var(--kec-green-deep) 100%);color:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(20,61,30,.34);
+  transition:transform .16s ease,box-shadow .16s ease}
+.sic__btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(20,61,30,.42)}
+.sic__btn svg{width:26px;height:26px}
+.sic__x{display:none}
+.sic--open .sic__ico{display:none}
+.sic--open .sic__x{display:block}
+.sic__ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--kec-gold);
+  animation:sicPulse 1.8s ease-out infinite;pointer-events:none}
+.sic--open .sic__ring{animation:none;opacity:0}
+@keyframes sicPulse{0%{transform:scale(.82);opacity:.85}100%{transform:scale(1.75);opacity:0}}
+.sic__card{width:290px;background:#fff;border:1px solid var(--kec-hairline);border-radius:14px;
+  box-shadow:0 20px 55px rgba(20,61,30,.20);padding:16px 18px;
+  opacity:0;transform:translateY(10px) scale(.96);transform-origin:bottom right;pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease}
+.sic--open .sic__card{opacity:1;transform:none;pointer-events:auto}
+.sic__h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.9px;
+  text-transform:uppercase;color:#8A7A1C}
+.sic__dash{width:16px;height:2px;background:var(--kec-gold);border-radius:2px;flex:none}
+.sic__sub{font-size:12px;color:var(--kec-muted);margin:9px 0 12px;line-height:1.5}
+.sic__mail{display:flex;align-items:center;gap:9px;text-decoration:none;background:var(--kec-surface);
+  border:1px solid var(--kec-hairline);border-radius:9px;padding:9px 11px;margin-top:8px;
+  font-size:12.5px;font-weight:600;color:var(--kec-green-deep);transition:background .14s ease,border-color .14s ease}
+.sic__mail:hover{background:var(--kec-badge-green-bg);border-color:var(--kec-badge-green-bd)}
+.sic__mail svg{width:16px;height:16px;color:var(--kec-green);flex:none}
 .auth-panel{flex:1 1 50%;min-width:0;display:flex;align-items:center;justify-content:center;padding:40px;background:var(--kec-paper)}
 .auth-form{width:min(400px,100%)}
 .auth-form__t{font-size:24px;font-weight:700;color:var(--kec-title);letter-spacing:-.4px;margin-bottom:7px}
@@ -451,6 +504,9 @@ body.role-recorder #tabE, body.role-recorder #paneE { display: none !important; 
 .logout-btn{color:var(--kec-neg);cursor:pointer;text-decoration:none;padding-left:8px;margin-left:1px;
   border-left:1px solid var(--kec-hairline);border-bottom:1px solid transparent;flex:none}
 .logout-btn:hover{border-bottom-color:var(--kec-neg)}
+.pw-btn{color:var(--kec-green);cursor:pointer;text-decoration:none;padding-left:8px;
+  border-left:1px solid var(--kec-hairline);border-bottom:1px solid transparent;flex:none}
+.pw-btn:hover{border-bottom-color:var(--kec-green)}
 
 /* ===================== DATE PICKER =====================
    The browser's own calendar is operating-system chrome and cannot be styled, so
@@ -654,12 +710,15 @@ body.viewer-mode .acts{display:none}
 .exec-print{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;
   background:var(--kec-green);color:#fff;font-family:var(--kec-font);font-weight:600;
   font-size:12.5px;padding:9px 15px;border-radius:9px}
-.exec-fit{flex:none;display:flex;flex-direction:column;align-items:center;gap:16px}
-.exec-sheet{flex:none;overflow:hidden;box-shadow:0 10px 44px rgba(0,0,0,.34);background:#fff}
-.exec-page{width:297mm;height:210mm;background:#fff;transform-origin:top left;
-  transform:scale(var(--exec-scale,1));display:flex;flex-direction:column;
+/* Pages are ALWAYS real A4-landscape mm (like the KEC report skill) so print is exact.
+   The on-screen shrink-to-fit uses `zoom`, scoped to @media SCREEN only — so in print the
+   `.exec-fit` carries no zoom/transform at all and Chrome fragments the pages correctly. */
+@media screen{ .exec-fit{ zoom:var(--exec-zoom,1) } }
+.exec-page{width:297mm;height:210mm;background:#fff;margin:0 auto 16px;
+  box-shadow:0 10px 44px rgba(0,0,0,.34);display:flex;flex-direction:column;overflow:hidden;
   padding:9mm 11mm 6mm;color:var(--kec-ink);font-family:var(--kec-font);
-  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}   /* 209 on a 210mm sheet: 1mm safety so a page never rounds over and splits in Save-as-PDF */
+.exec-page:last-child{margin-bottom:0}
 .exec-head{display:flex;justify-content:space-between;align-items:flex-end;flex:none;
   border-bottom:2px solid var(--kec-hairline);padding-bottom:8px;position:relative}
 .exec-head::after{content:'';position:absolute;bottom:-2px;left:0;width:130px;height:3px;background:var(--kec-gold)}
@@ -704,20 +763,17 @@ body.viewer-mode .acts{display:none}
 /* second page(s): registered-opportunities table — fixed A4 pages, rows never split */
 .exec-page--roster{height:auto;display:block;padding:9mm 11mm 9mm}          /* off-screen measuring only */
 .exec-page--rfixed{height:210mm;display:flex;flex-direction:column;padding:9mm 11mm 9mm}
-.exrf-body{flex:1;min-height:0;margin-top:12px}
-.exec-roster{width:100%;border-collapse:collapse;table-layout:fixed}
+.exrf-body{flex:1;min-height:0;overflow:hidden;margin-top:12px}
+.exec-roster{width:274mm;border-collapse:collapse;table-layout:fixed}   /* absolute width + colgroup mm = print-proof columns */
 .exec-roster th{background:var(--kec-surface-2);color:var(--kec-green-deep);font-weight:700;font-size:9.5px;
-  text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 9px;border-bottom:2px solid var(--kec-green)}
+  text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 9px;border-bottom:2px solid var(--kec-green);overflow:hidden}
 .exec-roster td{padding:7px 9px;border-bottom:1px solid var(--kec-hairline);color:var(--kec-ink);
-  vertical-align:top;font-size:10.5px;line-height:1.45;word-wrap:break-word;overflow-wrap:break-word}
+  vertical-align:top;font-size:10.5px;line-height:1.45;word-break:break-word;overflow-wrap:anywhere;overflow:hidden}
 .exec-roster tr:nth-child(even) td{background:var(--kec-paper)}
-.exec-roster .c-co{width:15%;font-weight:600}
-.exec-roster .c-lv{width:12%;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--kec-green-deep);font-weight:600}
-.exec-roster .c-st{width:13%;white-space:nowrap}
-.exec-roster .c-op{width:20%}
-.exec-roster .c-ra{width:21%}
-.exec-roster .c-na{width:19%}
-.exec-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;white-space:nowrap}
+/* every column wraps and clips inside its own box — content can NEVER spill into or overlap the next column */
+.exec-roster .c-co{font-weight:600}
+.exec-roster .c-lv{font-variant-numeric:tabular-nums;color:var(--kec-green-deep);font-weight:600}
+.exec-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;white-space:normal}
 .exec-badge i{width:8px;height:8px;border-radius:50%;flex:none}
 /* KEC report-identity footer (applied to every dashboard/roster page) */
 .exrf{flex:none;margin-top:10px}
@@ -733,14 +789,13 @@ body.viewer-mode .acts{display:none}
 .exrf__ar{font-size:9px;color:var(--kec-muted);white-space:nowrap}
 @media (max-width:768px){.exec-overlay{padding:0}.exec-acts{top:8px;right:8px}}
 @media print{
-  body.exec-open .page,body.exec-open .toast,body.exec-open .hwrap{display:none !important}
-  body.exec-open .exec-overlay{position:static;background:#fff;padding:0;overflow:visible;display:block}
-  body.exec-open .exec-acts{display:none !important}
-  body.exec-open .exec-fit{width:auto !important;height:auto !important;display:block !important;gap:0 !important}
-  body.exec-open .exec-sheet{width:auto !important;height:auto !important;overflow:visible !important;box-shadow:none !important;display:block !important}
-  body.exec-open .exec-page{transform:none !important;box-shadow:none;margin:0 auto;break-after:page;page-break-after:always}
-  body.exec-open .exec-sheet:last-child .exec-page{break-after:auto;page-break-after:auto}
-  body.exec-open .exec-roster tr{break-inside:avoid;page-break-inside:avoid}
+  /* On print, #execFit is hoisted to be a DIRECT child of <body> (see beforeprint) so the
+     pages sit in the body's own page flow — exactly like the KEC report skill. Everything
+     else is hidden, and each page forces its own sheet. */
+  body.exec-printing > *{display:none !important}
+  body.exec-printing > .exec-page{display:flex !important;box-shadow:none !important;margin:0 auto;break-after:page;page-break-after:always}
+  body.exec-printing > .exec-page:last-child{break-after:auto;page-break-after:auto}
+  body.exec-printing .exec-roster tr{break-inside:avoid;page-break-inside:avoid}
 }
 @media print{.kpop{display:none !important}}
 @media print{.dr,.toast,.hwrap,.auth-overlay,.sel__p{display:none !important}}
@@ -885,6 +940,7 @@ body.viewer-mode .acts{display:none}
     <div class="auth-brand__in">
       <div class="auth-mark"><img src="KEC.png" alt="Knowledge Economic City" onerror="this.parentNode.classList.add('auth-mark--none')"></div>
       <h1 class="auth-brand__t" id="authTitle"></h1>
+      <p class="auth-brand__dept">Business Development Department</p>
       <p class="auth-brand__s">Knowledge Economic City</p>
       <span class="auth-brand__rule"></span>
     </div>
@@ -906,9 +962,23 @@ body.viewer-mode .acts{display:none}
       </div>
 
       <button class="btn btn--go auth-go" id="authBtn" type="submit">Sign In securely</button>
-      <p class="auth-note">Every account is issued by an administrator. Viewers sign in with their own account and see the register read-only.</p>
       <p class="auth-pow">Powered By : Sa^^3R</p>
     </form>
+  </div>
+
+  <!-- Floating system-issue contact -->
+  <div class="sic" id="sicWrap">
+    <div class="sic__card" id="sicCard">
+      <div class="sic__h"><span class="sic__dash"></span>System Issue Contact</div>
+      <p class="sic__sub">To report any system issue, please contact:</p>
+      <a class="sic__mail" href="mailto:zalshowaier@madinahkec.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>zalshowaier@madinahkec.com</a>
+      <a class="sic__mail" href="mailto:shamdan@madinahkec.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>shamdan@madinahkec.com</a>
+    </div>
+    <button class="sic__btn" id="sicBtn" type="button" aria-label="System issue contact">
+      <span class="sic__ring"></span>
+      <svg class="sic__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><path d="M6 12H5a1 1 0 00-1 1v3a1 1 0 001 1h1a1 1 0 001-1v-4a1 1 0 00-1-1z"/><path d="M18 12h1a1 1 0 011 1v3a1 1 0 01-1 1h-1a1 1 0 01-1-1v-4a1 1 0 011-1z"/><path d="M18 17a4 4 0 01-4 4h-2"/></svg>
+      <svg class="sic__x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
   </div>
 </div>
 
@@ -938,6 +1008,28 @@ body.viewer-mode .acts{display:none}
   </div>
 </div>
 
+<!-- CHANGE PASSWORD -->
+<div class="auth-overlay" id="pwModal" style="display: none;">
+  <div class="auth-box" style="width: 400px; padding: 24px 30px; text-align: left;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+      <svg style="width:26px; height:26px; color:var(--kec-green); flex:none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <h2 style="color:var(--kec-green-deep); font-size:16px; font-weight:700; margin:0;">Change Password</h2>
+    </div>
+    <p style="color:var(--kec-muted); font-size:var(--fs-small); margin:0 0 18px;">Confirm your current password, then choose a new one.</p>
+    <label class="pw-l" for="pwCur">Current password</label>
+    <input type="password" id="pwCur" class="pw-i" autocomplete="current-password" placeholder="Your current password">
+    <label class="pw-l" for="pwNew">New password</label>
+    <input type="password" id="pwNew" class="pw-i" autocomplete="new-password" placeholder="At least 6 characters">
+    <label class="pw-l" for="pwNew2">Confirm new password</label>
+    <input type="password" id="pwNew2" class="pw-i" autocomplete="new-password" placeholder="Re-type the new password">
+    <div id="pwErr" class="pw-err"></div>
+    <div style="display:flex; gap:10px; margin-top:4px;">
+      <button class="btn" id="pwCancel" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Cancel</button>
+      <button class="btn btn--go" id="pwSave" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Change password</button>
+    </div>
+  </div>
+</div>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></symbol>
 <symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5L5 19M7.5 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM16.5 14a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"/></symbol>
@@ -956,6 +1048,7 @@ body.viewer-mode .acts{display:none}
         <img class="kec-logo" src="KEC.png" alt="Knowledge Economic City">
         <div class="user-badge">
             <span id="displayUser"></span>
+            <span class="pw-btn" id="pwBtn" style="display:none;" title="Change your own password">Change password</span>
             <span class="logout-btn" id="logoutBtn" style="display:none;">Logout</span>
         </div>
         <div class="kec-badges">
@@ -1584,10 +1677,11 @@ var SCHEMA = [
   },
   {
     "key": "plot",
-    "label": "Plot of Interest",
-    "short": "Plot",
+    "label": "Plots of Interest",
+    "short": "Plots",
     "group": "D",
-    "type": "select",
+    "type": "multi",
+    "search": true,
     "options": [
       "C01-1", "C01-2", "C02-1", "C02-2", "C02-3", "C02-4", "C02-OS1", "C02-OS2",
       "C03-1", "C03-2", "C03-OS1", "C04-1", "C04-2", "C05-1", "C05-2", "C05-3",
@@ -1615,7 +1709,7 @@ var SCHEMA = [
       "N10-1", "N10-2", "N11", "N12-1", "N12-2", "N12-3", "N12-4", "N12-OS1",
       "N13-1", "N13-2", "N13-3", "N13-4", "N13-OS1", "N25-1", "N25-2", "N25-3"
     ],
-    "help": "The land plot the investor is interested in",
+    "help": "The land plot(s) the investor is interested in — one investor may want several",
     "column": true
   },
   {
@@ -2020,7 +2114,16 @@ function initAuth() {
     $('#authSub').textContent = 'Sign in to access the ' + APP.title;
 
     $('#authForm').onsubmit = function (e) { e.preventDefault(); handleLogin(); };
+    var sicBtn = $('#sicBtn');
+    if (sicBtn) {
+        sicBtn.onclick = function (e) { e.stopPropagation(); $('#sicWrap').classList.toggle('sic--open'); };
+        document.addEventListener('click', function (e) {
+            var w = $('#sicWrap');
+            if (w && w.classList.contains('sic--open') && !e.target.closest('#sicWrap')) w.classList.remove('sic--open');
+        });
+    }
     $('#logoutBtn').onclick = function () { doLogout(); };
+    $('#pwBtn').onclick = function () { changeOwnPassword(); };
 
     // Custom Prompts
     $('#cpCancel').onclick = function() { closePrompt(false); };
@@ -2031,6 +2134,12 @@ function initAuth() {
     };
     $('#dpCancel').onclick = function() { closeDelete(false); };
     $('#dpConfirm').onclick = function() { closeDelete(true); };
+    $('#pwCancel').onclick = function() { closePwModal(); };
+    $('#pwSave').onclick = function() { submitPasswordChange(); };
+    $('#pwModal').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); submitPasswordChange(); }
+        else if (e.key === 'Escape') { e.preventDefault(); closePwModal(); }
+    });
 
     /* Bring Firebase up. Wait for the INITIAL session state to settle (authStateReady)
        so the sign-in form never flashes before a restored session is known, THEN attach
@@ -2222,30 +2331,47 @@ function createFirebaseUser (email, password) {
 function changeOwnPassword () {
     var u = FB && FB.auth && FB.auth.currentUser;
     if (!u) { toast('You are not signed in.'); return; }
-    askPrompt('Change your password', 'Enter a new password (at least 6 characters).', 'New password…', function (np) {
-        np = (np || '').trim();
-        if (np.length < 6) { toast('Use at least six characters.'); return; }
-        FB.authMod.updatePassword(u, np).then(function () {
-            stFlash('Your password was changed.');
-        }).catch(function (ex) {
-            if (ex && ex.code === 'auth/requires-recent-login') {
-                askPrompt('Confirm it’s you', 'For security, enter your CURRENT password to finish.', 'Current password…', function (cp) {
-                    cp = (cp || '').trim(); if (!cp) return;
-                    var cred = FB.authMod.EmailAuthProvider.credential(u.email, cp);
-                    FB.authMod.reauthenticateWithCredential(u, cred)
-                        .then(function () { return FB.authMod.updatePassword(u, np); })
-                        .then(function () { stFlash('Your password was changed.'); })
-                        .catch(function (e2) {
-                            var c = (e2 && e2.code) || '';
-                            toast((c === 'auth/wrong-password' || c === 'auth/invalid-credential')
-                                ? 'Current password is incorrect.' : 'Could not change password: ' + (c || 'error') + '.');
-                        });
-                }, '', 'password');
-            } else {
-                toast('Could not change password: ' + ((ex && ex.code) || 'error') + '.');
-            }
+    $('#pwCur').value = ''; $('#pwNew').value = ''; $('#pwNew2').value = '';
+    $('#pwErr').textContent = '';
+    $$('#pwModal .pw-i').forEach(function (i) { i.classList.remove('bad'); });
+    var b = $('#pwSave'); b.disabled = false; b.textContent = 'Change password';
+    $('#pwModal').style.display = 'flex';
+    setTimeout(function () { $('#pwCur').focus(); }, 90);
+}
+function closePwModal () { $('#pwModal').style.display = 'none'; }
+function pwFail (msg, el) {
+    $('#pwErr').textContent = msg;
+    $$('#pwModal .pw-i').forEach(function (i) { i.classList.remove('bad'); });
+    if (el) { el.classList.add('bad'); el.focus(); }
+    var b = $('#pwSave'); b.disabled = false; b.textContent = 'Change password';
+}
+/* Self-service password change. Firebase requires a recent login, so we always
+   reauthenticate with the CURRENT password first — which also serves as the
+   verification the user asked for — then set the new one. */
+function submitPasswordChange () {
+    var u = FB && FB.auth && FB.auth.currentUser;
+    if (!u) { pwFail('You are not signed in.'); return; }
+    var cur = $('#pwCur').value, np = $('#pwNew').value, np2 = $('#pwNew2').value;
+    if (!cur)            return pwFail('Enter your current password.', $('#pwCur'));
+    if (np.length < 6)   return pwFail('The new password must be at least 6 characters.', $('#pwNew'));
+    if (np !== np2)      return pwFail('The two new passwords do not match.', $('#pwNew2'));
+    if (np === cur)      return pwFail('The new password must be different from the current one.', $('#pwNew'));
+    var b = $('#pwSave'); b.disabled = true; b.textContent = 'Changing…';
+    var cred = FB.authMod.EmailAuthProvider.credential(u.email, cur);
+    FB.authMod.reauthenticateWithCredential(u, cred)
+        .then(function () { return FB.authMod.updatePassword(u, np); })
+        .then(function () { closePwModal(); stFlash('Your password was changed.'); })
+        .catch(function (ex) {
+            var c = (ex && ex.code) || '';
+            if (c === 'auth/wrong-password' || c === 'auth/invalid-credential')
+                pwFail('Your current password is incorrect.', $('#pwCur'));
+            else if (c === 'auth/weak-password')
+                pwFail('That new password is too weak — choose a stronger one.', $('#pwNew'));
+            else if (c === 'auth/too-many-requests')
+                pwFail('Too many attempts. Please wait a moment, then try again.');
+            else
+                pwFail('Could not change password (' + (c || 'error') + ').');
         });
-    }, '', 'password');
 }
 
 function applyRoleUI() {
@@ -2257,6 +2383,9 @@ function applyRoleUI() {
         disp.title = (currentUser.email || '') + ' \u2014 ' + roleLabel(currentUser.role);
         logout.style.display = 'inline';
     }
+    /* Everyone with an account \u2014 whatever their role \u2014 can change their OWN password. */
+    var pwBtn = document.getElementById('pwBtn');
+    if (pwBtn) pwBtn.style.display = 'inline';
     document.body.classList.toggle('viewer-mode', currentUser.role === 'viewer');
     document.body.classList.toggle('no-delete',   currentUser.role !== 'admin');
     document.body.classList.toggle('role-recorder', currentUser.role === 'recorder');
@@ -2602,7 +2731,7 @@ function initLocal () {
   var s = Local.read();
   if (!s || !s.records) { DATA = []; OWNERS = []; DYNAMIC_OPTS = {}; TRASH = []; }
   else {
-      DATA = s.records;
+      DATA = s.records; DATA.forEach(coerceMulti);
       OWNERS = s.owners || [];
       DYNAMIC_OPTS = s.options || {};
       TRASH = Array.isArray(s.trash) ? s.trash : [];
@@ -2677,7 +2806,7 @@ function initStore () {
          Save button silently does nothing. */
       var drafts = DATA.filter(function (r) { return r._draft; });
       DATA = snap.docs.filter(function(d) { return d.id.charAt(0) !== '_'; })
-                      .map(function (d) { var o = d.data(); o._id = d.id; return o; })
+                      .map(function (d) { var o = d.data(); o._id = d.id; return coerceMulti(o); })
                       .sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
       drafts.forEach(function (d) {
         if (!DATA.some(function (r) { return r._id === d._id; })) DATA.push(d);
@@ -2685,6 +2814,19 @@ function initStore () {
       renderAll();
     }, function (e) { console.warn('[KEC] records listener error', e && e.code); remote = null; initLocal(); });
   }
+}
+/* A field that became multi-select (e.g. Plots) may hold a single string in older
+   records. Normalise those to arrays on load so display, filtering and the editor all
+   agree — without this a legacy plot wouldn't match a plot filter until re-saved. */
+function coerceMulti (r) {
+  if (!r) return r;
+  SCHEMA.forEach(function (f) {
+    if (f.type !== 'multi') return;
+    var v = r[f.key];
+    if (v == null || v === '') r[f.key] = [];
+    else if (!Array.isArray(v)) r[f.key] = [v];
+  });
+  return r;
 }
 function bare (r) { var o = Object.assign({}, r); delete o._id; delete o._draft; return o; }
 function save (rec) {
@@ -3411,6 +3553,9 @@ function renderList () {
   $('#pPrev').disabled = page === 0;
   $('#pNext').disabled = start + size >= list.length;
   var pill = $('#pagePill'); if (pill) pill.textContent = 'Page ' + (page + 1) + ' of ' + n;
+  var ppv = $('#ppPrev'), ppn = $('#ppNext');
+  if (ppv) { ppv.style.display = n > 1 ? '' : 'none'; ppv.disabled = page === 0; }
+  if (ppn) { ppn.style.display = n > 1 ? '' : 'none'; ppn.disabled = page >= n - 1; }
 }
 function renderAll () { renderKpis(); syncOwnerSelects(); renderList(); }
 function resetFilters () {
@@ -3654,7 +3799,10 @@ function moveTo (fromId, toId) {
 function blank () {
   var r = { _id: uid(), record_id: nextId(), order: DATA.length, _draft: true };
   if (APP.stampField) r[APP.stampField] = TODAY;
-  SCHEMA.forEach(function (f) { if (r[f.key] == null) r[f.key] = (f.type === 'multi') ? [] : ''; });
+  SCHEMA.forEach(function (f) {
+    if (f.type === 'multi') { var mv = r[f.key]; r[f.key] = Array.isArray(mv) ? mv : (mv == null || mv === '' ? [] : [mv]); }
+    else if (r[f.key] == null) r[f.key] = '';
+  });
   /* Defaults must be real option values, or anything derived from them reads zero
      on every new record. */
   Object.keys(DEFAULTS).forEach(function (k) { if (F[k]) r[k] = DEFAULTS[k]; });
@@ -3706,8 +3854,15 @@ function fieldHtml (f, r) {
   else if (f.type === 'owner') inp = (f.key === 'brought_by' && !canDelete())
       ? ro(id, v || '—')                                   /* who registered it is locked (admin-only) */
       : '<span class="sel sel--field" id="' + id + '"></span>';
-  else if (f.type === 'multi') inp = '<div class="chips" id="' + id + '">' + getOptionsForField(f.key).map(function (o) {
-      return '<span class="chip' + ((v || []).indexOf(o) >= 0 ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</span>'; }).join('') + '<span class="chip chip-add" data-k="'+f.key+'" style="border:1px dashed var(--kec-hairline);">+ Add new</span></div>';
+  else if (f.type === 'multi') {
+      var selv = Array.isArray(v) ? v : (v ? [v] : []);   /* tolerate legacy single-value records */
+      var box = '<div class="chips" id="' + id + '">' + getOptionsForField(f.key).map(function (o) {
+          return '<span class="chip' + (selv.indexOf(o) >= 0 ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</span>'; }).join('')
+        + '<span class="chip chip-add" data-k="' + f.key + '" style="border:1px dashed var(--kec-hairline);">+ Add new</span></div>';
+      inp = f.search
+          ? '<div class="chips-wrap"><div class="chips-tools"><input class="chip-q" type="text" placeholder="Search ' + esc((f.short || f.label || '').toLowerCase()) + '…" autocomplete="off"><span class="chip-count"></span></div>' + box + '</div>'
+          : box;
+  }
   else inp = '<span class="sel sel--field" id="' + id + '"></span>';
   function ro (i, t) { return '<input class="f__i" id="' + i + '" value="' + esc(t) + '" readonly>'; }
   return '<div class="f' + (wide ? ' f--wide' : '') + '">' + lab + inp + hint + '</div>';
@@ -3767,7 +3922,14 @@ function openDrawer (id, atTab) {
     });
   });
   syncOwnerSelects();   /* refresh owner-list options only; each select keeps its own value */
+  function updChipCount (box) {
+    var w = box.closest('.chips-wrap'); if (!w) return;
+    var c = w.querySelector('.chip-count'); if (!c) return;
+    var n = $$('.chip.on', box).length;
+    c.textContent = n ? (n + ' selected') : '';
+  }
   $$('#drBody .chips').forEach(function (box) {
+    updChipCount(box);
     box.addEventListener('click', function (e) {
       if(currentUser && currentUser.role === 'viewer') return;
       var addBtn = e.target.closest('.chip-add');
@@ -3779,12 +3941,23 @@ function openDrawer (id, atTab) {
                   var newChip = document.createElement('span');
                   newChip.className = 'chip on'; newChip.dataset.v = newVal; newChip.textContent = newVal;
                   box.insertBefore(newChip, addBtn);
-                  meter();
+                  meter(); updChipCount(box);
               }
           });
           return;
       }
-      var c = e.target.closest('.chip'); if (c) { c.classList.toggle('on'); meter(); }
+      var c = e.target.closest('.chip'); if (c) { c.classList.toggle('on'); meter(); updChipCount(box); }
+    });
+  });
+  /* Live filter for long multi-select lists (e.g. plots): hides chips that don't match. */
+  $$('#drBody .chip-q').forEach(function (q) {
+    var box = q.closest('.chips-wrap').querySelector('.chips');
+    q.addEventListener('input', function () {
+      var term = q.value.trim().toLowerCase();
+      $$('.chip', box).forEach(function (c) {
+        if (c.classList.contains('chip-add')) return;
+        c.classList.toggle('hide', term && c.textContent.toLowerCase().indexOf(term) < 0);
+      });
     });
   });
   $$('#drBody .f__i--money').forEach(attachMoneyInput);
@@ -4051,6 +4224,9 @@ function bootApp () {
   $('#add').onclick   = function () { openDrawer(null); };
   $('#pPrev').onclick = function () { if (page > 0) { page--; renderList(); } };
   $('#pNext').onclick = function () { page++; renderList(); };
+  /* The ‹ › beside "Page X of Y" in the document footer navigate the register pages. */
+  $('#ppPrev').onclick = function () { if (page > 0) { page--; renderList(); } };
+  $('#ppNext').onclick = function () { if (page < pageCount(filtered().length) - 1) { page++; renderList(); } };
   $('#lifecycle').onclick = openLifecycle;
   $('#lcClose').onclick   = closeLifecycle;
   $('#lifecycleModal').addEventListener('click', function (e) { if (e.target.id === 'lifecycleModal') closeLifecycle(); });
@@ -5163,7 +5339,7 @@ function exportJson () {
 /* Shared restore core used by both the file import and the Drive day-picker. */
 function applyBackup (d) {
   var seen = {};
-  var recs = d.records.map(function (r) { if (!r._id) r._id = uid(); seen[r._id] = 1; return r; });
+  var recs = d.records.map(function (r) { if (!r._id) r._id = uid(); seen[r._id] = 1; return coerceMulti(r); });
   /* Faithful restore: remove remote records that are NOT in this backup — otherwise
      they linger in Firestore and reappear through the live listener. */
   if (remote) DATA.forEach(function (r) { if (!seen[r._id]) drop(r); });
@@ -5391,11 +5567,11 @@ function renderExec () {
   var rows = execOpportunityRows(R), total = rows.length;
   var chunks = execMeasureRoster(rows, today, total);
   var N = 1 + chunks.length;
-  var html = execSheet(page1 + execFooter(1, N));
-  chunks.forEach(function (chunk, i) { html += execSheet(rosterPageHtml(chunk, today, total, i + 2, N), 'exec-page--rfixed'); });
+  var html = execPage(page1 + execFooter(1, N));
+  chunks.forEach(function (chunk, i) { html += execPage(rosterPageHtml(chunk, today, total, i + 2, N), 'exec-page--rfixed'); });
   $('#execFit').innerHTML = html;
 }
-function execSheet (inner, cls) { return '<div class="exec-sheet"><div class="exec-page ' + (cls || '') + '">' + inner + '</div></div>'; }
+function execPage (inner, cls) { return '<div class="exec-page ' + (cls || '') + '">' + inner + '</div>'; }
 /* KEC report-identity footer: gold rule, register (left), Page i of n (centre), KEC (right). */
 function execFooter (i, n) {
   return '<footer class="exrf"><div class="exrf__rule"></div><div class="exrf__row">' +
@@ -5408,6 +5584,12 @@ function execFooter (i, n) {
 }
 var ROSTER_THEAD = '<tr><th class="c-co">Company</th><th class="c-lv">Lead Value</th><th class="c-st">Stage</th>' +
   '<th class="c-op">Opportunity</th><th class="c-ra">Rationale</th><th class="c-na">Next Action</th></tr>';
+/* Absolute mm column widths (sum ≈ the 275mm content box). Percentages under
+   table-layout:fixed can miscompute inside Chrome's print/PDF path (columns collapse and
+   overlap); fixed mm via <colgroup> cannot, so the table prints identically to the screen. */
+var ROSTER_COLGROUP = '<colgroup>' +
+  '<col style="width:38mm"><col style="width:36mm"><col style="width:41mm">' +
+  '<col style="width:52mm"><col style="width:55mm"><col style="width:52mm"></colgroup>';
 function rosterRowHtml (r) {
   return '<tr>' +
     '<td class="c-co">' + esc(r.company) + '</td>' +
@@ -5425,7 +5607,7 @@ function rosterHeaderHtml (total, today) {
 }
 function rosterTableHtml (chunk) {
   var body = chunk.map(rosterRowHtml).join('') || '<tr><td colspan="6" style="padding:16px;color:var(--kec-muted)">No opportunities registered yet.</td></tr>';
-  return '<div class="exrf-body"><table class="exec-roster"><thead>' + ROSTER_THEAD + '</thead><tbody>' + body + '</tbody></table></div>';
+  return '<div class="exrf-body"><table class="exec-roster">' + ROSTER_COLGROUP + '<thead>' + ROSTER_THEAD + '</thead><tbody>' + body + '</tbody></table></div>';
 }
 function rosterPageHtml (chunk, today, total, i, n) {
   return rosterHeaderHtml(total, today) + rosterTableHtml(chunk) + execFooter(i, n);
@@ -5438,7 +5620,7 @@ function execMeasureRoster (rows, today, total) {
   meas.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden';
   meas.innerHTML = '<div class="exec-page exec-page--roster" style="transform:none">' +
     rosterHeaderHtml(total, today) +
-    '<div class="exrf-body"><table class="exec-roster"><thead>' + ROSTER_THEAD + '</thead><tbody>' + rows.map(rosterRowHtml).join('') + '</tbody></table></div>' +
+    '<div class="exrf-body"><table class="exec-roster">' + ROSTER_COLGROUP + '<thead>' + ROSTER_THEAD + '</thead><tbody>' + rows.map(rosterRowHtml).join('') + '</tbody></table></div>' +
     execFooter(1, 1) + '</div>';
   document.body.appendChild(meas);
   var page = meas.firstChild;
@@ -5447,8 +5629,8 @@ function execMeasureRoster (rows, today, total) {
   var Hh = head ? head.offsetHeight : 64, Hth = thead ? thead.offsetHeight : 28, Hf = foot ? foot.offsetHeight : 42;
   var heights = Array.prototype.map.call(trs, function (t) { return t.offsetHeight; });
   document.body.removeChild(meas);
-  var pageH = 210 * 96 / 25.4, pad = 9 * 96 / 25.4;
-  var budget = (pageH - 2 * pad - Hh - 12 - Hf - 10) - Hth - 6;   /* px available for tbody rows */
+  var pageH = 210 * 96 / 25.4, pad = 9 * 96 / 25.4;   /* matches the 210mm print page height */
+  var budget = (pageH - 2 * pad - Hh - 12 - Hf - 10) - Hth - 16;   /* px available for tbody rows (extra safety) */
   if (budget < 120) budget = 120;
   var out = [], cur = [], curH = 0;
   for (var k = 0; k < rows.length; k++) {
@@ -5479,15 +5661,14 @@ function scaleExec () {
   var PW = 297 * 96 / 25.4, PH = 210 * 96 / 25.4;   /* every page is a fixed A4 landscape */
   var sc = Math.min((window.innerWidth - 36) / PW, (window.innerHeight - 92) / PH, 1);
   if (!(sc > 0)) sc = 1;
-  $$('.exec-page', fit).forEach(function (p) { p.style.setProperty('--exec-scale', sc); });
-  $$('.exec-sheet', fit).forEach(function (s2) { s2.style.width = (PW * sc) + 'px'; s2.style.height = (PH * sc) + 'px'; });
+  fit.style.setProperty('--exec-zoom', sc);   /* consumed only by the @media screen rule */
 }
 function execPageRule () { return document.getElementById('execPageRule'); }
 function openExec () {
   renderExec();
   $('#execModal').classList.add('open');
   document.body.classList.add('exec-open');
-  if (!execPageRule()) { var st = document.createElement('style'); st.id = 'execPageRule'; st.textContent = '@page{size:A4 landscape;margin:0}'; document.head.appendChild(st); }
+  if (!execPageRule()) { var st = document.createElement('style'); st.id = 'execPageRule'; st.media = 'print'; st.textContent = '@page{size:A4 landscape;margin:0}'; document.head.appendChild(st); }
   scaleExec();
   /* Row heights (and thus pagination) depend on the web-fonts; once they finish loading,
      re-paginate so no page is over- or under-filled. */
@@ -5502,6 +5683,27 @@ function closeExec () {
   var s = execPageRule(); if (s) s.remove();
 }
 function printExec () { window.print(); }
+/* Chrome only fragments pages that live in the body's own page flow. Our pages are nested
+   inside the overlay, which blocks break-after:page — so for the print pass we hoist
+   #execFit to be a direct child of <body> (KEC's structure), then put it back afterwards.
+   Runs for both the Print button and a plain Ctrl+P, with no action needed from the user. */
+var _execHoisted = null;
+window.addEventListener('beforeprint', function () {
+  var m = document.getElementById('execModal');
+  if (!m || !m.classList.contains('open')) return;
+  var fit = document.getElementById('execFit'); if (!fit) return;
+  _execHoisted = Array.prototype.slice.call(fit.children);   // the .exec-page elements
+  _execHoisted.forEach(function (p) { document.body.appendChild(p); });
+  document.body.classList.add('exec-printing');
+});
+window.addEventListener('afterprint', function () {
+  if (!_execHoisted) return;
+  var fit = document.getElementById('execFit');
+  _execHoisted.forEach(function (p) { if (fit) fit.appendChild(p); });
+  _execHoisted = null;
+  document.body.classList.remove('exec-printing');
+  scaleExec();
+});
 
 /* ===================== MEETINGS / MoM =====================
    A repeatable sub-entity: each record carries r.meetings — an array of meeting
@@ -6228,7 +6430,11 @@ else initAuth();
             <div class="kec-foot__val"><input class="kec-src" id="srcName" value="" aria-label="Source"><span class="kec-foot__sep">|</span><span id="footYear"></span></div>
           </div>
         </div>
-        <div class="kec-foot__mid"><span class="kec-pagepill" id="pagePill">Page 1 of 1</span></div>
+        <div class="kec-foot__mid">
+          <button class="pp-nav no-print" id="ppPrev" type="button" title="Previous page">&#8249;</button>
+          <span class="kec-pagepill" id="pagePill">Page 1 of 1</span>
+          <button class="pp-nav no-print" id="ppNext" type="button" title="Next page">&#8250;</button>
+        </div>
         <div class="kec-foot__cls">
           <div class="kec-foot__meta">
             <div class="kec-foot__lbl">Reference</div>
