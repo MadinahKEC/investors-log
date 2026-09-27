@@ -348,7 +348,7 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .auth-overlay{position:fixed;inset:0;z-index:9999;display:none;background:#fff}
 /* Dialog overlays (not the full-screen sign-in): centre the box on a soft dimmed
    backdrop so it reads as an elegant modal over the page, not a blank white screen. */
-#customPrompt,#deletePrompt,#pwModal{align-items:center;justify-content:center;padding:20px;
+#customPrompt,#deletePrompt,#pwModal,#admPwModal{align-items:center;justify-content:center;padding:20px;
   background:rgba(20,61,30,.30);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .auth-brand{flex:1 1 50%;min-width:0;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,var(--kec-green-deep) 0%,var(--kec-green) 55%,#4E7F3A 100%);
@@ -417,6 +417,12 @@ textarea.f__i{resize:vertical;min-height:76px;height:auto;padding:9px 11px;line-
 .auth-pow{font-size:10.5px;color:#B7BFB2;text-align:center;margin-top:18px;letter-spacing:.3px}
 .auth-error{color:var(--kec-neg);font-size:12.5px;margin-bottom:16px;display:none;background:#F7E9E5;
   padding:10px 12px;border-radius:8px;border:1px solid #E7CCC4;line-height:1.45}
+.auth-lock{display:none;gap:11px;align-items:flex-start;background:#FBF7E8;border:1px solid #E6DAAA;border-left:3px solid var(--kec-gold);
+  border-radius:9px;padding:12px 14px;margin-bottom:16px;color:#6B5D14;font-size:12.5px;line-height:1.5;animation:krise .25s ease-out}
+.auth-lock svg{width:20px;height:20px;color:var(--kec-gold);flex:none;margin-top:1px}
+.auth-lock span{display:block;margin-top:2px}
+.auth-lock__t{color:var(--kec-green-deep);font-size:13px}
+#authLockT{color:var(--kec-green-deep);font-variant-numeric:tabular-nums}
 @media (max-width:860px){ .auth-brand{display:none} .auth-panel{flex:1 1 100%} }
 
 /* the small overlay dialogs keep the old centred card */
@@ -950,6 +956,11 @@ body.viewer-mode .acts{display:none}
       <h2 class="auth-form__t">Welcome back</h2>
       <p class="auth-form__s" id="authSub"></p>
       <div class="auth-error" id="authError">That email and password do not match an account.</div>
+      <div class="auth-lock" id="authLock" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+        <div><b class="auth-lock__t">Sign-in temporarily locked</b>
+          <span>Too many failed attempts on this account. For security, please wait <b id="authLockT">3:00</b> before trying again.</span></div>
+      </div>
 
       <label class="auth-lb" for="authEmail">Email</label>
       <input type="email" id="authEmail" placeholder="name@madinahkec.com" autocomplete="username" spellcheck="false">
@@ -1026,6 +1037,26 @@ body.viewer-mode .acts{display:none}
     <div style="display:flex; gap:10px; margin-top:4px;">
       <button class="btn" id="pwCancel" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Cancel</button>
       <button class="btn btn--go" id="pwSave" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Change password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN: RESET ANOTHER USER'S PASSWORD -->
+<div class="auth-overlay" id="admPwModal" style="display: none;">
+  <div class="auth-box" style="width: 410px; padding: 24px 30px; text-align: left;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+      <svg style="width:26px; height:26px; color:var(--kec-green); flex:none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+      <h2 style="color:var(--kec-green-deep); font-size:16px; font-weight:700; margin:0;">Reset Password</h2>
+    </div>
+    <p id="apWho" style="color:var(--kec-muted); font-size:var(--fs-small); margin:0 0 18px; line-height:1.55;"></p>
+    <label class="pw-l" for="apNew">New password</label>
+    <input type="password" id="apNew" class="pw-i" autocomplete="new-password" placeholder="At least 6 characters">
+    <label class="pw-l" for="apNew2">Confirm new password</label>
+    <input type="password" id="apNew2" class="pw-i" autocomplete="new-password" placeholder="Re-type the new password">
+    <div id="apErr" class="pw-err"></div>
+    <div style="display:flex; gap:10px; margin-top:4px;">
+      <button class="btn" id="apCancel" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Cancel</button>
+      <button class="btn btn--go" id="apSave" type="button" style="flex:1; justify-content:center; height:34px; margin-bottom:0;">Set password</button>
     </div>
   </div>
 </div>
@@ -2114,6 +2145,9 @@ function initAuth() {
     $('#authSub').textContent = 'Sign in to access the ' + APP.title;
 
     $('#authForm').onsubmit = function (e) { e.preventDefault(); handleLogin(); };
+    $('#authEmail').addEventListener('input', checkLockFor);
+    $('#authEmail').addEventListener('change', checkLockFor);
+    setTimeout(checkLockFor, 400);   // autofilled email that is still locked
     var sicBtn = $('#sicBtn');
     if (sicBtn) {
         sicBtn.onclick = function (e) { e.stopPropagation(); $('#sicWrap').classList.toggle('sic--open'); };
@@ -2139,6 +2173,12 @@ function initAuth() {
     $('#pwModal').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') { e.preventDefault(); submitPasswordChange(); }
         else if (e.key === 'Escape') { e.preventDefault(); closePwModal(); }
+    });
+    $('#apCancel').onclick = function() { closeAdminReset(); };
+    $('#apSave').onclick = function() { submitAdminReset(); };
+    $('#admPwModal').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); submitAdminReset(); }
+        else if (e.key === 'Escape') { e.preventDefault(); closeAdminReset(); }
     });
 
     /* Bring Firebase up. Wait for the INITIAL session state to settle (authStateReady)
@@ -2227,9 +2267,45 @@ function clearSession () {
     } catch (e) {}
 }
 
+/* Brute-force guard: 5 wrong passwords for an email lock that email for 3 minutes on
+   this device, with a live countdown so people stop retrying (Firebase also throttles
+   server-side with auth/too-many-requests, which we fold into the same lock). */
+var LOCK_MAX = 5, LOCK_MS = 3 * 60 * 1000, LSLOCK = 'kec_login_lock', lockTimer = null;
+function lockRead () { try { return JSON.parse(localStorage.getItem(LSLOCK) || '{}') || {}; } catch (e) { return {}; } }
+function lockWrite (o) { try { localStorage.setItem(LSLOCK, JSON.stringify(o)); } catch (e) {} }
+function lockLeft (email) { var o = lockRead()[email]; return o && o.until ? Math.max(0, o.until - Date.now()) : 0; }
+function lockClear (email) { var all = lockRead(); delete all[email]; lockWrite(all); }
+function lockFail (email, hard) {
+    var all = lockRead(), o = all[email] || { n: 0 };
+    if (o.until && o.until <= Date.now()) o = { n: 0 };
+    o.n = (o.n || 0) + 1;
+    if (hard || o.n >= LOCK_MAX) { o.until = Date.now() + LOCK_MS; o.n = 0; }
+    all[email] = o; lockWrite(all); return o;
+}
+function startLockUI (email) {
+    clearInterval(lockTimer);
+    var box = $('#authLock'); if (!box) return;
+    showAuthError('');
+    var tick = function () {
+        var ms = lockLeft(email), btn = $('#authBtn');
+        if (ms <= 0 || normEmail($('#authEmail').value) !== email) {
+            clearInterval(lockTimer); lockTimer = null; box.style.display = 'none'; resetAuthBtn(); return;
+        }
+        var s = Math.ceil(ms / 1000), t = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+        $('#authLockT').textContent = t;
+        if (btn) { btn.disabled = true; btn.textContent = 'Locked · ' + t; }
+    };
+    box.style.display = 'flex'; tick(); lockTimer = setInterval(tick, 1000);
+}
+function checkLockFor () {
+    var em = normEmail($('#authEmail').value);
+    if (isEmail(em) && lockLeft(em) > 0) startLockUI(em);
+}
+
 function handleLogin() {
     var e = normEmail($('#authEmail').value), p = $('#authPassword').value;
     if (!isEmail(e)) { showAuthError('Enter a valid email address.'); $('#authEmail').focus(); return; }
+    if (lockLeft(e) > 0) { startLockUI(e); return; }
     if (!p) { showAuthError('Enter your password.'); $('#authPassword').focus(); return; }
     if (!FB) { showAuthError('Sign-in service is still loading — try again in a moment.'); return; }
     var btn = $('#authBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
@@ -2240,16 +2316,21 @@ function handleLogin() {
         return A.signInWithEmailAndPassword(FB.auth, e, p);
     }).then(function () {
         showAuthError('');
+        lockClear(e);
         $('#authPassword').value = '';
         /* onAuthStateChanged fires with the new user and boots the register. */
     }).catch(function (ex) {
         pendingSignInLog = false;
         resetAuthBtn();
         var c = (ex && ex.code) || '';
-        if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-email')
-            showAuthError('That email and password do not match an account.');
-        else if (c === 'auth/too-many-requests')
-            showAuthError('Too many attempts. Wait a minute, then try again.');
+        if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found' || c === 'auth/invalid-email') {
+            var st = lockFail(e);
+            if (st.until) { $('#authPassword').value = ''; startLockUI(e); return; }
+            var left = LOCK_MAX - st.n;
+            showAuthError('That email and password do not match an account. ' +
+                left + ' attempt' + (left === 1 ? '' : 's') + ' left before sign-in is locked for 3 minutes.');
+        }
+        else if (c === 'auth/too-many-requests') { lockFail(e, true); $('#authPassword').value = ''; startLockUI(e); return; }
         else if (c === 'auth/network-request-failed')
             showAuthError('Network problem — check your connection and try again.');
         else showAuthError('Sign-in failed' + (c ? ' (' + c + ')' : '') + '.');
@@ -2372,6 +2453,68 @@ function submitPasswordChange () {
             else
                 pwFail('Could not change password (' + (c || 'error') + ').');
         });
+}
+
+/* ===================== ADMIN SERVICE (Apps Script doPost) =====================
+   The browser SDK can only manage the SIGNED-IN account, so resetting someone
+   else's password or deleting their Firebase login goes through the same Apps Script
+   web app used for Drive restore. It verifies the caller's Firebase ID token and
+   that they are an administrator in _metadata before acting. */
+function adminApi (action, data) {
+    if (!RESTORE.url) return Promise.reject({ code: 'not-configured' });
+    var u = FB && FB.auth && FB.auth.currentUser;
+    if (!u) return Promise.reject({ code: 'unauthenticated' });
+    return u.getIdToken().then(function (tok) {
+        return fetch(RESTORE.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                    body: JSON.stringify(Object.assign({ action: action, idToken: tok }, data || {})) });
+    }).then(function (r) { return r.json(); }, function () { throw { code: 'network' }; })
+      .then(function (res) {
+        if (!res || !res.ok) throw { code: (res && res.code) || 'server-error', message: res && res.error };
+        return res;
+    }, function (ex) { throw (ex && ex.code) ? ex : { code: 'no-service' }; });
+}
+function adminErrText (ex) {
+    var c = (ex && ex.code) || '';
+    return ({
+        'not-configured': 'The admin service URL is not set.',
+        'unauthenticated': 'Your session could not be verified — sign out and in again.',
+        'not-admin': 'Only administrators can do this.',
+        'user-not-found': 'No Firebase sign-in exists for this email.',
+        'weak-password': 'That password is too weak — use at least 6 characters.',
+        'self': 'You cannot delete your own account.',
+        'network': 'Network problem — check your connection and try again.',
+        'no-service': 'The admin service is not set up yet — update and redeploy the Apps Script.',
+        'admin-api': 'Firebase refused the request' + (ex && ex.message ? ' (' + ex.message + ')' : '') + '.'
+    })[c] || ('The admin service returned an error' + (ex && ex.message ? ': ' + ex.message : (c ? ' (' + c + ')' : '')) + '.');
+}
+
+var apTarget = null;
+function openAdminReset (acc) {
+    apTarget = acc;
+    $('#apWho').innerHTML = 'Set a new password for <b style="color:var(--kec-green-deep)">' + esc(userName(acc)) +
+        '</b> (' + esc(acc.e) + '). It works immediately — share it with them securely.';
+    $('#apNew').value = ''; $('#apNew2').value = ''; $('#apErr').textContent = '';
+    $$('#admPwModal .pw-i').forEach(function (i) { i.classList.remove('bad'); });
+    var b = $('#apSave'); b.disabled = false; b.textContent = 'Set password';
+    $('#admPwModal').style.display = 'flex';
+    setTimeout(function () { $('#apNew').focus(); }, 90);
+}
+function closeAdminReset () { $('#admPwModal').style.display = 'none'; apTarget = null; }
+function apFail (msg, el) {
+    $('#apErr').textContent = msg;
+    $$('#admPwModal .pw-i').forEach(function (i) { i.classList.remove('bad'); });
+    if (el) { el.classList.add('bad'); el.focus(); }
+    var b = $('#apSave'); b.disabled = false; b.textContent = 'Set password';
+}
+function submitAdminReset () {
+    if (!apTarget) return;
+    var np = $('#apNew').value, np2 = $('#apNew2').value, who = apTarget;
+    if (np.length < 6) return apFail('The new password must be at least 6 characters.', $('#apNew'));
+    if (np !== np2)    return apFail('The two passwords do not match.', $('#apNew2'));
+    var b = $('#apSave'); b.disabled = true; b.textContent = 'Saving…';
+    adminApi('setPassword', { email: who.e, password: np }).then(function () {
+        closeAdminReset(); stFlash('Password updated for ' + who.e + '.');
+    }).catch(function (ex) { apFail(adminErrText(ex)); });
 }
 
 function applyRoleUI() {
@@ -6169,14 +6312,15 @@ function renderStUsers () {
       '<select class="st__in st__in--role rl"' + (lastAdmin ? ' disabled title="At least one administrator must remain"' : '') + '>' +
         ROLES.map(function (r) { return '<option value="' + r.id + '"' + (r.id === x.role ? ' selected' : '') + '>' + r.label + '</option>'; }).join('') +
       '</select>' +
-      (self ? '<button class="st__ib cpw" type="button">Change password</button>' : '') +
+      (self ? '<button class="st__ib cpw" type="button">Change password</button>'
+            : '<button class="st__ib rpw" type="button" title="Set a new password for this person">Reset password</button>') +
       (self || lastAdmin ? '' : '<button class="st__ib dg rm" type="button">Remove</button>') +
       '</li>';
   }).join('');
 
   $('#stUsers').innerHTML =
     '<div class="st__ttl">Users</div>' +
-    '<div class="st__sub">Everyone signs in with their own work email \u2014 including viewers, so every sign-in is attributable to a person. You set the role when you add someone, and a role change takes effect the next time they load the register. To reset a password, remove the person and add them again with a new one. You can change your own password below.</div>' +
+    '<div class="st__sub">Everyone signs in with their own work email \u2014 including viewers, so every sign-in is attributable to a person. You set the role when you add someone, and a role change takes effect the next time they load the register. Use <b>Reset password</b> to give anyone a new password directly; <b>Remove</b> also deletes their Firebase sign-in. Everyone can change their own password from the top bar.</div>' +
     '<div class="st__note">This decides who can change what inside the register. It is not a security boundary on its own \u2014 anyone holding the file can read its contents \u2014 so pair it with the Firestore rules. Do not reuse a password from another system.</div>' +
     '<div class="st__row"><button class="btn' + (stUserAdd ? '' : ' btn--go') + '" id="nuToggle" type="button">' +
       (stUserAdd ? 'Cancel' : '+ Add a user') + '</button></div>' +
@@ -6221,14 +6365,30 @@ function wireStUsers () {
     var li = b.closest('.st__o'); if (!li || !li.dataset.e) return;
     var acc = findUser(li.dataset.e); if (!acc) return;
     if (b.classList.contains('cpw')) { changeOwnPassword(); return; }
+    if (b.classList.contains('rpw')) { openAdminReset(acc); return; }
     if (b.classList.contains('rm')) {
-      askDelete('Remove ' + acc.e + ' from the register? They lose access immediately. Their Firebase sign-in stays until you delete it in the Firebase console.', function (ok) {
+      askDelete('Remove ' + userName(acc) + ' (' + acc.e + ')? They lose access immediately and their Firebase sign-in is deleted too.', function (ok) {
         if (!ok) return;
-        CFG.users = CFG.users.filter(function (x) { return normEmail(x.e) !== normEmail(acc.e); });
-        saveConfig(true); renderStUsers(); stFlash(acc.e + ' removed.');
-      });
+        b.disabled = true; b.textContent = 'Removing…';
+        /* Delete the Firebase login FIRST; only drop the register entry once that
+           succeeded, so the two never drift apart silently. */
+        adminApi('deleteUser', { email: acc.e }).then(function () {
+          dropUser(acc); stFlash(acc.e + ' removed from the register and from Firebase.');
+        }).catch(function (ex) {
+          b.disabled = false; b.textContent = 'Remove';
+          askDelete('The Firebase sign-in for ' + acc.e + ' could not be deleted. ' + adminErrText(ex) +
+            ' Remove them from the register anyway? They will lose access, but the Firebase login stays until it is deleted.', function (ok2) {
+            if (!ok2) return;
+            dropUser(acc); stFlash(acc.e + ' removed from the register (Firebase login kept).');
+          }, { title: 'Firebase deletion failed', confirm: 'Remove anyway' });
+        });
+      }, { title: 'Remove user', confirm: 'Remove' });
     }
   });
+  function dropUser (acc) {
+    CFG.users = CFG.users.filter(function (x) { return normEmail(x.e) !== normEmail(acc.e); });
+    saveConfig(true); renderStUsers();
+  }
   function addUser () {
     var em = normEmail($('#nuEmail').value), nm = ($('#nuName').value || '').trim(), pw = ($('#nuPass').value || '').trim();
     if (!isEmail(em)) { toast('Enter a valid work email address.'); return; }
@@ -6247,7 +6407,14 @@ function wireStUsers () {
       if (btn) { btn.disabled = false; btn.textContent = 'Create user'; }
       var c = (ex && ex.code) || '';
       if (c === 'auth/email-already-in-use') {
-        addMapping(em + ' already had a Firebase login — added to the register as ' + roleLabel(role) + '. Use Reset password if the password is unknown.');
+        /* A leftover login (e.g. someone removed earlier): set it to the password just
+           typed so the new account works straight away. */
+        if (btn) { btn.disabled = true; btn.textContent = 'Creating…'; }
+        adminApi('setPassword', { email: em, password: pw }).then(function () {
+          addMapping(em + ' already had a Firebase login — its password was set to the one you entered and they were added as ' + roleLabel(role) + '.');
+        }).catch(function () {
+          addMapping(em + ' already had a Firebase login — added to the register as ' + roleLabel(role) + '. Use Reset password to give them a new one.');
+        });
       } else if (c === 'auth/weak-password') { toast('Password is too weak — use at least six characters.'); }
       else if (c === 'auth/invalid-email') { toast('That email address is not valid.'); }
       else if (c === 'no-firebase') { toast('Not connected to Firebase yet — try again in a moment.'); }
